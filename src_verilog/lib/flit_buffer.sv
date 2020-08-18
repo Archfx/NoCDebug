@@ -1,5 +1,5 @@
 `timescale   1ns/1ps
-`define ASSERTION_ENABLE
+// `define ASSERTION_ENABLE
 //`define DUMP_ENABLE
 /**********************************************************************
 **	File:  flit_buffer.sv
@@ -341,6 +341,7 @@ generate
             //b4
             b4: assert property ( @(posedge clk) (!(depth[i] == {DEPTHw{1'b0}} && depth[i] == B))); 
          `endif 
+         
     end//for
 
     `ifdef DUMP_ENABLE
