@@ -12,6 +12,7 @@
      trace_buffer
 
 *****************************/
+`define DUMP_ENABLE
 `timescale   1ns/1ps
 
 module trace_buffer #(
@@ -77,32 +78,14 @@ module trace_buffer #(
     assign dout = fifo_ram_dout;    
     // assign  wr  =   (wr_en)?  vc_num_wr : {V{1'b0}};
     // assign  rd  =   (rd_en)?  vc_num_rd : ssa_rd;
+    integer trace_dump;
 
-genvar i;
-
-
-
-generate 
+    initial begin
+        trace_dump = $fopen("trace_dump.txt","w");
+    end
 
     reg [TB_Depth-1      :   0] rd_ptr;
     reg [TB_Depth-1     :   0] wr_ptr;
-    
-    
-    
-    
-    // wire [BwV-1    :    0]  rd_ptr_array;
-    // wire [BwV-1    :    0]  wr_ptr_array;
-    // wire [Bw-1     :    0]  vc_wr_addr;
-    // wire [Bw-1     :    0]  vc_rd_addr; 
-    // wire [Vw-1     :    0]  wr_select_addr;
-    // wire [Vw-1     :    0]  rd_select_addr; 
-    // wire [Bw+Vw-1  :    0]  wr_addr;
-    // wire [Bw+Vw-1  :    0]  rd_addr;
-    
-    
-
-
-
 
     fifo_ram    #(
         .DATA_WIDTH (Fpay),
@@ -118,63 +101,87 @@ generate
         .rd_en          (rd_en),
         .clk            (clk),
         .rd_data        (fifo_ram_dout)
-    );  
-
-
-        
-        // assign  vc_not_empty  =   (depth > 0);
+    );      
     
-    
-        always @(posedge clk or posedge reset) begin
-            if (reset) begin
-                rd_ptr   <= {TB_Depth{1'b0}};
-                wr_ptr   <= {TB_Depth{1'b0}};
-                depth    <= {TB_Depth{1'b0}};
-            end
-            else begin
-                if (wr) wr_ptr <= wr_ptr + 1'h1;
-                if (rd) rd_ptr <= rd_ptr + 1'h1;
-                if (wr & ~rd) depth <=
-                //synthesis translate_off
-                //synopsys  translate_off
-                   #1
-                //synopsys  translate_on
-                //synthesis translate_on
-                   depth + 1'h1;
-                else if (~wr & rd) depth <=
-                //synthesis translate_off
-                //synopsys  translate_off
-                   #1
-                //synopsys  translate_on
-                //synthesis translate_on
-                   depth - 1'h1;
-            end//else
-        end//always
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            rd_ptr   <= {TB_Depth{1'b0}};
+            wr_ptr   <= {TB_Depth{1'b0}};
+            depth    <= {TB_Depth{1'b0}};
+        end
+        else begin
+            if (wr) wr_ptr <= wr_ptr + 1'h1;
+            if (rd) rd_ptr <= rd_ptr + 1'h1;
+            if (wr & ~rd) depth <=
+            //synthesis translate_off
+            //synopsys  translate_off
+                #1
+            //synopsys  translate_on
+            //synthesis translate_on
+                depth + 1'h1;
+            else if (~wr & rd) depth <=
+            //synthesis translate_off
+            //synopsys  translate_off
+                #1
+            //synopsys  translate_on
+            //synthesis translate_on
+                depth - 1'h1;
+        end//else
 
-        //synthesis translate_off
-        //synopsys  translate_off
-    
-        // always @(posedge clk) begin
-        //     if(~reset)begin
-        //         if (wr && (depth == B) && !rd)
-        //             $display("%t: ERROR: Attempt to write to full FIFO:FIFO size is %d. %m",$time,B);
-        //         /* verilator lint_off WIDTH */
-        //         if (rd && (depth == {DEPTHw{1'b0}} &&  SSA_EN !="YES"  ))
-        //             $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
-        //         if (rd && !wr && (depth == {DEPTHw{1'b0}} &&  SSA_EN =="YES" ))
-        //             $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
-        //         /* verilator lint_on WIDTH */
-          
-        //     end//~reset      
-        // end//always
-        //synopsys  translate_on
-        //synthesis translate_on
-        
-    endgenerate   
+            
+    end//always  
 
+`ifdef DUMP_ENABLE
+    // Dumping buffer input values to files
+    always @(posedge clk) begin
+        if (wr) begin      
+            $fwrite(trace_dump,"%h \n",din);
+        end
+    end
+`endif
 
 
 endmodule 
+
+module trace_handler #(
+    parameter Fpay     =   32,
+    parameter Tile_num =   4
+    )   
+    (
+        din_0,
+        din_1,
+        din_2,
+        din_3,
+        wr_0, wr_1, wr_2, wr_3,
+        ip_select,
+        wr_en,   
+        dout, 
+        reset,
+        clk
+    );
+
+    input [Tile_num-1 : 0] ip_select;
+    input wr_0, wr_1, wr_2, wr_3;
+    input [Fpay-1:0] din_0,din_1,din_2,din_3;
+    input reset;
+    input clk;
+    output wr_en;
+    output reg [Fpay-1:0] dout;
+
+    assign wr_en = wr_0 & wr_1 & wr_2 & wr_3;
+
+    always @(*) begin
+        case (ip_select)
+        4'b0001  : dout <= din_0;
+        4'b0010  : dout <= din_1;
+        4'b0100  : dout <= din_2;
+        4'b1000  : dout <= din_3;
+        default : dout <= din_0; 
+        endcase
+    end
+
+
+endmodule  
 
 
 

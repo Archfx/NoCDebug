@@ -93,15 +93,12 @@ module mor1k_mpsoc (
 	
 	wire 					noc_clk,noc_reset; 
 
-	reg  [32-1 : 0] tile0reg;
-	reg  [32-1 : 0] tile1reg;
-	reg  [32-1 : 0] tile2reg;
-	reg  [32-1 : 0] tile3reg;
+	wire  [32-1 : 0] tile0bus,tile1bus,tile2bus,tile3bus;
+	wire  trigger_0,trigger_1,trigger_2,trigger_3;
 
-	wire  [32-1 : 0] tile0bus;
-	wire  [32-1 : 0] tile1bus;
-	wire  [32-1 : 0] tile2bus;
-	wire  [32-1 : 0] tile3bus;
+
+	wire tb_in_wr;
+	wire flit_in;
 	  
     
 //NoC
@@ -202,7 +199,8 @@ endgenerate
 		.ni_flit_in_wr(ni_flit_in_wr[0]) , 
 		.ni_flit_out(ni_flit_out[0]) , 
 		.ni_flit_out_wr(ni_flit_out_wr[0]) ,
-		.trace_signal(tile0bus)
+		.trace_signal(tile0bus) ,
+		.trigger(trigger_0)
 	);
  
 
@@ -238,7 +236,8 @@ endgenerate
 		.ni_flit_in_wr(ni_flit_in_wr[1]) , 
 		.ni_flit_out(ni_flit_out[1]) , 
 		.ni_flit_out_wr(ni_flit_out_wr[1]) ,
-		.trace_signal(tile1bus)
+		.trace_signal(tile1bus),
+		.trigger(trigger_1)
 	);
  
 
@@ -274,7 +273,8 @@ endgenerate
 		.ni_flit_in_wr(ni_flit_in_wr[2]) , 
 		.ni_flit_out(ni_flit_out[2]) , 
 		.ni_flit_out_wr(ni_flit_out_wr[2]) ,
-		.trace_signal(tile2bus)
+		.trace_signal(tile2bus),
+		.trigger(trigger_2)
 	);
  
 
@@ -310,7 +310,8 @@ endgenerate
 		.ni_flit_in_wr(ni_flit_in_wr[3]) , 
 		.ni_flit_out(ni_flit_out[3]) , 
 		.ni_flit_out_wr(ni_flit_out_wr[3]) ,
-		.trace_signal(tile3bus)
+		.trace_signal(tile3bus),
+		.trigger(trigger_3)
 	);
 
 	trace_buffer #(
@@ -320,12 +321,33 @@ endgenerate
      the_tb
      (
         .din(flit_in),     // Data in
-        .wr_en(flit_in_wr),   // Write enable
+        .wr_en(tb_in_wr),   // Write enable
         .rd_en(fifo_rd),   // Read the next word
         .dout(fifo_dout),    // Data out
         .reset(reset),
         .clk(clk)
     ); 
+
+	trace_handler #(
+    	.Fpay(32),
+    	.Tile_num(4)
+    )
+	the_tb_handler   
+    (
+        .din_0(tile0bus),
+        .din_1(tile1bus),
+        .din_2(tile2bus),
+        .din_3(tile3bus),
+        .wr_0(trigger_0),
+		.wr_1(trigger_1),
+		.wr_2(trigger_2), 
+		.wr_3(trigger_3),
+        .ip_select(4'b0010),
+        .wr_en(tb_in_wr),   
+        .dout(flit_in), 
+        .reset(reset),
+        .clk(clk)
+    );
 
 	
  

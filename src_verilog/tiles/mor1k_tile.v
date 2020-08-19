@@ -67,7 +67,8 @@ module mor1k_tile #(
 	ni_flit_in_wr, 
 	ni_flit_out, 
 	ni_flit_out_wr,
-	trace_signal
+	trace_signal,
+	trigger
 );
   
   	function integer log2;
@@ -172,7 +173,8 @@ module mor1k_tile #(
  	input			ni_flit_in_wr;
  	output	 [ ni_Fw-1   :   0    ] ni_flit_out;
  	output			ni_flit_out_wr;
-	output trace_signal;
+	output [31:0] trace_signal;
+	output trigger;
 
   	wire			 source_socket_clk_0_clk_o;
  	wire			 source_socket_reset_0_reset_o;
