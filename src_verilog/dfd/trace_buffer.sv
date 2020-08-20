@@ -183,6 +183,76 @@ module trace_handler #(
 
 endmodule  
 
+module trace_generator #(
+    parameter Fpay     =   32,
+    parameter Tile_num =   4
+    )   
+    (
+        trigger_length,
+        trace_signal,
+        trigger,
+        wr_en,   
+        dout, 
+        reset,
+        clk
+    );
+
+    input [Tile_num-1 : 0] trigger_length;
+    input trigger;
+    input [Fpay-1:0] trace_signal;
+    input reset;
+    input clk;
+    output reg wr_en;
+    output reg [Fpay-1:0] dout;
+
+    reg [4:0] counter=5'b0; //Counter for trace length calculation
+    reg [31:0] residue;
+    reg [4:0] residue_length;
+    reg residue_fill_flag=1'b0;
+    int i,j,k,l;
+    always @(*) begin
+        if (trigger && (counter+trigger_length < Fpay)) begin
+            for (j=0; j < (trigger_length); j++) begin
+                dout[counter+j]<=trace_signal[j];
+            end
+            // dout[trigger_length - 1 + counter : counter]<= trace_signal[trigger_length-1: 0];
+            counter <= counter+trigger_length;
+            wr_en<=1'b0;
+        end
+        else if (trigger) begin
+            for (i=0; i < (trigger_length-counter); i++) begin
+                dout[counter+i]<=trace_signal[i];
+            end
+            // dout[trigger_length - 1 + counter: counter]<= trace_signal[trigger_length-1-counter: 0];
+            for (k=0; k < (counter); k++) begin
+                residue[k]<=trace_signal[k];
+            end
+            // residue[counter-1: 0] <= trace_signal[counter-1: 0];
+            residue_length <= (5'b11111 - counter);
+            residue_fill_flag<=1'b1;
+            wr_en<=1'b1;
+        end
+        if (residue_fill_flag) begin
+            for (l=0; l < (residue_length); l++) begin
+                dout[l]<=residue[l];
+            end
+            // dout[residue_length - 1 : 0]<= residue[counter-1: 0];
+            counter <= residue_length;
+            residue_fill_flag <=1'b0;
+            residue_length<=5'b0;
+            wr_en<=1'b0;
+        end
+        if (counter == 5'b11111) begin
+            wr_en<=1'b1;
+            counter<=1'b0;
+        end
+
+
+    end
+
+
+endmodule
+
 
 
 

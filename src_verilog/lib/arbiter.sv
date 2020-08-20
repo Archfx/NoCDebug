@@ -45,7 +45,9 @@ module arbiter #(
    reset, 
    request, 
    grant,
-   any_grant
+   any_grant,
+   trigger,
+   trace_signal
 );
 
     
@@ -54,6 +56,8 @@ module arbiter #(
     output                                        any_grant;
     input                                        clk;
     input                                        reset;
+    output trigger;
+    output [32-1            :0] trace_signal;
 
 
 
@@ -115,12 +119,12 @@ module arbiter #(
     // Branch statements
     always@(posedge clk) begin
         //$display("%b", grant);
-        //a1
+        //a1 --> A10
         if ($onehot0(grant)) begin
             if ($onehot(grant)) $display (" a1 succeeded");
         end
         else $display(" $error :a1 failed in %m at %t", $time);
-        //a2
+        //a2 --> A11
         if ($onehot(request)) begin
             for(i=0;i<$size(request);i=i+1) begin :loop0
                 if(request[i]==1'b1) begin
@@ -136,7 +140,7 @@ module arbiter #(
             if ($onehot(grant) && grant[i]==1'b1 && request!=grant) $display(" $error :a2 failed in %m at %t", $time);
         end
        
-        //a3
+        //a3 --> A12
         for(x=0;x<$size(request);x=x+1) begin :loop1
             if (!request[x]) begin
                 #1
@@ -145,7 +149,7 @@ module arbiter #(
             end
         end
 
-        //a4
+        //a4 --> A13
         if($onehot(grant)) begin
             // $display("%d $size(grant)",$size(grant));
             for(y=0;y<$size(grant);y=y+1) begin :loop2
@@ -186,10 +190,10 @@ module arbiter #(
     end
 
     // Assert statements
-    //a1
+    //a1 --> A10
     a1: assert property (@(posedge clk) $onehot0(grant));
     
-    //a2
+    //a2 --> A11
     genvar j;
     generate
         for (j=0; j < $size(request); j++) begin
@@ -201,14 +205,14 @@ module arbiter #(
         end
     endgenerate  
 
-    //a3
+    //a3 --> A12
     genvar k;
     generate
         for (k=0; k < $size(request); k++) begin
             a3: assert property (@(posedge clk) !request[k] |-> ##1 !grant[k]);
         end
     endgenerate
-    //a4
+    //a4 --> A13
     genvar l;
     generate
         for (l=0; l < $size(grant); l++) begin

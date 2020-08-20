@@ -292,7 +292,7 @@ generate
                             
             // Branch statements
             always@(posedge clk) begin
-                //b1.1
+                //b1.1 --> A1
                 if (wr[i] && (!rd[i] && !(depth[i] == B) || rd[i])) begin
                     //$display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
                     wr_ptr_check[i] <= wr_ptr[i];
@@ -301,28 +301,28 @@ generate
                     if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $display(" b1.1 succeeded");
                     else $display(" $error :b1.1 failed in %m at %t", $time);
                 end
-                //b1.2
+                //b1.2 --> A1
                 if (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) begin
                     rd_ptr_check[i] <= rd_ptr[i];
                     #1
                     if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $display(" b1.2 succeeded");
                     else $display(" $error :b1.2 failed in %m at %t", $time);
                 end
-                //b3.1 trying to write to full buffer
+                //b3.1 --> A3 trying to write to full buffer
                 if (wr[i] && !rd[i] && (depth[i] == B) ) begin
                     wr_ptr_check[i] <= wr_ptr[i];
                     #1
                     if ( wr_ptr[i]== wr_ptr_check[i] ) $display(" b3.1 succeeded");
                     else $display(" $error :b3.1 failed in %m at %t", $time);
                 end
-                //b3.2 trying to read from empty buffer
+                //b3.2 --> A3 trying to read from empty buffer
                 if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
                     rd_ptr_check[i] <= rd_ptr[i];
                     #1
                     if ( rd_ptr[i]== rd_ptr_check[i] ) $display(" b3.2 succeeded");
                     else $display(" $error :b3.2 failed in %m at %t", $time);
                 end
-                //b4 buffer cannot be empty and full at the same time
+                //b4 --> A4 buffer cannot be empty and full at the same time
                 if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
                 else $display(" $error :b4 failed in %m at %t", $time);
                 
@@ -330,15 +330,15 @@ generate
             end
             
             // Assert statements
-            //b1.1
+            //b1.1 --> A1
             b1_1: assert property ( @(posedge clk) ( wr[i] && (!rd[i] && !(depth[i] == B) || rd[i]) ) ##1  ( wr_ptr[i] == $past(wr_ptr[i])+1 ));
-            //b1.2
+            //b1.2 --> A1
             b1_2: assert property ( @(posedge clk) (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) ##1  ( rd_ptr[i] == $past(rd_ptr[i])+1 )); 
-            //b3.1
+            //b3.1 --> A3
             b3_1: assert property ( @(posedge clk) (wr[i] && !rd[i] && (depth[i] == B) ) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )); 
-            //b3.2
+            //b3.2 --> A3
             b3_2: assert property ( @(posedge clk) (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )) ; 
-            //b4
+            //b4 --> A4
             b4: assert property ( @(posedge clk) (!(depth[i] == {DEPTHw{1'b0}} && depth[i] == B))); 
          `endif 
          
@@ -414,7 +414,7 @@ generate
 
             if (rd_en) begin      
 
-                // b5 : removing the header from the monitoring list
+                // b5 --> A5: removing the header from the monitoring list
                 if (dout[35]==1'b1) begin // Header found
                     // $display (" buffer out %b",dout[31:0]);
                     for(z=0;z<$size(b5_check_buffer)+1;z=z+1) begin :asserion_check_loop2
@@ -454,11 +454,11 @@ generate
                 if (dout[34]==1'b1) begin // tail packet found
                     packet_count_flag_out<=1'b0;
                     // branch statement
-                    //b6
+                    //b6 --> A6
                     if (b6_buffer_counter[z]==1'b0) $display(" b6 succeeded");
                     else $display(" $error :b6 failed in %m at %t", $time);
                     // assertion statements
-                    //b6
+                    //b6 --> A6
                     b6: assert (b6_buffer_counter[z]==1'b0);
                 end
             end

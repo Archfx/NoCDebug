@@ -119,24 +119,24 @@ module xy_mesh_routing #(
             // Asserting the Property r3 : Desired routing algorithm should be correctly implemented
 
             // Branch statements
-            //r1
+            //r1 --> A7
             if ($onehot0(destport)) $display (" r1 succeeded");
             else if ( !$isunknown(destport) )$display(" $error :r1 failed in %m at %t", $time);
-            //r2
+            //r2 --> A8
             if (dest_x<=1'b1 && dest_y<=1'b1) $display (" r2 succeeded");
             else begin
                 if (!$isunknown(dest_x) || !$isunknown(dest_y)) $display(" $error :r2 failed in %m at %t", $time);
             end
-            //r3
+            //r3 --> A9
             if ((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL)) $display (" r3 succeeded");
             else $display(" $error :r3 failed in %m at %t", $time);
 
             // Assert statments
-            //r1
+            //r1 --> A7
             r1: assert ($onehot0(destport) || $isunknown(destport));
-            //r2
+            //r2 --> A8
             r2: assert (dest_x<=1'b1 && dest_y<=1'b1 || ($isunknown(dest_x) || $isunknown(dest_y)));
-            // r3
+            // r3 --> A9
             r3: assert ((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL)); 
 
         `endif
