@@ -327,17 +327,18 @@ generate
             // Asserting the property b4 : Buffer can not be both full and empty at the same time
                             
             // Branch statements
+            // Signal selection and trigger generation
             always@(posedge clk) begin
                 //b1.1 --> A1
                 if (wr[i] && (!rd[i] && !(depth[i] == B) || rd[i])) begin
                     //$display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
                     trigger_in=1'b1;
-                    trace_din = wr_ptr[i];
-                    wr_ptr_check[i] <= wr_ptr[i];
+                    trace_din = {4'b0001,1'b0,27'(wr_ptr[i])};
+                    // wr_ptr_check[i] <= wr_ptr[i];
                     // $display("pre-trigger");
                     #1
                     trigger_in=1'b1;
-                    trace_din = wr_ptr[i];
+                    trace_din = {4'b0001,1'b0,27'(wr_ptr[i])};
                     // // $display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
                     // if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $display(" b1.1 succeeded");
                     // else $display(" $error :b1.1 failed in %m at %t", $time);
@@ -345,11 +346,16 @@ generate
                 else trigger_in=1'b0;
                 //b1.2 --> A1
                 if (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) begin
-                    rd_ptr_check[i] <= rd_ptr[i];
-                    // #1
+                    // rd_ptr_check[i] <= rd_ptr[i];
+                    trigger_in=1'b1;
+                    trace_din = {4'b0001,1'b1,27'(rd_ptr[i])};
+                    #1
+                    trigger_in=1'b1;
+                    trace_din = {4'b0001,1'b1,27'(rd_ptr[i])};
                     // if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $display(" b1.2 succeeded");
                     // else $display(" $error :b1.2 failed in %m at %t", $time);
                 end
+                else trigger_in=1'b0;
                 //b3.1 --> A3 trying to write to full buffer
                 if (wr[i] && !rd[i] && (depth[i] == B) ) begin
                     wr_ptr_check[i] <= wr_ptr[i];
@@ -533,141 +539,6 @@ generate
 
     
     end 
-    //  else begin :no_pow2    //pow2
-
-
-    
-
-
-//     /*****************      
-//         Buffer width is not power of 2
-//      ******************/
-
-
-
-
-    
-//     //pointers
-//     reg [BVw- 1     :   0] rd_ptr [V-1          :0];
-//     reg [BVw- 1     :   0] wr_ptr [V-1          :0];
-    
-//     // memory address
-//     wire [BVw- 1    :   0]  wr_addr;
-//     wire [BVw- 1    :   0]  rd_addr;
-    
-//     //pointer array      
-//     wire [BVwV- 1   :   0]  wr_addr_all;
-//     wire [BVwV- 1   :   0]  rd_addr_all;
-    
-//     for(i=0;i<V;i=i+1) begin :loop0
-        
-//         assign  wr_addr_all[(i+1)*BVw- 1        :   i*BVw]   =       wr_ptr[i];
-//         assign  rd_addr_all[(i+1)*BVw- 1        :   i*BVw]   =       rd_ptr[i];       
-//         assign  vc_not_empty    [i] =   (depth[i] > 0);
-    
-//      /* verilator lint_off WIDTH */ 
-//         always @(posedge clk or posedge reset)
-//         begin
-//             if (reset) begin
-               
-//                 rd_ptr  [i] <= (B*i);
-//                 wr_ptr  [i] <= (B*i);
-//                 depth   [i] <= {DEPTHw{1'b0}};
-//             end
-//             else begin
-//                 if (wr[i] ) wr_ptr[i] <=(wr_ptr[i]==(B*(i+1))-1)? (B*i) : wr_ptr [i]+ 1'h1;
-//                 if (rd[i] ) rd_ptr[i] <=(rd_ptr[i]==(B*(i+1))-1)? (B*i) : rd_ptr [i]+ 1'h1;
-//                 if (wr[i] & ~rd[i]) depth [i]<=
-// //synthesis translate_off
-// //synopsys  translate_off
-//                    #1
-// //synopsys  translate_on
-// //synthesis translate_on
-//                    depth[i] + 1'h1;
-//                 else if (~wr[i] & rd[i]) depth [i]<=
-// //synthesis translate_off
-// //synopsys  translate_off
-//                    #1          
-// //synopsys  translate_on
-// //synthesis translate_on
-//                    depth[i] - 1'h1;
-//             end//else
-//         end//always  
-//          /* verilator lint_on WIDTH */ 
-        
-// //synthesis translate_off
-// //synopsys  translate_off
-    
-
-//         always @(posedge clk) begin
-//             if(~reset)begin
-//                 if (wr[i] && (depth[i] == B) && !rd[i])
-//                    $display("%t: ERROR: Attempt to write to full FIFO:FIFO size is %d. %m",$time,B);
-//                 /* verilator lint_off WIDTH */
-//                 if (rd[i] && (depth[i] == {DEPTHw{1'b0}}  &&  SSA_EN !="YES"  ))
-//                     $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
-//                 if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}} &&  SSA_EN =="YES" ))
-//                     $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
-//                 /* verilator lint_on WIDTH */
-                
-//         //if (wr_en)       $display($time, " %h is written on fifo ",din);
-//             end//~reset
-//         end//always
-    
-// //synopsys  translate_on
-// //synthesis translate_on
-        
-              
-    
-//     end//FOR
-    
-    
-//     one_hot_mux #(
-//         .IN_WIDTH(BVwV),
-//         .SEL_WIDTH(V),
-//         .OUT_WIDTH(BVw)
-//     )
-//     wr_mux
-//     (
-//         .mux_in(wr_addr_all),
-//         .mux_out(wr_addr),
-//         .sel(vc_num_wr)
-//     );
-    
-//     one_hot_mux #(
-//         .IN_WIDTH(BVwV),
-//         .SEL_WIDTH(V),
-//         .OUT_WIDTH(BVw)
-//     )
-//     rd_mux
-//     (
-//         .mux_in(rd_addr_all),
-//         .mux_out(rd_addr),
-//         .sel(vc_num_rd)
-//     );
-    
-//     fifo_ram_mem_size #(
-//        .DATA_WIDTH (RAM_DATA_WIDTH),
-//        .MEM_SIZE (BV ),
-//        .SSA_EN(SSA_EN)       
-//     )
-//     the_queue
-//     (
-//         .wr_data        (fifo_ram_din), 
-//         .wr_addr        (wr_addr),
-//         .rd_addr        (rd_addr),
-//         .wr_en          (wr_en),
-//         .rd_en          (rd_en),
-//         .clk            (clk),
-//         .rd_data        (fifo_ram_dout)
-//     );  
-    
-    
-    
-    
-    
-    
-    // end
     endgenerate
     
     
