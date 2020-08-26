@@ -11,15 +11,15 @@ A8
 A11
 A12
 
-| A# | Implementation | Tested                 |
-|    |                |-------------|----------|
-|----|----------------| Without Bugs | With Bugs |
-|    |                |-------------|----------|
-|  A1  |         ✓       |             |          |
-|  A3  |                |             |          |
-|  A8  |                |             |          |
-|  A11  |                |             |          |
-|  A12  |                |             |          |
+| A#  | Implementation | Tested    |              |
+|-----|----------------|-----------|--------------|
+|     |                | With Bugs | Without Bugs |
+| A1  |                |           |              |
+| A3  |                |           |              |
+| A8  |                |           |              |
+| A11 |                |           |              |
+| A12 |                |           |              |
+|     |                |           |              |
 
 
 | prop. | Formalization  | Assert | Branch | Module |
