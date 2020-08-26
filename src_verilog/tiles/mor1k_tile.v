@@ -68,7 +68,7 @@ module mor1k_tile #(
 	ni_flit_out, 
 	ni_flit_out_wr,
 	trace_signal,
-	trigger
+	trace_trigger
 );
   
   	function integer log2;
@@ -173,8 +173,9 @@ module mor1k_tile #(
  	input			ni_flit_in_wr;
  	output	 [ ni_Fw-1   :   0    ] ni_flit_out;
  	output			ni_flit_out_wr;
+	
 	output [31:0] trace_signal;
-	output trigger;
+	output trace_trigger;
 
   	wire			 source_socket_clk_0_clk_o;
  	wire			 source_socket_reset_0_reset_o;
@@ -617,7 +618,9 @@ module mor1k_tile #(
 		.s_dat_o(ni_plug_wb_slave_0_dat_o),
 		.s_sel_i(ni_plug_wb_slave_0_sel_i),
 		.s_stb_i(ni_plug_wb_slave_0_stb_i),
-		.s_we_i(ni_plug_wb_slave_0_we_i)
+		.s_we_i(ni_plug_wb_slave_0_we_i),
+		.trace_trigger(trace_trigger),
+		.trace_signal(trace_signal)
 	);
  wb_single_port_ram #(
  		.Dw(ram_Dw),
@@ -717,9 +720,7 @@ module mor1k_tile #(
 		.snoop_adr_o(bus_socket_snoop_0_snoop_adr_o),
 		.snoop_en_o(bus_socket_snoop_0_snoop_en_o)
 	);
- 
-
- 
+	
  	assign  uart_plug_clk_0_clk_i = source_socket_clk_0_clk_o;
  	assign  uart_plug_reset_0_reset_i = source_socket_reset_0_reset_o;
  	assign  bus_socket_wb_slave_3_ack_i  = uart_plug_wb_slave_0_ack_o;
@@ -868,5 +869,8 @@ module mor1k_tile #(
  	assign bus_socket_wb_addr_map_0_sel_one_hot[0] = ((bus_socket_wb_addr_map_0_grant_addr >= ram_WB0_BASE_ADDR)   & (bus_socket_wb_addr_map_0_grant_addr <= ram_WB0_END_ADDR));
  /* timer wb_slave 0 */
  	assign bus_socket_wb_addr_map_0_sel_one_hot[2] = ((bus_socket_wb_addr_map_0_grant_addr >= timer_WB0_BASE_ADDR)   & (bus_socket_wb_addr_map_0_grant_addr <= timer_WB0_END_ADDR));
+ 
+
+ 
  endmodule
 

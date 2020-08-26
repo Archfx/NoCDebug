@@ -50,9 +50,9 @@ module xy_mesh_routing #(
     current_y,    // current router y address
     dest_x,        // destination x address
     dest_y,        // destination y address
-    destport,    // router output port
-    trigger,
-    trace_signal
+    destport//,    // router output port
+    // trigger,
+    // trace_signal
         
 );
     
@@ -80,8 +80,8 @@ module xy_mesh_routing #(
     input  [Xw-1        :0]    dest_x;
     input  [Yw-1        :0]    dest_y;
     output [DSTw-1            :0]    destport;
-    output trigger;
-    output [DSTw-1            :0] trace_signal;
+    // output trigger;
+    // output [31            :0] trace_signal;
 
     
     
@@ -97,8 +97,8 @@ module xy_mesh_routing #(
     // reg [DSTw-1            :0]    destport_next_r3;
     
     // Trigger
-    assign trigger = (dest_x<=1'b1 && dest_y<=1'b1);
-    assign trace_signal = destport_next;
+    // assign trigger = (dest_x<=1'b1 && dest_y<=1'b1);
+    // assign trace_signal = destport_next;
         
     assign    destport= destport_next;
     

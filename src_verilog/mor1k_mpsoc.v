@@ -93,12 +93,10 @@ module mor1k_mpsoc (
 	
 	wire 					noc_clk,noc_reset; 
 
-	wire  [32-1 : 0] tile0bus,tile1bus,tile2bus,tile3bus;
+	wire  [31 : 0] tile0bus,tile1bus,tile2bus,tile3bus;
 	wire  trigger_0,trigger_1,trigger_2,trigger_3;
-
-
 	wire tb_in_wr;
-	wire flit_in;
+	wire [31:0] flit_in,fifo_dout;
 	  
     
 //NoC
@@ -200,7 +198,7 @@ endgenerate
 		.ni_flit_out(ni_flit_out[0]) , 
 		.ni_flit_out_wr(ni_flit_out_wr[0]) ,
 		.trace_signal(tile0bus) ,
-		.trigger(trigger_0)
+		.trace_trigger(trigger_0)
 	);
  
 
@@ -237,7 +235,7 @@ endgenerate
 		.ni_flit_out(ni_flit_out[1]) , 
 		.ni_flit_out_wr(ni_flit_out_wr[1]) ,
 		.trace_signal(tile1bus),
-		.trigger(trigger_1)
+		.trace_trigger(trigger_1)
 	);
  
 
@@ -274,7 +272,7 @@ endgenerate
 		.ni_flit_out(ni_flit_out[2]) , 
 		.ni_flit_out_wr(ni_flit_out_wr[2]) ,
 		.trace_signal(tile2bus),
-		.trigger(trigger_2)
+		.trace_trigger(trigger_2)
 	);
  
 
@@ -311,7 +309,7 @@ endgenerate
 		.ni_flit_out(ni_flit_out[3]) , 
 		.ni_flit_out_wr(ni_flit_out_wr[3]) ,
 		.trace_signal(tile3bus),
-		.trigger(trigger_3)
+		.trace_trigger(trigger_3)
 	);
 
 	trace_buffer #(
@@ -342,12 +340,14 @@ endgenerate
 		.wr_1(trigger_1),
 		.wr_2(trigger_2), 
 		.wr_3(trigger_3),
-        .ip_select(4'b0010),
+        .ip_select(4'b1000),
         .wr_en(tb_in_wr),   
         .dout(flit_in), 
         .reset(reset),
         .clk(clk)
     );
+
+	
 
 	
  

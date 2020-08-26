@@ -45,9 +45,9 @@ module arbiter #(
    reset, 
    request, 
    grant,
-   any_grant,
-   trigger,
-   trace_signal
+   any_grant//,
+//    trigger,
+//    trace_signal
 );
 
     
@@ -56,8 +56,8 @@ module arbiter #(
     output                                        any_grant;
     input                                        clk;
     input                                        reset;
-    output trigger;
-    output [32-1            :0] trace_signal;
+    // output trigger;
+    // output [31            :0] trace_signal;
 
 
 

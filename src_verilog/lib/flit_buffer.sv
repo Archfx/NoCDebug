@@ -46,7 +46,9 @@ module flit_buffer #(
         vc_not_empty,
         reset,
         clk,
-        ssa_rd
+        ssa_rd,
+        trace_signal,
+        trace_trigger
     );
 
    
@@ -76,6 +78,9 @@ module flit_buffer #(
     input                   reset;
     input                   clk;
     input  [V-1        :0]  ssa_rd;
+    output [31:0] trace_signal;
+    output trace_trigger;
+
     
     localparam BVw              =   log2(BV),
                Bw               =   (B==1)? 1 : log2(B),
@@ -112,7 +117,17 @@ module flit_buffer #(
     reg [4     :   0] b6_buffer_counter [10          :0]; // Packet counter
     reg packet_count_flag_in;
     reg packet_count_flag_out;
+
+    // reg [31:0] trace_dout;
+    // wire trigger_en;
+
     integer x,y,z,p,q;
+
+    wire [4:0] trigger_length;
+	wire [31:0] trace_signal;
+	reg trigger_in;
+	wire wr_en;
+	reg [31:0] trace_din;
 
 genvar i;
 
@@ -229,7 +244,23 @@ generate
         .rd_en          (rd_en),
         .clk            (clk),
         .rd_data        (fifo_ram_dout)
-    );  
+    ); 
+
+    trace_generator #(
+            .Fpay(32),
+            .Tile_num(4)
+        )   
+        the_tg (
+            .trigger_length(trigger_length),
+            .trace_signal_in(trace_din),
+            .trigger(trigger_in),
+            .wr_en(trace_trigger),   
+            .dout(trace_signal), 
+            .reset(reset),
+            .clk(clk)
+        );
+
+ 
 
     for(i=0;i<V;i=i+1) begin :loop0
         
@@ -284,7 +315,12 @@ generate
         //synopsys  translate_on
         //synthesis translate_on
         
-        `ifdef ASSERTION_ENABLE
+        // Triggers for signal selection
+        assign trigger_length = 5'($size(wr_ptr[0])) ;//(rd_en_delayed)? memory_rd_data  : bypass_reg;
+	    // assign trace_din = (wr[0] && (!rd[0] && !depth[0]==B) || rd[0]) ? 32'(wr_ptr[0]) : ((wr[1] && (!rd[1] && !depth[1]==B) || rd[1]) ? 32'(wr_ptr[1]) : 32'd0 );//()?
+	    // assign trigger_in = ((wr[0] && (!rd[0] && !depth[0]==B) || rd[0]) || (wr[1] && (!rd[1] && !depth[1]==B) || rd[1])) ? 1'b1 : 1'b0;
+
+        // `ifdef ASSERTION_ENABLE
      
             // Asserting the Property b1 : Read and write pointers are incremented when r_en/w_en are set
             // Asserting the property b3 : Read and Write pointers are not incremented when the buffer is empty and full
@@ -295,53 +331,60 @@ generate
                 //b1.1 --> A1
                 if (wr[i] && (!rd[i] && !(depth[i] == B) || rd[i])) begin
                     //$display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
+                    trigger_in=1'b1;
+                    trace_din = wr_ptr[i];
                     wr_ptr_check[i] <= wr_ptr[i];
+                    // $display("pre-trigger");
                     #1
-                    // $display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
-                    if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $display(" b1.1 succeeded");
-                    else $display(" $error :b1.1 failed in %m at %t", $time);
+                    trigger_in=1'b1;
+                    trace_din = wr_ptr[i];
+                    // // $display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
+                    // if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $display(" b1.1 succeeded");
+                    // else $display(" $error :b1.1 failed in %m at %t", $time);
                 end
+                else trigger_in=1'b0;
                 //b1.2 --> A1
                 if (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) begin
                     rd_ptr_check[i] <= rd_ptr[i];
-                    #1
-                    if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $display(" b1.2 succeeded");
-                    else $display(" $error :b1.2 failed in %m at %t", $time);
+                    // #1
+                    // if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $display(" b1.2 succeeded");
+                    // else $display(" $error :b1.2 failed in %m at %t", $time);
                 end
                 //b3.1 --> A3 trying to write to full buffer
                 if (wr[i] && !rd[i] && (depth[i] == B) ) begin
                     wr_ptr_check[i] <= wr_ptr[i];
-                    #1
-                    if ( wr_ptr[i]== wr_ptr_check[i] ) $display(" b3.1 succeeded");
-                    else $display(" $error :b3.1 failed in %m at %t", $time);
+                    // #1
+                    // if ( wr_ptr[i]== wr_ptr_check[i] ) $display(" b3.1 succeeded");
+                    // else $display(" $error :b3.1 failed in %m at %t", $time);
                 end
                 //b3.2 --> A3 trying to read from empty buffer
                 if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
                     rd_ptr_check[i] <= rd_ptr[i];
-                    #1
-                    if ( rd_ptr[i]== rd_ptr_check[i] ) $display(" b3.2 succeeded");
-                    else $display(" $error :b3.2 failed in %m at %t", $time);
+                    // #1
+                    // if ( rd_ptr[i]== rd_ptr_check[i] ) $display(" b3.2 succeeded");
+                    // else $display(" $error :b3.2 failed in %m at %t", $time);
                 end
                 //b4 --> A4 buffer cannot be empty and full at the same time
-                if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
-                else $display(" $error :b4 failed in %m at %t", $time);
+                // if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
+                // else $display(" $error :b4 failed in %m at %t", $time);
                 
 
             end
             
-            // Assert statements
-            //b1.1 --> A1
-            b1_1: assert property ( @(posedge clk) ( wr[i] && (!rd[i] && !(depth[i] == B) || rd[i]) ) ##1  ( wr_ptr[i] == $past(wr_ptr[i])+1 ));
-            //b1.2 --> A1
-            b1_2: assert property ( @(posedge clk) (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) ##1  ( rd_ptr[i] == $past(rd_ptr[i])+1 )); 
-            //b3.1 --> A3
-            b3_1: assert property ( @(posedge clk) (wr[i] && !rd[i] && (depth[i] == B) ) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )); 
-            //b3.2 --> A3
-            b3_2: assert property ( @(posedge clk) (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )) ; 
-            //b4 --> A4
-            b4: assert property ( @(posedge clk) (!(depth[i] == {DEPTHw{1'b0}} && depth[i] == B))); 
-         `endif 
+            // // Assert statements
+            // //b1.1 --> A1
+            // b1_1: assert property ( @(posedge clk) ( wr[i] && (!rd[i] && !(depth[i] == B) || rd[i]) ) ##1  ( wr_ptr[i] == $past(wr_ptr[i])+1 ));
+            // //b1.2 --> A1
+            // b1_2: assert property ( @(posedge clk) (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) ##1  ( rd_ptr[i] == $past(rd_ptr[i])+1 )); 
+            // //b3.1 --> A3
+            // b3_1: assert property ( @(posedge clk) (wr[i] && !rd[i] && (depth[i] == B) ) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )); 
+            // //b3.2 --> A3
+            // b3_2: assert property ( @(posedge clk) (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )) ; 
+            // //b4 --> A4
+            // b4: assert property ( @(posedge clk) (!(depth[i] == {DEPTHw{1'b0}} && depth[i] == B))); 
+        //  `endif 
          
+       
     end//for
 
     `ifdef DUMP_ENABLE
@@ -363,22 +406,9 @@ generate
                 
                 $fwrite(dump_all, "%b | %m \n", din);
             end
-            // if (rd_en) begin      
-            // //     $display(instance_name.substr(29,29));
-            // //     $display(instance_name.substr(25,35));
-            // //     $display(instance_name);
-            //     // if (instance_name.substr(29,29)=="0")
-            //     //      $fwrite(dump_file_0,"%b\n", "%d",dout);
-            //     // if (instance_name.substr(29,29)=="1")
-            //     //     $fwrite(dump_file_1,"%b\n", "%d",dout);
-            //     // if (instance_name.substr(29,29)=="2")
-            //     //     $fwrite(dump_file_2,"%b\n", "%d",dout);
-            //     // if (instance_name.substr(29,29)=="3")
-            //     //    $fwrite(dump_file_3,"%b\n", "%d",dout);
-            // end
         end
     `endif 
-    
+
     `ifdef ASSERTION_ENABLE
         always @(posedge clk) begin
             if (wr_en) begin      
@@ -499,14 +529,14 @@ generate
         b5_psl: assert property (@(posedge clk) wr_en |-> s_eventually din[8:0]==dout[8:0]);
 
 
-    `endif   
+    `endif  
 
     
     end 
     //  else begin :no_pow2    //pow2
 
 
-
+    
 
 
 //     /*****************      

@@ -28,43 +28,16 @@ module trace_buffer #(
         clk
         // ssa_rd
     );
-
-   
-    // function integer log2;
-    //   input integer number; begin   
-    //      log2=(number <=1) ? 1: 0;    
-    //      while(2**log2<number) begin    
-    //         log2=log2+1;    
-    //      end 	   
-    //   end   
-    // endfunction // log2 
-    
-    // localparam      Fw      =   2+V+Fpay,   //flit width
-    //                 BV      =   B   *   V,
-
     
     
-    input  [Fpay-1      :0]   din;     // Data in
-    // input  [V-1       :0]   vc_num_wr;//write vertual channel   
-    // input  [V-1       :0]   vc_num_rd;//read vertual channel    
+    input  [Fpay-1      :0]   din;     // Data in  
     input                   wr_en;   // Write enable
     input                   rd_en;   // Read the next word
     output [Fpay-1       :0]  dout;    // Data out
-    // output [V-1        :0]  vc_not_empty;
     input                   reset;
     input                   clk;
     // input  [V-1        :0]  ssa_rd;
     
-    // localparam BVw              =   log2(BV),
-    //            Bw               =   (B==1)? 1 : log2(B),
-    //            Vw               =  (V==1)? 1 : log2(V),
-    //            DEPTHw           =   Bw+1,
-    //            BwV              =   Bw * V,
-    //            BVwV             =   BVw * V,
-    //            RAM_DATA_WIDTH   =   Fw - V;
-               
-         
-               
     wire  [Fpay-1     :   0] fifo_ram_din;
     wire  [Fpay-1     :   0] fifo_ram_dout;
     wire  wr;
@@ -76,12 +49,13 @@ module trace_buffer #(
     // assign dout = {fifo_ram_dout[Fpay+1:Fpay],{V{1'bX}},fifo_ram_dout[Fpay-1        :   0]};    
     assign fifo_ram_din = din;
     assign dout = fifo_ram_dout;    
-    // assign  wr  =   (wr_en)?  vc_num_wr : {V{1'b0}};
-    // assign  rd  =   (rd_en)?  vc_num_rd : ssa_rd;
+    assign  wr  =   wr_en;
+    assign  rd  =   rd_en;//)?  vc_num_rd : ssa_rd;
     integer trace_dump;
 
     initial begin
         trace_dump = $fopen("trace_dump.txt","w");
+         $fwrite(trace_dump,"%s \n","Start");
     end
 
     reg [TB_Depth-1      :   0] rd_ptr;
@@ -133,10 +107,11 @@ module trace_buffer #(
 
 `ifdef DUMP_ENABLE
     // Dumping buffer input values to files
-    always @(posedge clk) begin
-        if (wr) begin      
+    always @(posedge wr) begin
+        // if (wr) begin  
+            $display("writing");    
             $fwrite(trace_dump,"%h \n",din);
-        end
+        // end
     end
 `endif
 
@@ -166,18 +141,16 @@ module trace_handler #(
     input reset;
     input clk;
     output wr_en;
-    output reg [Fpay-1:0] dout;
+    output [Fpay-1:0] dout;
 
-    assign wr_en = wr_0 & wr_1 & wr_2 & wr_3;
+    assign wr_en =  (ip_select==4'b0001)? wr_0 : ((ip_select==4'b0010)? wr_1 : ((ip_select==4'b0100)? wr_2 : ((ip_select==4'b1000)? wr_3 : wr_0 ))); //wr_0 || wr_1 || wr_2 || wr_3;
+    assign dout = (ip_select==4'b0001)? din_0 : ((ip_select==4'b0010)? din_1 : ((ip_select==4'b0100)? din_2 : ((ip_select==4'b1000)? din_3 : din_0 )));
 
     always @(*) begin
-        case (ip_select)
-        4'b0001  : dout <= din_0;
-        4'b0010  : dout <= din_1;
-        4'b0100  : dout <= din_2;
-        4'b1000  : dout <= din_3;
-        default : dout <= din_0; 
-        endcase
+        if (wr_0 || wr_1 || wr_2 || wr_3) begin
+            $display("traceHandler triggered");
+            $display("%b,%b,%b,%b",wr_0,wr_1,wr_2,wr_3);
+        end
     end
 
 
@@ -189,7 +162,7 @@ module trace_generator #(
     )   
     (
         trigger_length,
-        trace_signal,
+        trace_signal_in,
         trigger,
         wr_en,   
         dout, 
@@ -197,58 +170,68 @@ module trace_generator #(
         clk
     );
 
-    input [Tile_num-1 : 0] trigger_length;
+    input [4 : 0] trigger_length;
     input trigger;
-    input [Fpay-1:0] trace_signal;
+    input [31:0] trace_signal_in;
     input reset;
     input clk;
-    output reg wr_en;
-    output reg [Fpay-1:0] dout;
+    output wr_en;
+    output [31:0] dout;
 
     reg [4:0] counter=5'b0; //Counter for trace length calculation
     reg [31:0] residue;
     reg [4:0] residue_length;
     reg residue_fill_flag=1'b0;
     int i,j,k,l;
-    always @(*) begin
-        if (trigger && (counter+trigger_length < Fpay)) begin
-            for (j=0; j < (trigger_length); j++) begin
-                dout[counter+j]<=trace_signal[j];
-            end
-            // dout[trigger_length - 1 + counter : counter]<= trace_signal[trigger_length-1: 0];
-            counter <= counter+trigger_length;
-            wr_en<=1'b0;
-        end
-        else if (trigger) begin
-            for (i=0; i < (trigger_length-counter); i++) begin
-                dout[counter+i]<=trace_signal[i];
-            end
-            // dout[trigger_length - 1 + counter: counter]<= trace_signal[trigger_length-1-counter: 0];
-            for (k=0; k < (counter); k++) begin
-                residue[k]<=trace_signal[k];
-            end
-            // residue[counter-1: 0] <= trace_signal[counter-1: 0];
-            residue_length <= (5'b11111 - counter);
-            residue_fill_flag<=1'b1;
-            wr_en<=1'b1;
-        end
-        if (residue_fill_flag) begin
-            for (l=0; l < (residue_length); l++) begin
-                dout[l]<=residue[l];
-            end
-            // dout[residue_length - 1 : 0]<= residue[counter-1: 0];
-            counter <= residue_length;
-            residue_fill_flag <=1'b0;
-            residue_length<=5'b0;
-            wr_en<=1'b0;
-        end
-        if (counter == 5'b11111) begin
-            wr_en<=1'b1;
-            counter<=1'b0;
-        end
+    reg [2:0] timer=1'b0;
+    
+    assign wr_en = trigger? 1'b1 : 1'b0;
+    assign dout = 32'(trace_signal_in);
+    // always @(*) begin
+    //     // if (trigger && (counter+trigger_length < Fpay)) begin
+    //     //     // for (j=0; j < (trigger_length); j++) begin
+    //     //     //     dout[counter+j]<=trace_signal_in[j];
+    //     //     // end
+    //     //     // // dout[trigger_length - 1 + counter : counter]<= trace_signal[trigger_length-1: 0];
+    //     //     // counter <= counter+trigger_length;
+    //     //     // wr_en<=1'b0;
+    //     //     dout<=32'(trace_signal_in);
+    //     // end
+    //     if (trigger) begin
+    //         wr_en <= trigger;
+    //         dout<=32'(trace_signal_in);
+    //         $display("triggered");
+    //     end
+    //     // else if (trigger) begin
+    //     //     for (i=0; i) < (trigger_length-counter); i++) begin
+    //     //         dout[counter+i]<=trace_signal_in[i];
+    //     //     end
+    //     //     // dout[trigger_length - 1 + counter: counter]<= trace_signal[trigger_length-1-counter: 0];
+    //     //     for (k=0; k < (counter); k++) begin
+    //     //         residue[k]<=trace_signal_in[k];
+    //     //     end
+    //     //     // residue[counter-1: 0] <= trace_signal[counter-1: 0];
+    //     //     residue_length <= (5'b11111 - counter);
+    //     //     residue_fill_flag<=1'b1;
+    //     //     wr_en<=1'b1;
+    //     // end
+    //     // if (residue_fill_flag) begin
+    //     //     for (l=0; l < (residue_length); l++) begin
+    //     //         dout[l]<=residue[l];
+    //     //     end
+    //     //     // dout[residue_length - 1 : 0]<= residue[counter-1: 0];
+    //     //     counter <= residue_length;
+    //     //     residue_fill_flag <=1'b0;
+    //     //     residue_length<=5'b0;
+    //     //     wr_en<=1'b0;
+    //     // end
+    //     // if (counter == 5'b11111) begin
+    //     //     wr_en<=1'b1;
+    //     //     counter<=1'b0;
+    //     // end
 
 
-    end
+    // end
 
 
 endmodule
