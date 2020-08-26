@@ -3,18 +3,12 @@
 ## Properties table
 
 ### Implication Assertions
-| prop. | Formalization  | Tested 
-|---|---|
-A1
-A3
-A8
-A11
-A12
+
 
 | A#  | Implementation | Tested    |              |
 |-----|----------------|-----------|--------------|
 |     |                | With Bugs | Without Bugs |
-| A1  |                |           |              |
+| A1  |     [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/flit_buffer.sv#L295-L310)            |           |       ✓       |
 | A3  |                |           |              |
 | A8  |                |           |              |
 | A11 |                |           |              |
@@ -22,7 +16,7 @@ A12
 |     |                |           |              |
 
 
-| prop. | Formalization  | Assert | Branch | Module |
+<!-- | prop. | Formalization  | Assert | Branch | Module |
 |---|---|---|---|---|
 | A1  | Read and write pointers are incremented when r_en/w_en are set | [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/flit_buffer.sv#L295-L310)  | [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/flit_buffer.sv#L333-L336) | [flit_buffer.sv](src_verilog/lib/flit_buffer.sv) |
 | A2  | Age of packet is incremented in each cycle |  [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/flit_buffer.sv#L480-L489) | [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/flit_buffer.sv#L491-L492) | [flit_buffer.sv](src_verilog/lib/flit_buffer.sv) |
@@ -49,6 +43,6 @@ A12
 | R4 | Packet that enteres the router will eventually leave the router at some point of time  | a1^a2^a3^b1^b2^b4^m1^r1^r2^r3 |
 | R5 | Packet is correctly routed to the correct port according to the destination | r3^R2 |
 | A15 | Age of the packet leaving the router will be at least Tmin | [✓](https://github.com/Archfx/assert_NoC/blob/2fd383c17618c96987fb20b87183e0eb66208c6e/src_verilog/lib/flit_buffer.sv#L433-L439)  |
-| A16 | Age of the packet leaving the router should not exceed Tmax  |  [✓](https://github.com/Archfx/assert_NoC/blob/2fd383c17618c96987fb20b87183e0eb66208c6e/src_verilog/lib/flit_buffer.sv#L470-L476)  |
+| A16 | Age of the packet leaving the router should not exceed Tmax  |  [✓](https://github.com/Archfx/assert_NoC/blob/2fd383c17618c96987fb20b87183e0eb66208c6e/src_verilog/lib/flit_buffer.sv#L470-L476)  | -->
 
 
