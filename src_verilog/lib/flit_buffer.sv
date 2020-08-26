@@ -358,18 +358,28 @@ generate
                 else trigger_in=1'b0;
                 //b3.1 --> A3 trying to write to full buffer
                 if (wr[i] && !rd[i] && (depth[i] == B) ) begin
-                    wr_ptr_check[i] <= wr_ptr[i];
-                    // #1
+                    // wr_ptr_check[i] <= wr_ptr[i];
+                    trigger_in=1'b1;
+                    trace_din = {4'b0011,1'b0,27'(wr_ptr[i])};
+                    #1
+                    trigger_in=1'b1;
+                    trace_din = {4'b0011,1'b0,27'(wr_ptr[i])};
                     // if ( wr_ptr[i]== wr_ptr_check[i] ) $display(" b3.1 succeeded");
                     // else $display(" $error :b3.1 failed in %m at %t", $time);
                 end
+                else trigger_in=1'b0;
                 //b3.2 --> A3 trying to read from empty buffer
                 if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
-                    rd_ptr_check[i] <= rd_ptr[i];
-                    // #1
+                    // rd_ptr_check[i] <= rd_ptr[i];
+                    trigger_in=1'b1;
+                    trace_din = {4'b0011,1'b1,27'(rd_ptr[i])};
+                    #1
+                    trigger_in=1'b1;
+                    trace_din = {4'b0011,1'b1,27'(rd_ptr[i])};
                     // if ( rd_ptr[i]== rd_ptr_check[i] ) $display(" b3.2 succeeded");
                     // else $display(" $error :b3.2 failed in %m at %t", $time);
                 end
+                else trigger_in=1'b0;
                 //b4 --> A4 buffer cannot be empty and full at the same time
                 // if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
                 // else $display(" $error :b4 failed in %m at %t", $time);

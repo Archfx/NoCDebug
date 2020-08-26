@@ -9,7 +9,7 @@
 |-----|----------------|-----------|--------------|
 |     |                | With Bugs | Without Bugs |
 | A1  |     [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/flit_buffer.sv#L295-L310)            |           |       ✓       |
-| A3  |                |           |              |
+| A3  |       [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/flit_buffer.sv#L318-L324)         |           |        ✓       |
 | A8  |                |           |              |
 | A11 |                |           |              |
 | A12 |                |           |              |
