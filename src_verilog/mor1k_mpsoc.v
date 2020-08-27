@@ -329,28 +329,31 @@ endgenerate
         .clk(clk)
     ); 
 
-	trace_handler #(
-    	.Fpay(32),
-    	.Tile_num(4)
-    )
-	the_tb_handler   
-    (
-        .din_0(tile0bus),
-        .din_1(tile1bus),
-        .din_2(tile2bus),
-        .din_3(tile3bus),
-		.din_4(nocbus),
-        .wr_0(trigger_0),
-		.wr_1(trigger_1),
-		.wr_2(trigger_2), 
-		.wr_3(trigger_3),
-		.wr_4(trigger_noc),
-        .ip_select(4'b1111),
-        .wr_en(tb_in_wr),   
-        .dout(flit_in), 
-        .reset(reset),
-        .clk(clk)
-    );
+	// trace_handler #(
+    // 	.Fpay(32),
+    // 	.Tile_num(4)
+    // )
+	// the_tb_handler   
+    // (
+    //     .din_0(tile0bus),
+    //     .din_1(tile1bus),
+    //     .din_2(tile2bus),
+    //     .din_3(tile3bus),
+	// 	.din_4(nocbus),
+    //     .wr_0(trigger_0),
+	// 	.wr_1(trigger_1),
+	// 	.wr_2(trigger_2), 
+	// 	.wr_3(trigger_3),
+	// 	.wr_4(trigger_noc),
+    //     .ip_select(4'b1111),
+    //     .wr_en(tb_in_wr),   
+    //     .dout(flit_in), 
+    //     .reset(reset),
+    //     .clk(clk)
+    // );
+
+	assign tb_in_wr = trigger_0 | trigger_1 | trigger_2 | trigger_3 | trigger_noc; //(trigger_0)? wr_0 : ((trigger_1)? wr_1 : ((trigger_2)? wr_2 : ((trigger_3)? wr_3 : ((trigger_4)? wr_4 : wr_4) ))); //wr_0 || wr_1 || wr_2 || wr_3;
+    assign flit_in = (trigger_0)? tile0bus : ((trigger_1)? tile1bus : ((trigger_2)? tile2bus : ((trigger_3)? tile3bus : ((trigger_noc)? nocbus : 32'd0) )));
 
 	
 
