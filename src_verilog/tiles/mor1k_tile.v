@@ -619,7 +619,7 @@ module mor1k_tile #(
 		.s_sel_i(ni_plug_wb_slave_0_sel_i),
 		.s_stb_i(ni_plug_wb_slave_0_stb_i),
 		.s_we_i(ni_plug_wb_slave_0_we_i),
-		.trace_trigger(trace_trigger),
+		.trigger(trace_trigger),
 		.trace_signal(trace_signal)
 	);
  wb_single_port_ram #(

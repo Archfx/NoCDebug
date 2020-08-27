@@ -345,7 +345,7 @@ endgenerate
 		.wr_2(trigger_2), 
 		.wr_3(trigger_3),
 		.wr_4(trigger_noc),
-        .ip_select(4'b1001),
+        .ip_select(4'b1111),
         .wr_en(tb_in_wr),   
         .dout(flit_in), 
         .reset(reset),

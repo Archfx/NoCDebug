@@ -860,7 +860,9 @@ endmodule
     pck_ready,
     valid_dst,
     clk,
-    reset 
+    reset,
+    trigger,
+    trace_signal
  );
  
  
@@ -887,6 +889,9 @@ endmodule
     output buffer_full,pck_ready;
     input  valid_dst; 
     output [DSTPw-1    :0] destport; 
+    output trigger;
+    output [31:0] trace_signal;
+    
     reg    [PCK_CNTw-1 :0] packet_counter;  
     wire   buffer_empty; 
  
@@ -910,7 +915,9 @@ endmodule
         .clk(clk),
         .current_r_addr(current_r_addr),
         .dest_e_addr(dest_e_addr),
-        .destport(destport)
+        .destport(destport),
+        .trigger(trigger),
+        .trace_signal(trace_signal)
     );
 
     wire timestamp_fifo_nearly_full , timestamp_fifo_full;

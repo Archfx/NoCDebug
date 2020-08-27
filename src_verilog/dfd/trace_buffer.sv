@@ -140,13 +140,13 @@ module trace_handler #(
     output wr_en;
     output [Fpay-1:0] dout;
 
-    assign wr_en =  (ip_select==4'b0001)? wr_0 : ((ip_select==4'b0010)? wr_1 : ((ip_select==4'b0100)? wr_2 : ((ip_select==4'b1000)? wr_3 : wr_4 ))); //wr_0 || wr_1 || wr_2 || wr_3;
-    assign dout = (ip_select==4'b0001)? din_0 : ((ip_select==4'b0010)? din_1 : ((ip_select==4'b0100)? din_2 : ((ip_select==4'b1000)? din_3 : din_4 )));
+    assign wr_en =  (ip_select==4'b0001)? wr_0 : ((ip_select==4'b0010)? wr_1 : ((ip_select==4'b0100)? wr_2 : ((ip_select==4'b1000)? wr_3 : ((ip_select==4'b1111)? wr_4 : wr_4) ))); //wr_0 || wr_1 || wr_2 || wr_3;
+    assign dout = (ip_select==4'b0001)? din_0 : ((ip_select==4'b0010)? din_1 : ((ip_select==4'b0100)? din_2 : ((ip_select==4'b1000)? din_3 : ((ip_select==4'b1111)? din_4 : din_4) )));
 
-    always @(*) begin
-        if (wr_0 || wr_1 || wr_2 || wr_3) begin
+    always @(posedge clk) begin
+        if (wr_4) begin
             $display("traceHandler triggered");
-            $display("%b,%b,%b,%b",wr_0,wr_1,wr_2,wr_3);
+            $display("%b,%b,%b,%b,%b",wr_0,wr_1,wr_2,wr_3,wr_4);
         end
     end
 

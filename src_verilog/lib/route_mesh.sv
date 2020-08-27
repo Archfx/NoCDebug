@@ -112,7 +112,7 @@ module xy_mesh_routing #(
         end
         // $display("Route mesh values dest port %b",destport);
         // $display("Route mesh values dest x %b , y %b",dest_x,dest_y);
-
+        // if (trigger) $display("triggered");
         `ifdef ASSERTION_ENABLE
             // Asserting the Property r1 : Route can issue at most one request 
             // Asserting the Property r2 : Route should issue a request whenever a data is valid

@@ -44,7 +44,9 @@ module ni_conventional_routing #(
     clk,
     current_r_addr,
     dest_e_addr,
-    destport
+    destport,
+    trigger,
+    trace_signal
 );    
 
     function integer log2;
@@ -60,7 +62,8 @@ module ni_conventional_routing #(
     input   [RAw-1   :0] current_r_addr;
     input   [EAw-1   :0] dest_e_addr;
     output  [DSTPw-1 :0] destport;
-    
+    output trigger;
+    output [31            :0] trace_signal;
  generate 
     /* verilator lint_off WIDTH */ 
     if(TOPOLOGY == "MESH" || TOPOLOGY == "TORUS"  || TOPOLOGY ==  "RING" || TOPOLOGY ==  "LINE") begin :mesh_torus
@@ -128,7 +131,9 @@ module ni_conventional_routing #(
             .current_y(current_ry),
             .dest_x(dest_ex),
             .dest_y(dest_ey),
-            .destport(destport)
+            .destport(destport),
+            .trigger(trigger),
+            .trace_signal(trace_signal)
         );
     
     end else begin : others

@@ -377,8 +377,6 @@ module input_queue_per_port  #(
     wire  [VELw-1 : 0] endp_localp_num;
     wire [ELw-1 : 0] endp_l_in;
            
-    wire [31:0] trace_signal;
-    wire trace_trigger;
 
 //extract header flit info
     extract_header_flit_info #(
@@ -764,7 +762,7 @@ generate
             .clk(clk),
             .ssa_rd(ssa_ivc_num_getting_sw_grant),
             .trace_signal(trace_signal),
-            .trace_trigger(trace_trigger)
+            .trace_trigger(trigger)
         );
    
     end else begin :spec//not nonspec comb
@@ -788,7 +786,9 @@ generate
             .vc_not_empty(ivc_not_empty),
             .reset(reset),
             .clk(clk),
-            .ssa_rd(ssa_ivc_num_getting_sw_grant)
+            .ssa_rd(ssa_ivc_num_getting_sw_grant),
+            .trace_signal(trace_signal),
+            .trace_trigger(trigger)
         );  
   
     end       

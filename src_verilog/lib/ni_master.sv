@@ -108,7 +108,7 @@ module  ni_master #(
 
     //DfD signals
     trace_signal,
-    trace_trigger    
+    trigger    
 
 );
 
@@ -170,8 +170,17 @@ module  ni_master #(
 
      //DfD signals
     output [31:0] trace_signal;
-    output trace_trigger; 
+    output trigger; 
+
+    wire [31:0] trace_signal_flit;
+    wire trigger_flit;
+    wire [31:0] trace_signal_route;
+    wire trigger_route;
     
+    assign trigger_route = trigger_flit | trigger_route ;
+    assign trace_signal = (trigger_flit? trace_signal_flit : (trigger_route? trace_signal_route :32'd0));
+
+
     wire                            s_ack_o_next;    
     
     localparam 
@@ -644,18 +653,6 @@ module  ni_master #(
         //always @(*) crc_miss_match = {V{1'b0}};
 	always @(posedge clk) crc_miss_match <= {V{1'b0}};
     end
-
-    // `ifdef ASSERTION_ENABLE
-    // // Asserting the Property r1 : Route can issue at most one request
-
-    // always@(posedge clk) begin
-    //     //$display("%b", receive_vc_is_active);
-    //     if ($onehot(receive_vc_is_active) || receive_vc_is_active == 1'b0 ) begin
-    //         if ($onehot(receive_vc_is_active)) $display ("Assert check : Property r1 suceeded");
-    //     end
-    //     else $display("Assert check : $ Warning - Property r1 failed in %m at %t", $time);
-    // end
-    // `endif 
   
     if(V> 1) begin : multi_channel
     
@@ -731,7 +728,9 @@ module  ni_master #(
         .clk(clk),
         .current_r_addr(current_r_addr),
         .dest_e_addr(dest_e_addr),
-        .destport(destport)
+        .destport(destport),
+        .trigger(trigger_route),
+        .trace_signal(trace_signal_route)
     );
   
         
@@ -822,8 +821,8 @@ module  ni_master #(
         .reset(reset),
         .clk(clk),
         .ssa_rd({V{1'b0}}),
-        .trace_signal(trace_signal),
-        .trace_trigger(trace_trigger)   
+        .trace_signal(trace_signal_flit),
+        .trace_trigger(trigger_flit)   
     ); 
     
    extract_header_flit_info #(
