@@ -101,7 +101,11 @@ module inout_ports #(
     iport_weight_all,
     oports_weight_all,
     refresh_w_counter,
-    clk,reset
+    clk,reset,
+
+    //to Trace buffer
+    trigger,
+    trace_signal 
     
 );
 
@@ -169,6 +173,10 @@ module inout_ports #(
     input refresh_w_counter;
 
     input clk,reset;
+
+    // to traceBuffer
+    output trigger;
+    output [31:0] trace_signal;
 
   
     wire [PVV-1 : 0] candidate_ovc_all;
@@ -560,7 +568,9 @@ endgenerate
         .granted_dest_port_all(granted_dest_port_all),
         .refresh_w_counter(refresh_w_counter),
         .reset (reset),
-        .clk (clk)
+        .clk (clk),
+        .trigger(trigger),
+        .trace_signal(trace_signal)
     );               
 
 endmodule

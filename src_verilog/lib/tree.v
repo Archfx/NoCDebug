@@ -49,7 +49,9 @@ module  tree_noc #(
     credit_in_all,
     flit_in_all,  
     flit_in_wr_all,  
-    credit_out_all    
+    credit_out_all,
+    trigger,
+    trace_signal    
 );
 
     `define INCLUDE_TOPOLOGY_LOCALPARAM
@@ -100,7 +102,9 @@ module  tree_noc #(
     input  [NEV-1 : 0] credit_in_all;
     input  [NEFw-1 : 0] flit_in_all;
     input  [NE-1 : 0] flit_in_wr_all;  
-    output [NEV-1 : 0] credit_out_all;                
+    output [NEV-1 : 0] credit_out_all;
+    output trigger;
+    output [31:0] trace_signal;                   
                     
            
     wire [PLKw-1 : 0]   neighbors_pos_all [NR-1 :0];//get a fixed value for each individual router
@@ -182,7 +186,9 @@ module  tree_noc #(
         .credit_in_all(router_credit_in_all[ROOT_ID][(K*V)-1 : 0]),
         .congestion_out_all(router_congestion_out_all[ROOT_ID][(K*CONGw)-1 : 0]),            
         .clk(clk),
-        .reset(reset)       
+        .reset(reset),
+        .trigger(trigger),
+        .trace_signal(trace_signal)       
     );  
 
 
@@ -236,7 +242,9 @@ for( level=1; level<L; level=level+1) begin :level_lp
             .credit_in_all(router_credit_in_all[NRATTOP1+pos]),
             .congestion_out_all(router_congestion_out_all[NRATTOP1+pos]),            
             .clk(clk),
-            .reset(reset)        
+            .reset(reset),
+            .trigger(trigger),
+            .trace_signal(trace_signal)        
         );  
    
     end//pos

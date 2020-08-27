@@ -86,7 +86,9 @@ module input_ports
     granted_dest_port_all,
     refresh_w_counter,
     reset,
-    clk
+    clk,
+    trigger,
+    trace_signal
 );
     
          
@@ -136,6 +138,10 @@ module input_ports
     output  [WPP-1 : 0] oports_weight_all;
    
     input refresh_w_counter;
+
+    //Trace
+    output trigger;
+    output [31:0] trace_signal;
     
 
 genvar i;
@@ -203,7 +209,10 @@ generate
         .vc_weight_is_consumed(vc_weight_is_consumed_all [(i+1)*V-1 : i*V]),
         .iport_weight_is_consumed(iport_weight_is_consumed_all[i]),
         .refresh_w_counter(refresh_w_counter),
-        .granted_dest_port(granted_dest_port_all[(i+1)*P_1-1 : i*P_1])        
+        .granted_dest_port(granted_dest_port_all[(i+1)*P_1-1 : i*P_1]),
+        .trigger(trigger),
+        .trace_signal(trace_signal) 
+
     );
     
     end//for      
@@ -277,7 +286,9 @@ module input_queue_per_port  #(
     vc_weight_is_consumed,
     iport_weight_is_consumed,
     refresh_w_counter,
-    granted_dest_port    
+    granted_dest_port,
+    trigger,
+    trace_signal    
 );
 
  
@@ -341,6 +352,9 @@ module input_queue_per_port  #(
     output  [WP-1 : 0] oports_weight;  
     input   [PPSw-1 : 0] port_pre_sel;
     input   [V-1  : 0]  swap_port_presel;
+    // Trace
+    output trigger;
+    output [31:0] trace_signal;
   
             
     
@@ -802,7 +816,9 @@ endgenerate
         .destport_encoded(destport_in_encoded),
         .lkdestport_encoded(lk_destination_in_encoded),
         .reset(reset),
-        .clk(clk)
+        .clk(clk),
+        .trigger(trigger),
+        .trace_signal(trace_signal)
      );
 
     header_flit_update_lk_route_ovc #(

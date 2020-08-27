@@ -54,7 +54,9 @@ module  fattree_noc #(
     credit_in_all,
     flit_in_all,  
     flit_in_wr_all,  
-    credit_out_all    
+    credit_out_all,
+    trigger,
+    trace_signal    
 );        
   
    `define INCLUDE_TOPOLOGY_LOCALPARAM
@@ -106,7 +108,9 @@ module  fattree_noc #(
     input  [NEV-1 : 0] credit_in_all;
     input  [NEFw-1 : 0] flit_in_all;
     input  [NE-1 : 0] flit_in_wr_all;  
-    output [NEV-1 : 0] credit_out_all;                
+    output [NEV-1 : 0] credit_out_all; 
+    output trigger;
+    output [31:0] trace_signal;               
                         
                 
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
@@ -188,7 +192,9 @@ for( pos=0; pos<NRL; pos=pos+1) begin : root
                 .congestion_out_all(router_congestion_out_all[pos][(K*CONGw)-1 : 0]),
             
                 .clk(clk),
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger),
+                .trace_signal(trace_signal)
         
             );  
    
@@ -246,7 +252,9 @@ for( level=1; level<L; level=level+1) begin :level_lp
                 .congestion_out_all(router_congestion_out_all[NRL*level+pos]),
             
                 .clk(clk),
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger),
+                .trace_signal(trace_signal)
         
             );  
    

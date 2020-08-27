@@ -93,8 +93,8 @@ module mor1k_mpsoc (
 	
 	wire 					noc_clk,noc_reset; 
 
-	wire  [31 : 0] tile0bus,tile1bus,tile2bus,tile3bus;
-	wire  trigger_0,trigger_1,trigger_2,trigger_3;
+	wire  [31 : 0] tile0bus,tile1bus,tile2bus,tile3bus,nocbus;
+	wire  trigger_0,trigger_1,trigger_2,trigger_3,trigger_noc;
 	wire tb_in_wr;
 	wire [31:0] flit_in,fifo_dout;
 	  
@@ -136,7 +136,10 @@ module mor1k_mpsoc (
 		.flit_in_wr_all(flit_in_wr_all) ,
 		.credit_out_all(credit_out_all) ,
 		.reset(noc_reset) ,
-		.clk(noc_clk) 
+		.clk(noc_clk),
+		.trace_signal(nocbus) ,
+		.trigger(trigger_noc)
+
 	);
 
  	
@@ -336,11 +339,13 @@ endgenerate
         .din_1(tile1bus),
         .din_2(tile2bus),
         .din_3(tile3bus),
+		.din_4(nocbus),
         .wr_0(trigger_0),
 		.wr_1(trigger_1),
 		.wr_2(trigger_2), 
 		.wr_3(trigger_3),
-        .ip_select(4'b1000),
+		.wr_4(trigger_noc),
+        .ip_select(4'b1001),
         .wr_en(tb_in_wr),   
         .dout(flit_in), 
         .reset(reset),

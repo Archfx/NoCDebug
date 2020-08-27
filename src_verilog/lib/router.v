@@ -78,7 +78,10 @@ module router # (
     credit_in_all,
     congestion_out_all,
     
-    clk,reset
+    clk,reset,
+
+    trigger,
+    trace_signal
 
 );
 
@@ -123,6 +126,9 @@ module router # (
     output [CONG_ALw-1 :  0]  congestion_out_all;
     
     input clk,reset;
+
+    output trigger;
+    output [31:0] trace_signal;
 
     
     //internal wires
@@ -233,7 +239,9 @@ module router # (
         .iport_weight_is_consumed_all(iport_weight_is_consumed_all), 
         .refresh_w_counter(refresh_w_counter), 
         .clk(clk), 
-        .reset(reset)
+        .reset(reset),
+        .trigger(trigger),
+        .trace_signal(trace_signal)
     );
 
 

@@ -123,11 +123,8 @@ module trace_handler #(
     parameter Tile_num =   4
     )   
     (
-        din_0,
-        din_1,
-        din_2,
-        din_3,
-        wr_0, wr_1, wr_2, wr_3,
+        din_0,din_1,din_2,din_3,din_4,
+        wr_0, wr_1, wr_2, wr_3,wr_4,
         ip_select,
         wr_en,   
         dout, 
@@ -136,15 +133,15 @@ module trace_handler #(
     );
 
     input [Tile_num-1 : 0] ip_select;
-    input wr_0, wr_1, wr_2, wr_3;
-    input [Fpay-1:0] din_0,din_1,din_2,din_3;
+    input wr_0, wr_1, wr_2, wr_3,wr_4;
+    input [Fpay-1:0] din_0,din_1,din_2,din_3,din_4;
     input reset;
     input clk;
     output wr_en;
     output [Fpay-1:0] dout;
 
-    assign wr_en =  (ip_select==4'b0001)? wr_0 : ((ip_select==4'b0010)? wr_1 : ((ip_select==4'b0100)? wr_2 : ((ip_select==4'b1000)? wr_3 : wr_0 ))); //wr_0 || wr_1 || wr_2 || wr_3;
-    assign dout = (ip_select==4'b0001)? din_0 : ((ip_select==4'b0010)? din_1 : ((ip_select==4'b0100)? din_2 : ((ip_select==4'b1000)? din_3 : din_0 )));
+    assign wr_en =  (ip_select==4'b0001)? wr_0 : ((ip_select==4'b0010)? wr_1 : ((ip_select==4'b0100)? wr_2 : ((ip_select==4'b1000)? wr_3 : wr_4 ))); //wr_0 || wr_1 || wr_2 || wr_3;
+    assign dout = (ip_select==4'b0001)? din_0 : ((ip_select==4'b0010)? din_1 : ((ip_select==4'b0100)? din_2 : ((ip_select==4'b1000)? din_3 : din_4 )));
 
     always @(*) begin
         if (wr_0 || wr_1 || wr_2 || wr_3) begin
@@ -156,85 +153,85 @@ module trace_handler #(
 
 endmodule  
 
-module trace_generator #(
-    parameter Fpay     =   32,
-    parameter Tile_num =   4
-    )   
-    (
-        trigger_length,
-        trace_signal_in,
-        trigger,
-        wr_en,   
-        dout, 
-        reset,
-        clk
-    );
+// module trace_generator #(
+//     parameter Fpay     =   32,
+//     parameter Tile_num =   4
+//     )   
+//     (
+//         trigger_length,
+//         trace_signal_in,
+//         trigger,
+//         wr_en,   
+//         dout, 
+//         reset,
+//         clk
+//     );
 
-    input [4 : 0] trigger_length;
-    input trigger;
-    input [31:0] trace_signal_in;
-    input reset;
-    input clk;
-    output wr_en;
-    output [31:0] dout;
+//     input [4 : 0] trigger_length;
+//     input trigger;
+//     input [31:0] trace_signal_in;
+//     input reset;
+//     input clk;
+//     output reg wr_en;
+//     output reg [31:0] dout;
 
-    reg [4:0] counter=5'b0; //Counter for trace length calculation
-    reg [31:0] residue;
-    reg [4:0] residue_length;
-    reg residue_fill_flag=1'b0;
-    int i,j,k,l;
-    reg [2:0] timer=1'b0;
+//     reg [4:0] counter=5'b0; //Counter for trace length calculation
+//     reg [31:0] residue;
+//     reg [4:0] residue_length;
+//     reg residue_fill_flag=1'b0;
+//     int i,j,k,l;
+//     reg [2:0] timer=1'b0;
     
-    assign wr_en = trigger? 1'b1 : 1'b0;
-    assign dout = 32'(trace_signal_in);
-    // always @(*) begin
-    //     // if (trigger && (counter+trigger_length < Fpay)) begin
-    //     //     // for (j=0; j < (trigger_length); j++) begin
-    //     //     //     dout[counter+j]<=trace_signal_in[j];
-    //     //     // end
-    //     //     // // dout[trigger_length - 1 + counter : counter]<= trace_signal[trigger_length-1: 0];
-    //     //     // counter <= counter+trigger_length;
-    //     //     // wr_en<=1'b0;
-    //     //     dout<=32'(trace_signal_in);
-    //     // end
-    //     if (trigger) begin
-    //         wr_en <= trigger;
-    //         dout<=32'(trace_signal_in);
-    //         $display("triggered");
-    //     end
-    //     // else if (trigger) begin
-    //     //     for (i=0; i) < (trigger_length-counter); i++) begin
-    //     //         dout[counter+i]<=trace_signal_in[i];
-    //     //     end
-    //     //     // dout[trigger_length - 1 + counter: counter]<= trace_signal[trigger_length-1-counter: 0];
-    //     //     for (k=0; k < (counter); k++) begin
-    //     //         residue[k]<=trace_signal_in[k];
-    //     //     end
-    //     //     // residue[counter-1: 0] <= trace_signal[counter-1: 0];
-    //     //     residue_length <= (5'b11111 - counter);
-    //     //     residue_fill_flag<=1'b1;
-    //     //     wr_en<=1'b1;
-    //     // end
-    //     // if (residue_fill_flag) begin
-    //     //     for (l=0; l < (residue_length); l++) begin
-    //     //         dout[l]<=residue[l];
-    //     //     end
-    //     //     // dout[residue_length - 1 : 0]<= residue[counter-1: 0];
-    //     //     counter <= residue_length;
-    //     //     residue_fill_flag <=1'b0;
-    //     //     residue_length<=5'b0;
-    //     //     wr_en<=1'b0;
-    //     // end
-    //     // if (counter == 5'b11111) begin
-    //     //     wr_en<=1'b1;
-    //     //     counter<=1'b0;
-    //     // end
+//     // assign wr_en = trigger? 1'b1 : 1'b0;
+//     // assign dout = 32'(trace_signal_in);
+//     always @(*) begin
+//         if (trigger && (counter+trigger_length < Fpay)) begin
+//             for (j=0; j < (trigger_length); j++) begin
+//                 dout[counter+j]<=trace_signal_in[j];
+//             end
+//             // dout[trigger_length - 1 + counter : counter]<= trace_signal[trigger_length-1: 0];
+//             counter <= counter+trigger_length;
+//             wr_en<=1'b0;
+//             // dout<=32'(trace_signal_in);
+//         end
+//         // if (trigger) begin
+//         //     wr_en <= trigger;
+//         //     dout<=32'(trace_signal_in);
+//         //     $display("triggered");
+//         // end
+//         else if (trigger) begin
+//             for (i=0; i < (trigger_length-counter); i++) begin
+//                 dout[counter+i]<=trace_signal_in[i];
+//             end
+//             // dout[trigger_length - 1 + counter: counter]<= trace_signal[trigger_length-1-counter: 0];
+//             for (k=0; k < (counter); k++) begin
+//                 residue[k]<=trace_signal_in[k];
+//             end
+//             // residue[counter-1: 0] <= trace_signal[counter-1: 0];
+//             residue_length <= (5'b11111 - counter);
+//             residue_fill_flag<=1'b1;
+//             wr_en<=1'b1;
+//         end
+//         if (residue_fill_flag) begin
+//             for (l=0; l < (residue_length); l++) begin
+//                 dout[l]<=residue[l];
+//             end
+//             // dout[residue_length - 1 : 0]<= residue[counter-1: 0];
+//             counter <= residue_length;
+//             residue_fill_flag <=1'b0;
+//             residue_length<=5'b0;
+//             wr_en<=1'b0;
+//         end
+//         if (counter == 5'b11111) begin
+//             wr_en<=1'b1;
+//             counter<=1'b0;
+//         end
 
 
-    // end
+//     end
 
 
-endmodule
+// endmodule
 
 
 

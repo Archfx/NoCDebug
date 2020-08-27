@@ -246,21 +246,22 @@ generate
         .rd_data        (fifo_ram_dout)
     ); 
 
-    trace_generator #(
-            .Fpay(32),
-            .Tile_num(4)
-        )   
-        the_tg (
-            .trigger_length(trigger_length),
-            .trace_signal_in(trace_din),
-            .trigger(trigger_in),
-            .wr_en(trace_trigger),   
-            .dout(trace_signal), 
-            .reset(reset),
-            .clk(clk)
-        );
+    // trace_generator #(
+    //         .Fpay(32),
+    //         .Tile_num(4)
+    //     )   
+    //     the_tg (
+    //         .trigger_length(trigger_length),
+    //         .trace_signal_in(trace_din),
+    //         .trigger(trigger_in),
+    //         .wr_en(trace_trigger),   
+    //         .dout(trace_signal), 
+    //         .reset(reset),
+    //         .clk(clk)
+    //     );
 
- 
+    assign trace_signal = trace_din;
+    assign trace_trigger = trigger_in;
 
     for(i=0;i<V;i=i+1) begin :loop0
         
