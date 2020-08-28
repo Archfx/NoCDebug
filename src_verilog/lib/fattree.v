@@ -138,6 +138,12 @@ module  fattree_noc #(
     wire [LKw-1 : 0] current_pos_addr [NR-1 :0];
     wire [Lw-1  : 0] current_layer_addr [NR-1 :0];   
     wire [RAw-1 : 0] current_r_addr [NR-1 : 0];
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_signal_0,trace_signal_1;
+
+    assign trigger = trigger_0 | trigger_1 ;
+    assign trace_signal = (trigger_0)? trace_signal_0 : (trigger_1? trace_signal_1 : 32'd0);
     
 //add roots
 
@@ -193,8 +199,8 @@ for( pos=0; pos<NRL; pos=pos+1) begin : root
             
                 .clk(clk),
                 .reset(reset),
-                .trigger(trigger),
-                .trace_signal(trace_signal)
+                .trigger(trigger_0),
+                .trace_signal(trace_signal_0)
         
             );  
    
@@ -253,8 +259,8 @@ for( level=1; level<L; level=level+1) begin :level_lp
             
                 .clk(clk),
                 .reset(reset),
-                .trigger(trigger),
-                .trace_signal(trace_signal)
+                .trigger(trigger_1),
+                .trace_signal(trace_signal_1)
         
             );  
    

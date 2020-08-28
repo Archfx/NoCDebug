@@ -103,10 +103,30 @@ module mesh_torus_noc #(
     input  [NEFw-1 : 0] flit_in_all;
     input  [NE-1 : 0] flit_in_wr_all;  
     output [NEV-1 : 0] credit_out_all; 
-    output trigger;
-    output [31:0] trace_signal;                  
-                    
-                    
+    output reg trigger;
+    output reg [31:0] trace_signal;
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_signal_0, trace_signal_1;                  
+    
+    // assign trigger = trigger_0 | trigger_1;
+    // assign trace_signal = trigger_0? trace_signal_0 : (trigger_1? trace_signal_1 : 32'd0);
+
+    always @(*) begin
+		if (trigger_0 | trigger_1 ) begin
+            trigger = (trigger_0 | trigger_1);
+            if (trigger_0) trace_signal = trace_signal_0 ;
+            else if (trigger_1) trace_signal = trace_signal_1 ;
+
+    
+
+			$display("%d",trigger);
+			$display("%d",trace_signal);
+            // $display("%d,%d, %d",trigger_0 , trigger_1,trigger_2);
+			// $display("%d,%d,%d",trace_signal_0,trace_signal_1, trace_signal_2);
+		end
+        else trigger = 1'b0;
+	end                
                    
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
     wire [MAX_P-1 : 0] router_flit_in_we_all [NR-1 :0];    
@@ -197,8 +217,8 @@ generate
             
                 .clk(clk),
                 .reset(reset),
-                .trigger(trigger),
-                .trace_signal(trace_signal)
+                .trigger(trigger_0),
+                .trace_signal(trace_signal_0)
         
             );
         
@@ -324,8 +344,8 @@ generate
             
                 .clk(clk),
                 .reset(reset),
-                .trigger(trigger),
-                .trace_signal(trace_signal)
+                .trigger(trigger_1),
+                .trace_signal(trace_signal_1)
         
             );
     /*

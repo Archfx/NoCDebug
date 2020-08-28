@@ -103,9 +103,29 @@ module  tree_noc #(
     input  [NEFw-1 : 0] flit_in_all;
     input  [NE-1 : 0] flit_in_wr_all;  
     output [NEV-1 : 0] credit_out_all;
-    output trigger;
-    output [31:0] trace_signal;                   
-                    
+    output reg trigger;
+    output reg [31:0] trace_signal; 
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_signal_0, trace_signal_1;                  
+    
+    // assign trigger = trigger_0 | trigger_1;
+    // assign trace_signal = trigger_0? trace_signal_0 : (trigger_1? trace_signal_1 : 32'd0);                  
+
+    always @(*) begin
+		if (trigger_0 | trigger_1 ) begin
+            trigger = (trigger_0 | trigger_1);
+            if (trigger_0) trace_signal = trace_signal_0 ;
+            else if (trigger_1) trace_signal = trace_signal_1 ;
+    
+
+			$display("%d-tree",trigger);
+			$display("%d-tree",trace_signal);
+            // $display("%d,%d, %d",trigger_0 , trigger_1,trigger_2);
+			// $display("%d,%d,%d",trace_signal_0,trace_signal_1, trace_signal_2);
+		end
+        else trigger = 1'b0;
+	end                
            
     wire [PLKw-1 : 0]   neighbors_pos_all [NR-1 :0];//get a fixed value for each individual router
     wire [PLw-1  : 0]  neighbors_layer_all [NR-1 :0];  
@@ -187,8 +207,8 @@ module  tree_noc #(
         .congestion_out_all(router_congestion_out_all[ROOT_ID][(K*CONGw)-1 : 0]),            
         .clk(clk),
         .reset(reset),
-        .trigger(trigger),
-        .trace_signal(trace_signal)       
+        .trigger(trigger_0),
+        .trace_signal(trace_signal_0)       
     );  
 
 
@@ -243,8 +263,8 @@ for( level=1; level<L; level=level+1) begin :level_lp
             .congestion_out_all(router_congestion_out_all[NRATTOP1+pos]),            
             .clk(clk),
             .reset(reset),
-            .trigger(trigger),
-            .trace_signal(trace_signal)        
+            .trigger(trigger_1),
+            .trace_signal(trace_signal_1)        
         );  
    
     end//pos

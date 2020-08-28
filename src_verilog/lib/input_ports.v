@@ -353,8 +353,8 @@ module input_queue_per_port  #(
     input   [PPSw-1 : 0] port_pre_sel;
     input   [V-1  : 0]  swap_port_presel;
     // Trace
-    output trigger;
-    output [31:0] trace_signal;
+    output reg trigger;
+    output reg [31:0] trace_signal;
   
             
     
@@ -376,7 +376,13 @@ module input_queue_per_port  #(
     wire [Cw-1 : 0] class_out [V-1 : 0];
     wire  [VELw-1 : 0] endp_localp_num;
     wire [ELw-1 : 0] endp_l_in;
-           
+
+    // Trace
+    wire trigger_0,trigger_1, trigger_2;
+    wire [31:0] trace_signal_0,trace_signal_1, trace_signal_2;
+
+    // assign trigger = (trigger_0 | trigger_1 | trigger_2)? 1'b1:1'b0 ;
+    // assign  trace_signal = trigger_0 ? trace_signal_0 : (trigger_1? trace_signal_1 : (trigger_2? trace_signal_2 : 32'd0)); 
 
 //extract header flit info
     extract_header_flit_info #(
@@ -761,8 +767,8 @@ generate
             .reset(reset),
             .clk(clk),
             .ssa_rd(ssa_ivc_num_getting_sw_grant),
-            .trace_signal(trace_signal),
-            .trace_trigger(trigger)
+            .trace_signal(trace_signal_0),
+            .trace_trigger(trigger_0)
         );
    
     end else begin :spec//not nonspec comb
@@ -787,12 +793,12 @@ generate
             .reset(reset),
             .clk(clk),
             .ssa_rd(ssa_ivc_num_getting_sw_grant),
-            .trace_signal(trace_signal),
-            .trace_trigger(trigger)
+            .trace_signal(trace_signal_1),
+            .trace_trigger(trigger_1)
         );  
   
     end       
-endgenerate    
+endgenerate   
 
     look_ahead_routing #(
     	.T1(T1),
@@ -817,8 +823,8 @@ endgenerate
         .lkdestport_encoded(lk_destination_in_encoded),
         .reset(reset),
         .clk(clk),
-        .trigger(trigger),
-        .trace_signal(trace_signal)
+        .trigger(trigger_2),
+        .trace_signal(trace_signal_2)
      );
 
     header_flit_update_lk_route_ovc #(
@@ -846,6 +852,21 @@ endgenerate
         .clk (clk)
     );
     
+    always @(*) begin
+		if (trigger_0 | trigger_1 | trigger_2) begin
+            trigger = (trigger_0 | trigger_1 | trigger_2);
+            if (trigger_0) trace_signal = trace_signal_0 ;
+            else if (trigger_1) trace_signal = trace_signal_1 ;
+            else if (trigger_2) trace_signal = trace_signal_2 ;
+    
+
+			// $display("%d",trigger);
+			// $display("%d",trace_signal);
+            // $display("%d,%d, %d",trigger_0 , trigger_1,trigger_2);
+			// $display("%d,%d,%d",trace_signal_0,trace_signal_1, trace_signal_2);
+		end
+        else trigger = 1'b0;
+	end
     assign flit_wr =(flit_in_we )? vc_num_in : {V{1'b0}};
         
     always @(posedge clk or posedge reset) begin 

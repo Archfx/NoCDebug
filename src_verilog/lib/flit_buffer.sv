@@ -118,16 +118,16 @@ module flit_buffer #(
     reg packet_count_flag_in;
     reg packet_count_flag_out;
 
-    // reg [31:0] trace_dout;
-    // wire trigger_en;
+
 
     integer x,y,z,p,q;
 
-    wire [4:0] trigger_length;
-	wire [31:0] trace_signal;
+ 
 	reg trigger_in;
-	wire wr_en;
 	reg [31:0] trace_din;
+
+    assign trace_signal = trace_din;
+    assign trace_trigger = trigger_in;
 
 genvar i;
 
@@ -246,22 +246,8 @@ generate
         .rd_data        (fifo_ram_dout)
     ); 
 
-    // trace_generator #(
-    //         .Fpay(32),
-    //         .Tile_num(4)
-    //     )   
-    //     the_tg (
-    //         .trigger_length(trigger_length),
-    //         .trace_signal_in(trace_din),
-    //         .trigger(trigger_in),
-    //         .wr_en(trace_trigger),   
-    //         .dout(trace_signal), 
-    //         .reset(reset),
-    //         .clk(clk)
-    //     );
 
-    assign trace_signal = trace_din;
-    assign trace_trigger = trigger_in;
+
 
     for(i=0;i<V;i=i+1) begin :loop0
         
@@ -276,6 +262,8 @@ generate
                 rd_ptr  [i] <= {Bw{1'b0}};
                 wr_ptr  [i] <= {Bw{1'b0}};
                 depth   [i] <= {DEPTHw{1'b0}};
+                trigger_in=1'b0;
+                trace_din = 32'd0;
             end
             else begin
                 if (wr[i] ) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
@@ -315,12 +303,7 @@ generate
         end//always
         //synopsys  translate_on
         //synthesis translate_on
-        
-        // Triggers for signal selection
-        assign trigger_length = 5'($size(wr_ptr[0])) ;//(rd_en_delayed)? memory_rd_data  : bypass_reg;
-	    // assign trace_din = (wr[0] && (!rd[0] && !depth[0]==B) || rd[0]) ? 32'(wr_ptr[0]) : ((wr[1] && (!rd[1] && !depth[1]==B) || rd[1]) ? 32'(wr_ptr[1]) : 32'd0 );//()?
-	    // assign trigger_in = ((wr[0] && (!rd[0] && !depth[0]==B) || rd[0]) || (wr[1] && (!rd[1] && !depth[1]==B) || rd[1])) ? 1'b1 : 1'b0;
-
+    
         // `ifdef ASSERTION_ENABLE
      
             // Asserting the Property b1 : Read and write pointers are incremented when r_en/w_en are set
@@ -403,6 +386,13 @@ generate
          
        
     end//for
+
+    // always @(*) begin
+	// 	if (trace_trigger) begin
+	// 		// $display("%d,%d,%d,%d,%d",trigger_0 , trigger_1 , trigger_2 , trigger_3 , trigger_noc);
+	// 		$display("%d",trace_din);
+	// 	end
+	// end
 
     `ifdef DUMP_ENABLE
         // Dumping buffer input values to files

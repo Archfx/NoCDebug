@@ -169,17 +169,31 @@ module  ni_master #(
     output                          irq; 
 
      //DfD signals
-    output [31:0] trace_signal;
-    output trigger; 
+    output reg [31:0] trace_signal;
+    output reg trigger; 
 
     wire [31:0] trace_signal_flit;
     wire trigger_flit;
     wire [31:0] trace_signal_route;
     wire trigger_route;
     
-    assign trigger_route = trigger_flit | trigger_route ;
-    assign trace_signal = (trigger_flit? trace_signal_flit : (trigger_route? trace_signal_route :32'd0));
+    // assign trigger = trigger_flit | trigger_route ;
+    // assign trace_signal = (trigger_flit? trace_signal_flit : (trigger_route? trace_signal_route :32'd0));
 
+    always @(*) begin
+		if (trigger_flit | trigger_route) begin
+            trigger = (trigger_flit | trigger_route);
+            if (trigger_flit) trace_signal <= trace_signal_flit ;
+            else if (trigger_route) trace_signal <= trace_signal_route ;
+    
+
+			$display("%d -Ni",trigger);
+			$display("%d- Ni",trace_signal);
+            // $display("%d,%d, %d",trigger_0 , trigger_1,trigger_2);
+			// $display("%d,%d,%d",trace_signal_0,trace_signal_1, trace_signal_2);
+		end
+        else trigger = 1'b0;
+	end
 
     wire                            s_ack_o_next;    
     

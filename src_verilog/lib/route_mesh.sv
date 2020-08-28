@@ -97,8 +97,9 @@ module xy_mesh_routing #(
     // reg [DSTw-1            :0]    destport_next_r3;
     
     // Trigger
-    assign trigger = (dest_x<=1'b1 && dest_y<=1'b1)? 1'b1: 1'b0;
+    assign trigger = 1'b0;//(dest_x<=1'b1 && dest_y<=1'b1)? 1'b1: 1'b0;
     assign trace_signal =  {4'b1000,28'(destport_next)};
+    
         
     assign    destport= destport_next;
     

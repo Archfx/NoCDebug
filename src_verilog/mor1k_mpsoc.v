@@ -95,8 +95,10 @@ module mor1k_mpsoc (
 
 	wire  [31 : 0] tile0bus,tile1bus,tile2bus,tile3bus,nocbus;
 	wire  trigger_0,trigger_1,trigger_2,trigger_3,trigger_noc;
-	wire tb_in_wr;
-	wire [31:0] flit_in,fifo_dout;
+	reg trigger_wr;
+	wire trace_rd;
+	reg [31:0] trace_in;
+	wire [31:0] trace_out;
 	  
     
 //NoC
@@ -321,10 +323,10 @@ endgenerate
      )
      the_tb
      (
-        .din(flit_in),     // Data in
-        .wr_en(tb_in_wr),   // Write enable
-        .rd_en(fifo_rd),   // Read the next word
-        .dout(fifo_dout),    // Data out
+        .din(trace_in),     // Data in
+        .wr(trigger_wr),   // Write enable
+        .rd(trace_rd),   // Read the next word
+        .dout(trace_out),    // Data out
         .reset(reset),
         .clk(clk)
     ); 
@@ -352,10 +354,58 @@ endgenerate
     //     .clk(clk)
     // );
 
-	assign tb_in_wr = trigger_0 | trigger_1 | trigger_2 | trigger_3 | trigger_noc; //(trigger_0)? wr_0 : ((trigger_1)? wr_1 : ((trigger_2)? wr_2 : ((trigger_3)? wr_3 : ((trigger_4)? wr_4 : wr_4) ))); //wr_0 || wr_1 || wr_2 || wr_3;
-    assign flit_in = (trigger_0)? tile0bus : ((trigger_1)? tile1bus : ((trigger_2)? tile2bus : ((trigger_3)? tile3bus : ((trigger_noc)? nocbus : 32'd0) )));
-
+	// assign trigger_wr = trigger_0 | trigger_1 | trigger_2 | trigger_3 | trigger_noc; //(trigger_0)? wr_0 : ((trigger_1)? wr_1 : ((trigger_2)? wr_2 : ((trigger_3)? wr_3 : ((trigger_4)? wr_4 : wr_4) ))); //wr_0 || wr_1 || wr_2 || wr_3;
+    // assign trace_in = (trigger_0)? tile0bus : ((trigger_1)? tile1bus : ((trigger_2)? tile2bus : ((trigger_3)? tile3bus : ((trigger_noc)? nocbus : 32'd0) )));
 	
+	always @(*) begin
+		// if (trigger_0 | trigger_1 | trigger_2 | trigger_3 | trigger_noc) begin
+            // trigger_wr = (trigger_0 | trigger_1 | trigger_2 | trigger_3 | trigger_noc);
+            if (trigger_0) begin
+				trace_in <= tile0bus; 
+				trigger_wr <= trigger_0 ;
+				$display("%d-soc-0",trigger_wr);
+				$display("%d-soc-0",trace_in);
+			end 
+            else if (trigger_1) begin
+				trace_in <= tile1bus ;
+				trigger_wr <= trigger_1 ;
+				$display("%d-soc-1",trigger_wr);
+				$display("%d-soc-1",trace_in);
+			end
+            else if (trigger_2) begin
+				trace_in <= tile2bus ;
+				trigger_wr <= trigger_2 ;
+				$display("%d-soc-2",trigger_wr);
+				$display("%d-soc-2",trace_in);
+			end
+			else if (trigger_3) begin
+				trace_in <= tile3bus ;
+				trigger_wr <= trigger_2 ;
+				$display("%d-soc-3",trigger_wr);
+				$display("%d-soc-3",trace_in);
+			end 
+			else if (trigger_noc) begin
+				trace_in <= nocbus ;
+				trigger_wr <= trigger_noc ;
+				$display("%d-soc-noc",trigger_wr);
+				$display("%d-soc-noc",trace_in);
+			end 
+    
+
+			// $display("%d-soc",trigger_wr);
+			// $display("%d-soc",trace_in);
+            // $display("%d,%d, %d",trigger_0 , trigger_1,trigger_2);
+			// $display("%d,%d,%d",trace_signal_0,trace_signal_1, trace_signal_2);
+		// end
+		else trigger_wr <= 1'b0;
+	end
+	
+	always @(*) begin
+		if (trigger_wr) begin
+			$display("%d,%d,%d,%d,%d",trigger_0 , trigger_1 , trigger_2 , trigger_3 , trigger_noc);
+			$display("%d,%d,%d,%d,%d",tile0bus , tile1bus , tile2bus , tile3bus , nocbus);
+		end
+	end
 
 	
  

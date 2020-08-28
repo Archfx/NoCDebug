@@ -21,8 +21,8 @@ module trace_buffer #(
     )   
     (
         din,     // Data in
-        wr_en,   // Write enable
-        rd_en,   // Read the buffer using JTaG
+        wr,   // Write enable
+        rd,   // Read the buffer using JTaG
         dout,    // Data out
         reset,
         clk
@@ -31,8 +31,8 @@ module trace_buffer #(
     
     
     input  [Fpay-1      :0]   din;     // Data in  
-    input                   wr_en;   // Write enable
-    input                   rd_en;   // Read the next word
+    input                   wr;   // Write enable
+    input                   rd;   // Read the next word
     output [Fpay-1       :0]  dout;    // Data out
     input                   reset;
     input                   clk;
@@ -40,8 +40,8 @@ module trace_buffer #(
     
     wire  [Fpay-1     :   0] fifo_ram_din;
     wire  [Fpay-1     :   0] fifo_ram_dout;
-    wire  wr;
-    wire  rd;
+    // wire  wr;
+    // wire  rd;
     reg   [TB_Depth-1            :   0] depth;
     
     
@@ -49,8 +49,8 @@ module trace_buffer #(
     // assign dout = {fifo_ram_dout[Fpay+1:Fpay],{V{1'bX}},fifo_ram_dout[Fpay-1        :   0]};    
     assign fifo_ram_din = din;
     assign dout = fifo_ram_dout;    
-    assign  wr  =   wr_en;
-    assign  rd  =   rd_en;//)?  vc_num_rd : ssa_rd;
+    // assign  wr  =   wr_en;
+    // assign  rd  =   rd_en;//)?  vc_num_rd : ssa_rd;
     integer trace_dump;
 
     initial begin
@@ -71,8 +71,8 @@ module trace_buffer #(
         .wr_data        (fifo_ram_din), 
         .wr_addr        (wr_ptr),
         .rd_addr        (rd_ptr),
-        .wr_en          (wr_en),
-        .rd_en          (rd_en),
+        .wr_en          (wr),
+        .rd_en          (rd),
         .clk            (clk),
         .rd_data        (fifo_ram_dout)
     );      
@@ -107,51 +107,51 @@ module trace_buffer #(
 
 `ifdef DUMP_ENABLE
     // Dumping buffer input values to files
-    always @(posedge wr) begin
-        // if (wr) begin  
+    always @(posedge clk) begin
+        if (wr) begin  
             $display("writing");    
             $fwrite(trace_dump,"%h \n",din);
-        // end
+        end
     end
 `endif
 
 
 endmodule 
 
-module trace_handler #(
-    parameter Fpay     =   32,
-    parameter Tile_num =   4
-    )   
-    (
-        din_0,din_1,din_2,din_3,din_4,
-        wr_0, wr_1, wr_2, wr_3,wr_4,
-        ip_select,
-        wr_en,   
-        dout, 
-        reset,
-        clk
-    );
+// module trace_handler #(
+//     parameter Fpay     =   32,
+//     parameter Tile_num =   4
+//     )   
+//     (
+//         din_0,din_1,din_2,din_3,din_4,
+//         wr_0, wr_1, wr_2, wr_3,wr_4,
+//         ip_select,
+//         wr_en,   
+//         dout, 
+//         reset,
+//         clk
+//     );
 
-    input [Tile_num-1 : 0] ip_select;
-    input wr_0, wr_1, wr_2, wr_3,wr_4;
-    input [Fpay-1:0] din_0,din_1,din_2,din_3,din_4;
-    input reset;
-    input clk;
-    output wr_en;
-    output [Fpay-1:0] dout;
+//     input [Tile_num-1 : 0] ip_select;
+//     input wr_0, wr_1, wr_2, wr_3,wr_4;
+//     input [Fpay-1:0] din_0,din_1,din_2,din_3,din_4;
+//     input reset;
+//     input clk;
+//     output wr_en;
+//     output [Fpay-1:0] dout;
 
-    assign wr_en =  (ip_select==4'b0001)? wr_0 : ((ip_select==4'b0010)? wr_1 : ((ip_select==4'b0100)? wr_2 : ((ip_select==4'b1000)? wr_3 : ((ip_select==4'b1111)? wr_4 : wr_4) ))); //wr_0 || wr_1 || wr_2 || wr_3;
-    assign dout = (ip_select==4'b0001)? din_0 : ((ip_select==4'b0010)? din_1 : ((ip_select==4'b0100)? din_2 : ((ip_select==4'b1000)? din_3 : ((ip_select==4'b1111)? din_4 : din_4) )));
+//     assign wr_en =  (ip_select==4'b0001)? wr_0 : ((ip_select==4'b0010)? wr_1 : ((ip_select==4'b0100)? wr_2 : ((ip_select==4'b1000)? wr_3 : ((ip_select==4'b1111)? wr_4 : wr_4) ))); //wr_0 || wr_1 || wr_2 || wr_3;
+//     assign dout = (ip_select==4'b0001)? din_0 : ((ip_select==4'b0010)? din_1 : ((ip_select==4'b0100)? din_2 : ((ip_select==4'b1000)? din_3 : ((ip_select==4'b1111)? din_4 : din_4) )));
 
-    always @(posedge clk) begin
-        if (wr_4) begin
-            $display("traceHandler triggered");
-            $display("%b,%b,%b,%b,%b",wr_0,wr_1,wr_2,wr_3,wr_4);
-        end
-    end
+//     always @(posedge clk) begin
+//         if (wr_4) begin
+//             $display("traceHandler triggered");
+//             $display("%b,%b,%b,%b,%b",wr_0,wr_1,wr_2,wr_3,wr_4);
+//         end
+//     end
 
 
-endmodule  
+// endmodule  
 
 // module trace_generator #(
 //     parameter Fpay     =   32,
