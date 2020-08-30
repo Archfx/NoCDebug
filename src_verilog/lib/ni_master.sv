@@ -169,31 +169,45 @@ module  ni_master #(
     output                          irq; 
 
      //DfD signals
-    output [31:0] trace_signal;
-    output trigger; 
+    output reg [31:0] trace_signal;
+    output reg  trigger; 
 
     wire [31:0] trace_signal_flit;
     wire trigger_flit;
     wire [31:0] trace_signal_route;
     wire trigger_route;
     
-    assign trigger = (trigger_flit | trigger_route)? 1'b1:1'b0 ;
-    assign trace_signal = (trigger_flit? trace_signal_flit : (trigger_route? trace_signal_route :32'd0));
+    // assign trigger = ((trigger_flit | trigger_route))? 1'b1: ($isunknown(trigger_flit | trigger_route))?1'b0 :1'b0;
+    // assign trace_signal = (trigger_flit? trace_signal_flit : (trigger_route? trace_signal_route :32'd0));
 
+    initial begin
+        trigger <= 1'b0;
+        trace_signal <= 32'b0;
+    end
     always @(*) begin
-		if (trigger_flit | trigger_route) begin
-            // trigger = (trigger_flit | trigger_route);
-            // if (trigger_flit) trace_signal <= trace_signal_flit ;
-            // else if (trigger_route) trace_signal <= trace_signal_route ;
+        trigger <= trigger_flit | trigger_route ;
+        
+        case ({trigger_flit , trigger_route})
+            2'b10  : trace_signal <= trace_signal_flit;
+            2'b01  : trace_signal <= trace_signal_route;
+            default : trace_signal <= 32'b0; 
+        endcase
+    end
+
+    // always @(*) begin
+	// 	if (trigger_flit | trigger_route) begin
+    //         // trigger = (trigger_flit | trigger_route);
+    //         // if (trigger_flit) trace_signal <= trace_signal_flit ;
+    //         // else if (trigger_route) trace_signal <= trace_signal_route ;
     
 
-			$display("%d -Ni",trigger);
-			$display("%d- Ni",trace_signal);
-            // $display("%d,%d, %d",trigger_0 , trigger_1,trigger_2);
-			// $display("%d,%d,%d",trace_signal_0,trace_signal_1, trace_signal_2);
-		end
-        // else trigger = 1'b0;
-	end
+	// 		$display("%d -Ni",trigger);
+	// 		$display("%d- Ni",trace_signal);
+    //         // $display("%d,%d, %d",trigger_0 , trigger_1,trigger_2);
+	// 		// $display("%d,%d,%d",trace_signal_0,trace_signal_1, trace_signal_2);
+	// 	end
+    //     // else trigger = 1'b0;
+	// end
 
     wire                            s_ack_o_next;    
     

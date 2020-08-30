@@ -317,8 +317,26 @@ endgenerate
 		.trace_trigger(trigger_3)
 	);
 
-	assign trigger_wr = (trigger_0 | trigger_1 | trigger_2 | trigger_3 | trigger_noc )? 1'b1: 1'b0; //(trigger_0)? wr_0 : ((trigger_1)? wr_1 : ((trigger_2)? wr_2 : ((trigger_3)? wr_3 : ((trigger_4)? wr_4 : wr_4) ))); //wr_0 || wr_1 || wr_2 || wr_3;
+	assign trigger_wr = (trigger_0 | trigger_1 | trigger_2 | trigger_3 | trigger_noc)? 1'b1: 1'b0; //(trigger_0)? wr_0 : ((trigger_1)? wr_1 : ((trigger_2)? wr_2 : ((trigger_3)? wr_3 : ((trigger_4)? wr_4 : wr_4) ))); //wr_0 || wr_1 || wr_2 || wr_3;
     assign trace_in = (trigger_0)? tile0bus : ((trigger_1)? tile1bus : ((trigger_2)? tile2bus : ((trigger_3)? tile3bus : ((trigger_noc)? nocbus : 32'd0) )));
+
+	// initial begin
+    //     trigger_wr <= 1'b0;
+    //     trace_in <= 32'b0;
+    // end
+    // always @(*) begin
+    //     trigger_wr <= (trigger_0 | trigger_1 | trigger_2 | trigger_3 | trigger_noc);
+        
+    //     case ({trigger_0 , trigger_1 , trigger_2 , trigger_3 , trigger_noc})
+    //         5'b10000  : trace_in <= tile0bus;
+    //         5'b01000  : trace_in <= tile1bus;
+    //         5'b00100  : trace_in <= tile2bus;
+	// 		5'b00010  : trace_in <= tile3bus;
+    //         5'b00001  : trace_in <= nocbus;
+
+    //         default : trace_in <= 32'b0; 
+    //     endcase
+    // end
 
 	trace_buffer #(
         .Fpay(32),
@@ -356,7 +374,12 @@ endgenerate
     //     .reset(reset),
     //     .clk(clk)
     // );
+	integer trace_dump;
 
+	initial begin
+        trace_dump = $fopen("trace_dump_mpsoc.txt","w");
+         $fwrite(trace_dump,"%s \n","Start");
+    end
 	
 	always @(*) begin
 		// if (trigger_0 | trigger_1 | trigger_2 | trigger_3 | trigger_noc) begin
@@ -366,34 +389,44 @@ endgenerate
 				// trigger_wr <= trigger_0 ;
 				$display("%d-soc-0",trigger_wr);
 				$display("%d-soc-0",trace_in);
+				$display("writing");    
+            	$fwrite(trace_dump,"%h \n",trace_in);
 			end 
             else if (trigger_1) begin
 				// trace_in <= tile1bus ;
 				// trigger_wr <= trigger_1 ;
 				$display("%d-soc-1",trigger_wr);
 				$display("%d-soc-1",trace_in);
+				$display("writing");    
+            	$fwrite(trace_dump,"%h \n",trace_in);
 			end
             else if (trigger_2) begin
 				// trace_in <= tile2bus ;
 				// trigger_wr <= trigger_2 ;
 				$display("%d-soc-2",trigger_wr);
 				$display("%d-soc-2",trace_in);
+				$display("writing");    
+            	$fwrite(trace_dump,"%h \n",trace_in);
 			end
 			else if (trigger_3) begin
 				// trace_in <= tile3bus ;
 				// trigger_wr <= trigger_2 ;
 				$display("%d-soc-3",trigger_wr);
 				$display("%d-soc-3",trace_in);
+				$display("writing");    
+            	$fwrite(trace_dump,"%h \n",trace_in);
 			end 
 			else if (trigger_noc) begin
 				// trace_in <= nocbus ;
 				// trigger_wr <= trigger_noc ;
 				$display("%d-soc-noc",trigger_wr);
 				$display("%d-soc-noc",trace_in);
+				$display("writing");    
+            	$fwrite(trace_dump,"%h \n",trace_in);
 			end 
     
 
-			 $display("%d-trigger_wr",trigger_wr);
+			//  $display("%d-trigger_wr",trigger_wr);
 			// $display("%d-soc",trace_in);
             // $display("%d,%d, %d",trigger_0 , trigger_1,trigger_2);
 			// $display("%d,%d,%d",trace_signal_0,trace_signal_1, trace_signal_2);
@@ -401,12 +434,12 @@ endgenerate
 		// else trigger_wr <= 1'b0;
 	end
 	
-	always @(*) begin
-		if (trigger_wr) begin
-			$display("%d,%d,%d,%d,%d",trigger_0 , trigger_1 , trigger_2 , trigger_3 , trigger_noc);
-			$display("%d,%d,%d,%d,%d",tile0bus , tile1bus , tile2bus , tile3bus , nocbus);
-		end
-	end
+	// always @(*) begin
+	// 	if (trigger_wr) begin
+	// 		$display("%d,%d,%d,%d,%d",trigger_0 , trigger_1 , trigger_2 , trigger_3 , trigger_noc);
+	// 		$display("%d,%d,%d,%d,%d",tile0bus , tile1bus , tile2bus , tile3bus , nocbus);
+	// 	end
+	// end
 
 	
  

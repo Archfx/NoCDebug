@@ -353,8 +353,8 @@ module input_queue_per_port  #(
     input   [PPSw-1 : 0] port_pre_sel;
     input   [V-1  : 0]  swap_port_presel;
     // Trace
-    output trigger;
-    output [31:0] trace_signal;
+    output reg trigger;
+    output reg [31:0] trace_signal;
   
             
     
@@ -381,8 +381,23 @@ module input_queue_per_port  #(
     wire trigger_0,trigger_1, trigger_2;
     wire [31:0] trace_signal_0,trace_signal_1, trace_signal_2;
 
-    assign trigger = (trigger_0 | trigger_1 | trigger_2)? 1'b1:1'b0 ;
-    assign  trace_signal = trigger_0 ? trace_signal_0 : (trigger_1? trace_signal_1 : (trigger_2? trace_signal_2 : 32'd0)); 
+    // assign trigger = (trigger_0 | trigger_1 | trigger_2)? 1'b1:1'b0 ;
+    // assign  trace_signal = trigger_0 ? trace_signal_0 : (trigger_1? trace_signal_1 : (trigger_2? trace_signal_2 : 32'd0)); 
+
+   initial begin
+        trigger <= 1'b0;
+        trace_signal <= 32'b0;
+    end
+    always @(*) begin
+        trigger <= trigger_0 | trigger_1 | trigger_2;
+        
+        case ({trigger_0 , trigger_1, trigger_2})
+            3'b100  : trace_signal <= trace_signal_0;
+            3'b010  : trace_signal <= trace_signal_1;
+            3'b001  : trace_signal <= trace_signal_2;
+            default : trace_signal <= 32'b0; 
+        endcase
+    end
 
 //extract header flit info
     extract_header_flit_info #(

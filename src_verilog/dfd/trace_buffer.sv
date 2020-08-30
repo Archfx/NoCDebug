@@ -75,11 +75,7 @@ module trace_buffer #(
         .rd_en          (rd),
         .clk            (clk),
         .rd_data        (fifo_ram_dout)
-    ); 
-
-    always @(*) begin
-        $display("%b- wr", wr);
-    end   
+    );   
     
     always @(posedge clk or posedge reset) begin
         if (reset) begin
