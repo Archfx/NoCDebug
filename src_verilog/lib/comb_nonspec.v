@@ -67,7 +67,11 @@ module comb_nonspec_allocator #(
     
     // global
     clk,
-    reset
+    reset,
+
+    // DfD
+    trigger,
+    trace_signal
 
 );
        
@@ -100,6 +104,29 @@ module comb_nonspec_allocator #(
     input  [PV-1 : 0] vc_weight_is_consumed_all;
     input  [P-1 : 0] iport_weight_is_consumed_all;
     output   [P-1 : 0] granted_dst_is_from_a_single_flit_pck;
+
+    // DfD
+    output reg trigger;
+    output reg [31:0] trace_signal;
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_signal_0,trace_signal_1;
+
+    initial begin
+        trigger <= 1'b0;
+        trace_signal <= 32'b0;
+    end
+    always @(*) begin
+        trigger <= trigger_0 | trigger_1;
+        
+        case ({trigger_0 , trigger_1})
+            2'b10  : trace_signal <= trace_signal_0;
+            2'b01  : trace_signal <= trace_signal_1;
+            default : trace_signal <= 32'b0; 
+        endcase
+    end
+
+    
         
 
 
@@ -134,7 +161,9 @@ module comb_nonspec_allocator #(
         .vc_weight_is_consumed_all(vc_weight_is_consumed_all),
         .iport_weight_is_consumed_all(iport_weight_is_consumed_all),
         .clk (clk),
-        .reset (reset)
+        .reset (reset),
+        .trigger(trigger_0),
+        .trace_signal(trace_signal_0)
     
     );
     
@@ -186,7 +215,9 @@ module comb_nonspec_allocator #(
                 .reset        (reset), 
                 .request    (masked_non_assigned_request    [i]), 
                 .grant        (first_arbiter_ovc_granted[i]),
-                .any_grant    ()
+                .any_grant    (),
+                .trigger(trigger_1),
+                .trace_signal(trace_signal_1)
               );
        /*       
         end  else begin :fixarb
@@ -335,7 +366,11 @@ module  comb_nonspec_v2_allocator #(
     
     // global
     clk,
-    reset
+    reset,
+
+    // DfD 
+    trigger,
+    trace_signal
 
 );
 
@@ -370,6 +405,26 @@ module  comb_nonspec_v2_allocator #(
     input   [PV-1 : 0] vc_weight_is_consumed_all;
     input   [P-1 : 0] iport_weight_is_consumed_all;
 
+    output reg trigger;
+    output reg [31:0] trace_signal;
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_signal_0,trace_signal_1;
+
+    initial begin
+        trigger <= 1'b0;
+        trace_signal <= 32'b0;
+    end
+    always @(*) begin
+        trigger <= trigger_0 | trigger_1;
+        
+        case ({trigger_0 , trigger_1})
+            2'b10  : trace_signal <= trace_signal_0;
+            2'b01  : trace_signal <= trace_signal_1;
+            default : trace_signal <= 32'b0; 
+        endcase
+    end
+
     //internal wires switch allocator
     wire    [PV-1 : 0] first_arbiter_granted_ivc_all;
     wire    [PV-1 : 0] ivc_request_masked_all;
@@ -402,7 +457,10 @@ module  comb_nonspec_v2_allocator #(
         .vc_weight_is_consumed_all(vc_weight_is_consumed_all),
         .iport_weight_is_consumed_all(iport_weight_is_consumed_all),
         .clk  (clk),
-        .reset (reset)
+        .reset (reset),
+        .trigger(trigger_1),
+        .trace_signal(trace_signal_1)
+
     
     );
     
@@ -476,7 +534,9 @@ module  comb_nonspec_v2_allocator #(
             .reset (reset), 
             .request (candidate_ovc_local_num[i]), 
             .grant (first_arbiter_ovc_granted[i]),
-            .any_grant ( )
+            .any_grant ( ),
+            .trigger(trigger),
+            .trace_signal(trace_signal)
         );
     
         
@@ -550,7 +610,9 @@ module nonspec_sw_alloc #(
     vc_weight_is_consumed_all,
     iport_weight_is_consumed_all,
     clk,
-    reset
+    reset,
+    trigger,
+    trace_signal
     
 );
 
@@ -576,6 +638,20 @@ module nonspec_sw_alloc #(
     input  clk, reset;
     input [PV-1 : 0] vc_weight_is_consumed_all;
     input [P-1: 0] iport_weight_is_consumed_all;
+
+    //DfD
+    output  trigger;
+    output  [31:0] trace_signal;
+
+    // wire trigger_0,trigger_1;
+    // wire [31:0] trace_signal_0, trace_signal_1;
+
+    wire trigger_1;
+    wire [31:0] trace_signal_1;
+
+    assign trigger = trigger_1;
+    assign trace_signal = trace_signal_1;
+
     
     //separte input per port
     wire [V-1 : 0] ivc_granted        [P-1 : 0];
@@ -596,6 +672,20 @@ module nonspec_sw_alloc #(
     wire    [V-1 : 0] vc_weight_is_consumed [P-1 : 0]; 
     wire    [P-1    :0] winner_weight_consumed;            
      
+    // initial begin
+    //     trigger <= 1'b0;
+    //     trace_signal <= 32'b0;
+    // end
+    // always @(*) begin
+    //     trigger <= trigger_0 | trigger_1;
+        
+    //     case ({trigger_0 , trigger_1})
+    //         2'b10  : trace_signal <= trace_signal_0;
+    //         2'b01  : trace_signal <= trace_signal_1;
+    //         default : trace_signal <= 32'b0; 
+    //     endcase
+    // end
+
     genvar i,j;
     generate
     
@@ -626,7 +716,9 @@ module nonspec_sw_alloc #(
         	.clk(clk),
         	.reset(reset),
         	.vc_weight_is_consumed(vc_weight_is_consumed[i]),
-        	.winner_weight_consumed(winner_weight_consumed[i])
+        	.winner_weight_consumed(winner_weight_consumed[i])//,
+            // .trigger(trigger_0),
+            // .trace_signal(trace_signal_0)
         );
         
         
@@ -707,7 +799,9 @@ module nonspec_sw_alloc #(
            .reset(reset), 
            .request(second_arbiter_request [i]), 
            .grant(second_arbiter_grant [i]),
-           .any_grant(any_ovc_granted_all [i])  
+           .any_grant(any_ovc_granted_all [i])  ,
+           .trigger(trigger_1),
+           .trace_signal(trace_signal_1)
         );
             
         
@@ -833,7 +927,9 @@ module swa_input_port_arbiter #(
                 .reset (reset), 
                 .request (request), 
                 .grant (grant),
-                .any_grant (any_grant )
+                .any_grant (any_grant ),
+                .trigger(trigger),
+                .trace_signal (trace_signal )
             );
             
         end//else
@@ -863,7 +959,9 @@ module swa_output_port_arbiter #(
    reset, 
    request, 
    grant,
-   any_grant  
+   any_grant,
+   trigger,
+   trace_signal   
 );
 
 
@@ -874,9 +972,26 @@ module swa_output_port_arbiter #(
     input                                  clk;
     input                                  reset;
     input    [ARBITER_WIDTH-1  :    0]     weight_consumed;
+    // DfD
+    output reg trigger;
+    output reg [31:0] trace_signal;
 
-
-
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_signal_0,  trace_signal_1;
+    
+    initial begin
+        trigger <= 1'b0;
+        trace_signal <= 32'b0;
+    end
+    always @(*) begin
+        trigger <= trigger_0 | trigger_1;
+        
+        case ({trigger_0 , trigger_1})
+            2'b10  : trace_signal <= trace_signal_0;
+            2'b01  : trace_signal <= trace_signal_1;
+            default : trace_signal <= 32'b0; 
+        endcase
+    end
  generate 
     /* verilator lint_off WIDTH */
     if(ARBITER_TYPE == "WRRA") begin : wrra_mine
@@ -929,7 +1044,9 @@ module swa_output_port_arbiter #(
             .reset (reset), 
             .request (mux_req), 
             .grant (grant),
-            .any_grant (any_grant )
+            .any_grant (any_grant ),
+            .trigger(trigger_0),
+            .trace_signal(trace_signal_0 ) 
         );
     
     
@@ -945,7 +1062,9 @@ module swa_output_port_arbiter #(
             .reset (reset), 
             .request (request), 
             .grant (grant),
-            .any_grant (any_grant )
+            .any_grant (any_grant ),
+            .trigger(trigger_1),
+            .trace_signal(trigger_1) 
         );
         
    end

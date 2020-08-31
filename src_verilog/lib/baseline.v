@@ -55,7 +55,9 @@ module baseline_allocator #(
     masked_ovc_request_all,
     vc_weight_is_consumed_all,
     iport_weight_is_consumed_all,
-    clk,reset
+    clk,reset,
+    trigger,
+    trace_signal
 );
 
     localparam 
@@ -86,6 +88,8 @@ module baseline_allocator #(
     output [PVV-1:   0] spec_ovc_num_all;
     input  [PVV-1:  0] masked_ovc_request_all;
     input  clk,reset;
+    output trigger;
+    output [31:0] trace_signal;
 
     
     wire [V-1:   0] spec_first_arbiter_granted_ivc    [P-1:   0];
@@ -110,7 +114,9 @@ module baseline_allocator #(
         .dest_port_all (dest_port_all),
         .spec_ovc_num_all (spec_ovc_num_all),
         .clk (clk),
-        .reset (reset)
+        .reset (reset),
+        .trigger(trigger),
+        .trace_signal(trace_signal)
     );
             
     //speculative switch allocator 
@@ -191,7 +197,9 @@ module canonical_vc_alloc #(
     masked_ovc_request_all,
     spec_ovc_num_all,
     clk,
-    reset    
+    reset,
+    trigger,
+    trace_signal    
 );
 
 
@@ -210,6 +218,8 @@ module canonical_vc_alloc #(
     input  [PVP_1-1:  0]  dest_port_all;
     output [PVV-1:  0]  spec_ovc_num_all;
     input  clk,reset;
+    output reg trigger;
+    output reg [31:0] trace_signal;
     
     wire    [V-1:  0]  ovc_granted_ivc [PV-1:  0]  ;
     wire    [P_1-1: 0]  dest_port_ivc  [PV-1:  0]  ;
@@ -220,8 +230,26 @@ module canonical_vc_alloc #(
     wire    [VP_1-1 : 0]  second_arbiter_grant [PV-1:  0]  ;
     wire    [VP_1-1 : 0]  granted_ovc_array [PV-1:  0]  ;
     genvar i,j;
-        
+
+    wire trigger_0,trigger_1,trigger_2;
+    wire [31:0] trace_signal_0,trace_signal_1,trace_signal_2;    
     
+    initial begin
+        trigger <= 1'b0;
+        trace_signal <= 32'b0;
+    end
+    always @(*) begin
+        trigger <= trigger_0 | trigger_1 | trigger_2;
+        
+        case ({trigger_0 , trigger_1, trigger_2})
+            3'b100  : trace_signal <= trace_signal_0;
+            3'b010  : trace_signal <= trace_signal_1;
+            3'b001  : trace_signal <= trace_signal_2;
+
+            default : trace_signal <= 32'b0; 
+        endcase
+    end
+
     generate
     
        
@@ -241,7 +269,9 @@ module canonical_vc_alloc #(
         .reset       (reset), 
         .request       (masked_ovc_request  [i]), 
         .grant       (first_arbiter_grant[i]),
-        .any_grant   ()
+        .any_grant   (),
+        .trigger(trigger_0),
+        .trace_signal(trace_signal_0)
        );
        
        assign spec_ovc_num_all[(i+1)*V-1 :i*V]   = first_arbiter_grant[i];
@@ -285,7 +315,10 @@ module canonical_vc_alloc #(
               .reset (reset), 
               .request (second_arbiter_request[i]), 
               .grant (second_arbiter_grant  [i]),
-              .any_grant (ovc_allocated_all[i])
+              .any_grant (ovc_allocated_all[i]),
+              .trigger(trigger_1),
+              .trace_signal(trace_signal_1)
+              
         );
        end else begin :arb
         arbiter #(
@@ -297,7 +330,9 @@ module canonical_vc_alloc #(
               .reset (reset), 
               .request (second_arbiter_request[i]), 
               .grant (second_arbiter_grant  [i]),
-              .any_grant (ovc_allocated_all[i])
+              .any_grant (ovc_allocated_all[i]),
+              .trigger(trigger_2),
+              .trace_signal(trace_signal_2)
         );
        end
        

@@ -98,7 +98,11 @@ module wishbone_bus #(
 	//system signals
 	
 	clk,
-	reset
+	reset,
+
+    // DfD
+    trigger,
+    trace_signal
 	
 );
 
@@ -181,6 +185,10 @@ module wishbone_bus #(
     //system signals
     
     input                           clk,     reset;
+
+    //DfD
+    output trigger;
+    output [31:0] trace_signal;
     
 
     wire	                    any_s_ack,any_s_err,any_s_rty;
@@ -457,7 +465,9 @@ generate
 			.request (m_cyc_i_all),
 			.grant	(m_grant_onehot),
 			.clk (clk),
-			.reset (reset)
+			.reset (reset),
+            .trigger(trigger),
+            .trace_signal(trace_signal)
 		);
 	end else begin // if we have just one master there is no needs for arbitration
 		assign m_grant_onehot = m_cyc_i_all;
@@ -484,12 +494,16 @@ module bus_arbiter # (
 	request,
 	grant,
 	clk,
-	reset
+	reset,
+    trigger,
+    trace_signal
 );
 
     input   [M-1    :       0]  request;
     output  [M-1    :       0]  grant;
     input                       clk, reset;
+    output trigger;
+    output [31:0] trace_signal; 
 
     wire                    comreq;
     wire    [M-1	:	0]	one_hot_arb_req, one_hot_arb_grant;
@@ -518,7 +532,9 @@ module bus_arbiter # (
 	   .grant		(one_hot_arb_grant),
 	   .any_grant	(),
 	   .clk			(clk),
-	   .reset		(reset)
+	   .reset		(reset),
+       .trigger(trigger),
+       .trace_signal(trace_signal)
     );
 
 

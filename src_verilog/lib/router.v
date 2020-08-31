@@ -127,8 +127,25 @@ module router # (
     
     input clk,reset;
 
-    output trigger;
-    output [31:0] trace_signal;
+    output reg trigger;
+    output reg [31:0] trace_signal;
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_signal_0,trace_signal_1;
+
+    initial begin
+        trigger <= 1'b0;
+        trace_signal <= 32'b0;
+    end
+    always @(*) begin
+        trigger <= trigger_0 | trigger_1;
+        
+        case ({trigger_0 , trigger_1})
+            2'b10  : trace_signal <= trace_signal_0;
+            2'b01  : trace_signal <= trace_signal_1;
+            default : trace_signal <= 32'b0; 
+        endcase
+    end
 
     
     //internal wires
@@ -240,8 +257,8 @@ module router # (
         .refresh_w_counter(refresh_w_counter), 
         .clk(clk), 
         .reset(reset),
-        .trigger(trigger),
-        .trace_signal(trace_signal)
+        .trigger(trigger_0),
+        .trace_signal(trace_signal_0)
     );
 
 
@@ -279,7 +296,9 @@ module router # (
         .vc_weight_is_consumed_all(vc_weight_is_consumed_all),  
         .iport_weight_is_consumed_all(iport_weight_is_consumed_all),  
         .clk(clk), 
-        .reset(reset)
+        .reset(reset),
+        .trigger(trigger_1),
+        .trace_signal(trace_signal_1) 
         );
         
    

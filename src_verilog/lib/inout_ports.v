@@ -600,7 +600,9 @@ endmodule
     output reg [V-1 :0] cand_vc,
     input                                               cand_wr_vc_en,
     input                                                   clk,
-    input                                                   reset
+    input                                                   reset,
+    output trigger,
+    output [31:0]    trace_signal
 );
 
     
@@ -657,7 +659,9 @@ endmodule
                     .reset          (reset),
                     .request            (request),
                     .grant          (cand_vc_next),
-                    .any_grant       ()
+                    .any_grant       (),
+                    .trigger(trigger),
+                    .trace_signal (trigger_signal)
                 );
 
         end else begin : min_depth_select

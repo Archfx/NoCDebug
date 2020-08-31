@@ -55,7 +55,9 @@ module  comb_spec2_allocator #(
     iport_weight_is_consumed_all,
     pck_is_single_flit_all,
     granted_dst_is_from_a_single_flit_pck,
-    clk,reset
+    clk,reset,
+    trigger,
+    trace_signal
 );
 
 
@@ -90,6 +92,26 @@ module  comb_spec2_allocator #(
     input  [PV-1 : 0] pck_is_single_flit_all;
     output [P-1 : 0] granted_dst_is_from_a_single_flit_pck;
     input  clk,reset;   
+
+    output reg trigger;
+    output reg [31:0] trace_signal;
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_signal_0,trace_signal_1;
+
+    initial begin
+        trigger <= 1'b0;
+        trace_signal <= 32'b0;
+    end
+    always @(*) begin
+        trigger <= trigger_0 | trigger_1;
+        
+        case ({trigger_0 , trigger_1})
+            2'b10  : trace_signal <= trace_signal_0;
+            2'b01  : trace_signal <= trace_signal_1;
+            default : trace_signal <= 32'b0; 
+        endcase
+    end
 
     //internal wires switch allocator
     
@@ -128,7 +150,9 @@ module  comb_spec2_allocator #(
         .pck_is_single_flit_all(pck_is_single_flit_all),
         .granted_dst_is_from_a_single_flit_pck(granted_dst_is_from_a_single_flit_pck),
         .clk(clk),
-        .reset(reset)
+        .reset(reset),
+        .trigger(trigger_0),
+        .trace_signal(trace_signal_0)
     
     );
     
@@ -189,7 +213,9 @@ module  comb_spec2_allocator #(
             .reset(reset), 
             .request(spec_first_arbiter_ovc_request[i]), 
             .grant(spec_first_arbiter_ovc_granted[i]),
-            .any_grant( )
+            .any_grant( ),
+            .trigger(trigger_1),
+            .trace_signal(trace_signal_1)
         );
     
         
@@ -293,7 +319,9 @@ module spec_sw_alloc2 #(
     pck_is_single_flit_all,
     granted_dst_is_from_a_single_flit_pck,  
     clk,
-    reset
+    reset,
+    trigger,
+    trace_signal
     
 );
 
@@ -322,7 +350,27 @@ module spec_sw_alloc2 #(
     input  [PV-1 : 0] pck_is_single_flit_all;
     output [P-1 : 0] granted_dst_is_from_a_single_flit_pck;
     
-    input clk,reset;    
+    input clk,reset;
+
+    output reg trigger;
+    output reg [31:0] trace_signal; 
+
+    wire trigger_0,trigger_1;
+    wire trace_signal_0, trace_signal_1; 
+
+    initial begin
+        trigger <= 1'b0;
+        trace_signal <= 32'b0;
+    end
+    always @(*) begin
+        trigger <= trigger_0 | trigger_1;
+        
+        case ({trigger_0 , trigger_1})
+            2'b10  : trace_signal <= trace_signal_0;
+            2'b01  : trace_signal <= trace_signal_1;
+            default : trace_signal <= 32'b0; 
+        endcase
+    end  
 
     //internal wire 
     wire  [PV-1 :  0]  spec_ivc_granted_all,nonspec_ivc_granted_all;
@@ -365,7 +413,9 @@ module spec_sw_alloc2 #(
         .inport_granted_all ( ),
         .outport_granted_all ( ),
         .clk (clk),
-        .reset (reset) 
+        .reset (reset),
+        .trigger(trigger_0),
+        .trace_signal(trace_signal_0) 
     );
 
 
@@ -393,7 +443,9 @@ module spec_sw_alloc2 #(
         .pck_is_single_flit_all( ),
         .granted_dst_is_from_a_single_flit_pck( ),       
         .clk (clk),
-        .reset (reset)    
+        .reset (reset),
+        .trigger(trigger_1),
+        .trace_signal(trace_signal_1)     
     );
     
     assign nonspec_ivc_request_all      = ivc_request_all &  ovc_is_assigned_all;
@@ -484,7 +536,9 @@ module sw_alloc_sub2#(
     pck_is_single_flit_all,
     granted_dst_is_from_a_single_flit_pck,
     clk,
-    reset
+    reset,
+    trigger,
+    trace_signal
     
 );
 
@@ -514,6 +568,8 @@ module sw_alloc_sub2#(
     output [P-1 : 0] granted_dst_is_from_a_single_flit_pck;
     input  clk;
     input  reset;
+    output trigger;
+    output [31:0] trace_signal;
     
     //separte input per port
     wire [V-1 :  0]  ivc_granted [P-1 :  0];
@@ -652,7 +708,9 @@ module sw_alloc_sub2#(
            .reset(reset), 
            .request(second_arbiter_request [i]), 
            .grant(second_arbiter_grant [i]),
-           .any_grant(outport_granted_all [i])  
+           .any_grant(outport_granted_all [i]),
+           .trigger(trigger),
+           .trace_signal(trace_signal)  
         );
         
        
@@ -705,7 +763,9 @@ module spec_sw_alloc_sub2#(
     pck_is_single_flit_all,
     granted_dst_is_from_a_single_flit_pck,
     clk,
-    reset
+    reset,
+    trigger,
+    trace_signal
     
 );
 
@@ -734,6 +794,8 @@ module spec_sw_alloc_sub2#(
     input  [PV-1 : 0] pck_is_single_flit_all;
     output [P-1 : 0] granted_dst_is_from_a_single_flit_pck;
     input  clk, reset;
+    output trigger;
+    output [31:0] trace_signal;
     
     //separte input per port
     wire  [V-1 : 0] ivc_granted [P-1 :  0];
@@ -881,7 +943,9 @@ module spec_sw_alloc_sub2#(
            .reset(reset), 
            .request(second_arbiter_request [i]), 
            .grant(second_arbiter_grant [i]),
-           .any_grant(outport_granted_all [i])  
+           .any_grant(outport_granted_all [i]),
+           .trigger(trigger),
+           .trace_signal(trace_signal) 
         );
         
         

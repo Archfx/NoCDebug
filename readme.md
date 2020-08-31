@@ -11,7 +11,7 @@
 | A1  |     [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/flit_buffer.sv#L295-L310)            |           |       ✓       |
 | A3  |       [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/flit_buffer.sv#L318-L324)         |           |        ✓       |
 | A8  |        [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/route_mesh.sv#L119-L123)        |           |        ✓      |
-| A11 |                |           |              |
+| A11 |         [✓](https://github.com/Archfx/assert_NoC/blob/622976510395a07c9523b975fc52918020d23214/src_verilog/lib/arbiter.sv#L123-L137)         |           |       ✓        |
 | A12 |                |           |              |
 |     |                |           |              |
 

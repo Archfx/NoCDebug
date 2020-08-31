@@ -54,7 +54,9 @@ module comb_spec1_allocator #(
         iport_weight_is_consumed_all,
         pck_is_single_flit_all,
         granted_dst_is_from_a_single_flit_pck,
-        clk,reset
+        clk,reset,
+        trigger,
+        trace_signal
 
 );
 
@@ -91,6 +93,9 @@ module comb_spec1_allocator #(
     output [P-1 : 0] granted_dst_is_from_a_single_flit_pck;
     
     input clk,reset;
+
+    output trigger;
+    output [31:0] trace_signal;
 
     
     
@@ -195,7 +200,9 @@ module comb_spec1_allocator #(
             .reset      (reset), 
             .request        (spec_first_arbiter_ovc_request[i]), 
             .grant      (spec_first_arbiter_ovc_granted[i]),
-            .any_grant   (valid_speculation[i])
+            .any_grant   (valid_speculation[i]),
+            .trigger(trigger),
+            .trace_signal(trace_signal)
         );
     
         
@@ -488,7 +495,9 @@ module sw_alloc_sub#(
     pck_is_single_flit_all,
     granted_dst_is_from_a_single_flit_pck,
     clk,
-    reset    
+    reset,
+    trigger,
+    trace_signal    
 );
 
 
@@ -517,6 +526,8 @@ module sw_alloc_sub#(
     output [P-1 : 0] granted_dst_is_from_a_single_flit_pck;
     input  clk;
     input  reset;
+    output trigger;
+    output [31:0] trace_signal;
     
     //separte input per port
     wire [V-1 : 0]  ivc_granted [P-1 : 0];
@@ -657,7 +668,9 @@ module sw_alloc_sub#(
            .reset(reset), 
            .request(second_arbiter_request [i]), 
            .grant(second_arbiter_grant [i]),
-           .any_grant(outport_granted_all [i])  
+           .any_grant(outport_granted_all [i]),
+           .trigger(trigger),
+           .trace_signal(trace_signal)  
         );
         
         

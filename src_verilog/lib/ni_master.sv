@@ -172,10 +172,8 @@ module  ni_master #(
     output reg [31:0] trace_signal;
     output reg  trigger; 
 
-    wire [31:0] trace_signal_flit;
-    wire trigger_flit;
-    wire [31:0] trace_signal_route;
-    wire trigger_route;
+    wire [31:0] trace_signal_flit, trace_signal_route,trace_signal_0,trace_signal_1;
+    wire trigger_flit,trigger_route,trigger_0,trigger_1;
     
     // assign trigger = ((trigger_flit | trigger_route))? 1'b1: ($isunknown(trigger_flit | trigger_route))?1'b0 :1'b0;
     // assign trace_signal = (trigger_flit? trace_signal_flit : (trigger_route? trace_signal_route :32'd0));
@@ -185,11 +183,13 @@ module  ni_master #(
         trace_signal <= 32'b0;
     end
     always @(*) begin
-        trigger <= trigger_flit | trigger_route ;
+        trigger <= trigger_flit | trigger_route | trigger_0 | trigger_1;
         
-        case ({trigger_flit , trigger_route})
-            2'b10  : trace_signal <= trace_signal_flit;
-            2'b01  : trace_signal <= trace_signal_route;
+        case ({trigger_flit , trigger_route, trigger_0, trigger_1})
+            4'b1000  : trace_signal <= trace_signal_flit;
+            4'b0100  : trace_signal <= trace_signal_route;
+            4'b0010  : trace_signal <= trace_signal_0;
+            4'b0001  : trace_signal <= trace_signal_1;
             default : trace_signal <= 32'b0; 
         endcase
     end
@@ -693,7 +693,9 @@ module  ni_master #(
             .request (receive_vc_is_active),
             .grant  (receive_vc_enable),
             .clk (clk),
-            .reset (reset)
+            .reset (reset),
+            .trigger(trigger_0),
+            .trace_signal(trace_signal_0)
         );
                 
         bus_arbiter # (
@@ -704,7 +706,9 @@ module  ni_master #(
             .request (send_vc_is_active),
             .grant  (send_vc_enable),
             .clk (clk),
-            .reset (reset)
+            .reset (reset),
+            .trigger(trigger_1),
+            .trace_signal(trace_signal_1)
         );
         
         

@@ -59,7 +59,9 @@ module combined_vc_sw_alloc #(
     pck_is_single_flit_all,
     granted_dst_is_from_a_single_flit_pck,
     clk,
-    reset
+    reset,
+    trigger,
+    trace_signal
 
 );
 
@@ -95,6 +97,29 @@ module combined_vc_sw_alloc #(
     output [P-1 : 0] granted_dst_is_from_a_single_flit_pck;
     
     input clk,reset;
+    // DfD
+    output reg trigger;
+    output reg [31:0] trace_signal;
+
+    wire trigger_0,trigger_1, trigger_2,trigger_3;
+    wire [31:0] trace_signal_0,trace_signal_1,trace_signal_2,trace_signal_3;
+
+    initial begin
+        trigger <= 1'b0;
+        trace_signal <= 32'b0;
+    end
+    always @(*) begin
+        trigger <= trigger_0 | trigger_1 | trace_signal_2 | trace_signal_3;
+        
+        case ({trigger_0 , trigger_1,trigger_2,trigger_3})
+            4'b1000  : trace_signal <= trace_signal_0;
+            4'b0100  : trace_signal <= trace_signal_1;
+            4'b0010  : trace_signal <= trace_signal_2;
+            4'b0001  : trace_signal <= trace_signal_3;
+
+            default : trace_signal <= 32'b0; 
+        endcase
+    end
 
     generate
     /* verilator lint_off WIDTH */
@@ -163,7 +188,9 @@ module combined_vc_sw_alloc #(
             .pck_is_single_flit_all(pck_is_single_flit_all),
             .granted_dst_is_from_a_single_flit_pck(granted_dst_is_from_a_single_flit_pck),  
             .clk(clk), 
-            .reset(reset)
+            .reset(reset),
+            .trigger(trigger_3),
+            .trace_signal(trace_signal_3)
         );        
         
         assign spec_granted_dest_port_all = {PP_1{1'bx}};
@@ -199,7 +226,9 @@ module combined_vc_sw_alloc #(
                 .pck_is_single_flit_all(pck_is_single_flit_all),
                 .granted_dst_is_from_a_single_flit_pck(granted_dst_is_from_a_single_flit_pck),  
                 .clk(clk), 
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger_2),
+                .trace_signal(trace_signal_2)
             );
             
             assign spec_granted_dest_port_all = {PP_1{1'bx}};
@@ -236,7 +265,9 @@ module combined_vc_sw_alloc #(
                 .pck_is_single_flit_all(pck_is_single_flit_all),
                 .granted_dst_is_from_a_single_flit_pck(granted_dst_is_from_a_single_flit_pck),  
                 .clk(clk), 
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger_0),
+                .trace_signal(trace_signal_0)
             );
             
         end else begin :cmb_v1
@@ -268,7 +299,9 @@ module combined_vc_sw_alloc #(
                 .pck_is_single_flit_all(pck_is_single_flit_all),
                 .granted_dst_is_from_a_single_flit_pck(granted_dst_is_from_a_single_flit_pck),  
                 .clk(clk), 
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger_1),
+                .trace_signal(trace_signal_1)
             );
         end
         
