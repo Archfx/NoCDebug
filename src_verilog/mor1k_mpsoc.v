@@ -310,8 +310,23 @@ endgenerate
         .trace(trace_3) 
 	);
 
+
+
 	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3);
 	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 :(trigger_2? trace_2 : trace_3));
+
+	trace_buffer #(
+    	.Fpay (32),
+    	.TB_Depth(512)
+	)  the_trace_buffer (
+        .trace(trace),     // Data in
+        .trigger(trigger),   // Write enable
+        .rd(),   // Read the buffer using JTaG
+        .dout(),    // Data out
+        .reset(reset),
+        .clk(clk)
+        // ssa_rd
+    );
 
 	always@(*) begin
         $display("MpSoc_0 %d, trace %b",trigger_0,trace_0);

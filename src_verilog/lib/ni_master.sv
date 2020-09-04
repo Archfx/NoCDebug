@@ -646,18 +646,6 @@ module  ni_master #(
 	always @(posedge clk) crc_miss_match <= {V{1'b0}};
     end
 
-    `ifdef ASSERTION_ENABLE
-    // Asserting the Property r1 : Route can issue at most one request
-
-    always@(posedge clk) begin
-        //$display("%b", receive_vc_is_active);
-        if ($onehot(receive_vc_is_active) || receive_vc_is_active == 1'b0 ) begin
-            if ($onehot(receive_vc_is_active)) $display ("Assert check : Property r1 suceeded");
-        end
-        else $display("Assert check : $ Warning - Property r1 failed in %m at %t", $time);
-    end
-    `endif 
-  
     if(V> 1) begin : multi_channel
     
         // round roubin arbiter
@@ -805,9 +793,9 @@ module  ni_master #(
     wire [Fw-1  :   0] fifo_dout;
 
     //DfD debug
-    always@(*) begin
-        $display("ni_master %d, trace %b",trigger,trace);
-    end
+    // always@(*) begin
+    //     $display("ni_master %d, trace %b",trigger,trace);
+    // end
     
     flit_buffer #(
         .V(V),
