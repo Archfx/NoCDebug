@@ -54,7 +54,10 @@ module  fattree_noc #(
     credit_in_all,
     flit_in_all,  
     flit_in_wr_all,  
-    credit_out_all    
+    credit_out_all,
+    trigger,
+    trace
+
 );        
   
    `define INCLUDE_TOPOLOGY_LOCALPARAM
@@ -106,7 +109,14 @@ module  fattree_noc #(
     input  [NEV-1 : 0] credit_in_all;
     input  [NEFw-1 : 0] flit_in_all;
     input  [NE-1 : 0] flit_in_wr_all;  
-    output [NEV-1 : 0] credit_out_all;                
+    output [NEV-1 : 0] credit_out_all;  
+
+    //DfD
+    output trigger;
+    output [31:0] trace;    
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;            
                         
                 
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
@@ -139,6 +149,8 @@ module  fattree_noc #(
 
 genvar pos,level,port;
 
+assign trigger = (trigger_0|trigger_1);//|trigger_2|trigger_3);
+assign trace = trigger_0? trace_0 : trace_1;//(trigger_1? trace_1 :(trigger_2? trace_2 : trace_3));
 
 
 generate 
@@ -188,13 +200,21 @@ for( pos=0; pos<NRL; pos=pos+1) begin : root
                 .congestion_out_all(router_congestion_out_all[pos][(K*CONGw)-1 : 0]),
             
                 .clk(clk),
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger_0),
+                .trace(trace_0)  
         
             );  
    
    
    
 end   
+
+always@(*) begin
+        $display("fattree_noc %d, trace %b",trigger_0,trace_0);
+		$display("fattree_noc %d, trace %b",trigger_1,trace_1);
+
+end
 
 //add leaves
 
@@ -246,7 +266,9 @@ for( level=1; level<L; level=level+1) begin :level_lp
                 .congestion_out_all(router_congestion_out_all[NRL*level+pos]),
             
                 .clk(clk),
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger_1),
+                .trace(trace_1)  
         
             );  
    

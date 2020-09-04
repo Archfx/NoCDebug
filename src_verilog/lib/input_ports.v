@@ -86,7 +86,9 @@ module input_ports
     granted_dest_port_all,
     refresh_w_counter,
     reset,
-    clk
+    clk,
+    trigger,
+    trace 
 );
     
          
@@ -136,6 +138,10 @@ module input_ports
     output  [WPP-1 : 0] oports_weight_all;
    
     input refresh_w_counter;
+
+    //Dfd
+    output trigger;
+    output [31:0] trace;  
     
 
 genvar i;
@@ -203,11 +209,17 @@ generate
         .vc_weight_is_consumed(vc_weight_is_consumed_all [(i+1)*V-1 : i*V]),
         .iport_weight_is_consumed(iport_weight_is_consumed_all[i]),
         .refresh_w_counter(refresh_w_counter),
-        .granted_dest_port(granted_dest_port_all[(i+1)*P_1-1 : i*P_1])        
+        .granted_dest_port(granted_dest_port_all[(i+1)*P_1-1 : i*P_1]) ,
+        .trigger(trigger),
+        .trace(trace)         
     );
     
     end//for      
 endgenerate
+
+    always@(*) begin
+        $display("input_ports %d, trace %b",trigger,trace);
+    end 
 
 endmodule 
 
@@ -347,6 +359,12 @@ module input_queue_per_port  #(
     // Trace
     output trigger;
     output [31:0] trace;
+   
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
+
+    assign trigger = trigger_0;//(COMBINATION_TYPE == "COMB_NONSPEC")? trigger_0 :trigger_1;
+    assign trace = trace_0;//(COMBINATION_TYPE == "COMB_NONSPEC")? trace_0 : trace_1;
   
             
     
@@ -753,8 +771,8 @@ generate
             .reset(reset),
             .clk(clk),
             .ssa_rd(ssa_ivc_num_getting_sw_grant),
-            .trigger(trigger),
-            .trace(trace)
+            .trigger(trigger_0),
+            .trace(trace_0)
         );
    
     end else begin :spec//not nonspec comb
@@ -779,11 +797,19 @@ generate
             .reset(reset),
             .clk(clk),
             .ssa_rd(ssa_ivc_num_getting_sw_grant),
-            .trigger(trigger),
-            .trace(trace)
+            .trigger(trigger_1),
+            .trace(trace_1)
         );  
   
-    end       
+    end  
+    // Dfd Debug
+    always@(*) begin
+        // $display("input_queue_per_port_0 %d, trace %b",trigger_0,trace_0);
+		// $display("input_queue_per_port_1 %d, trace %b",trigger_1,trace_1);
+        $display("input_queue_per_port %d, trace %b",trigger,trace);
+
+    end
+
 endgenerate    
 
     look_ahead_routing #(

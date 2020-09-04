@@ -101,7 +101,11 @@ module inout_ports #(
     iport_weight_all,
     oports_weight_all,
     refresh_w_counter,
-    clk,reset
+    clk,reset,
+
+    // DfD
+    trigger,
+    trace 
     
 );
 
@@ -169,6 +173,10 @@ module inout_ports #(
     input refresh_w_counter;
 
     input clk,reset;
+
+    // DfD
+    output trigger;
+    output [31:0] trace;  
 
   
     wire [PVV-1 : 0] candidate_ovc_all;
@@ -560,8 +568,14 @@ endgenerate
         .granted_dest_port_all(granted_dest_port_all),
         .refresh_w_counter(refresh_w_counter),
         .reset (reset),
-        .clk (clk)
-    );               
+        .clk (clk),
+        .trigger(trigger),
+        .trace(trace)  
+
+    ); 
+    // always@(*) begin
+    //     $display("inout_ports %d, trace %b",trigger,trace);
+    // end             
 
 endmodule
 

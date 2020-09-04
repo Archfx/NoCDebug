@@ -94,8 +94,8 @@ module mor1k_mpsoc (
 	wire 					noc_clk,noc_reset;  
 
 	// Trace
-    wire trigger,trigger_0,trigger_1,trigger_2,trigger_3;
-    wire [31:0] trace,trace_0,trace_1,trace_2,trace_3;  
+    wire trigger,trigger_0,trigger_1,trigger_2,trigger_3,trigger_4;
+    wire [31:0] trace,trace_0,trace_1,trace_2,trace_3,trace_4;  
     
 //NoC
  	noc #(
@@ -134,7 +134,9 @@ module mor1k_mpsoc (
 		.flit_in_wr_all(flit_in_wr_all) ,
 		.credit_out_all(credit_out_all) ,
 		.reset(noc_reset) ,
-		.clk(noc_clk) 
+		.clk(noc_clk) ,
+        .trigger(trigger_4),
+        .trace(trace_4)  
 	);
 
  	
@@ -312,8 +314,8 @@ endgenerate
 
 
 
-	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3);
-	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 :(trigger_2? trace_2 : trace_3));
+	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3|trace_4);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 :(trigger_2? trace_2 : (trigger_3? trace_3: trace_4)));
 
 	trace_buffer #(
     	.Fpay (32),

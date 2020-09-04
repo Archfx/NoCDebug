@@ -69,7 +69,9 @@ module mesh_torus_noc #(
     credit_in_all,
     flit_in_all,  
     flit_in_wr_all,  
-    credit_out_all    
+    credit_out_all,
+    trigger,
+    trace    
 );
 
     `define INCLUDE_TOPOLOGY_LOCALPARAM
@@ -100,7 +102,14 @@ module mesh_torus_noc #(
     input  [NEV-1 : 0] credit_in_all;
     input  [NEFw-1 : 0] flit_in_all;
     input  [NE-1 : 0] flit_in_wr_all;  
-    output [NEV-1 : 0] credit_out_all;                
+    output [NEV-1 : 0] credit_out_all;   
+
+    //DfD
+    output trigger;
+    output [31:0] trace;  
+
+    // wire trigger_0,trigger_1;
+    // wire [31:0] trace_0,trace_1;              
                     
                     
                    
@@ -192,7 +201,9 @@ generate
                 .congestion_out_all(router_congestion_out_all[x]),
             
                 .clk(clk),
-                .reset(reset)
+                .reset(reset),
+                .trigger(),
+                .trace()
         
             );
         
@@ -317,9 +328,20 @@ generate
                 .congestion_out_all(router_congestion_out_all[`router_id(x,y)]),
             
                 .clk(clk),
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger),
+                .trace(trace)
         
             );
+
+            // DfD debug
+            // always@(*) begin
+            //     // $display("mesh_torus_noc_0 %d, trace %b",trigger_0,trace_0);
+            //     // $display("mesh_torus_noc_1 %d, trace %b",trigger_1,trace_1);
+            //      $display("mesh_torus_noc_1 %d, trace %b",trigger,trace);
+
+            // end
+
     /*
     in [x,y][east] <------  out [x+1 ,y  ][west] ;
     in [x,y][north] <------ out [x   ,y-1][south] ;
