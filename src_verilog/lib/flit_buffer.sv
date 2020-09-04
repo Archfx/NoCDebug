@@ -46,9 +46,7 @@ module flit_buffer #(
         vc_not_empty,
         reset,
         clk,
-        ssa_rd,
-        trace_signal,
-        trace_trigger
+        ssa_rd
     );
 
    
@@ -78,9 +76,6 @@ module flit_buffer #(
     input                   reset;
     input                   clk;
     input  [V-1        :0]  ssa_rd;
-    output [31:0] trace_signal;
-    output trace_trigger;
-
     
     localparam BVw              =   log2(BV),
                Bw               =   (B==1)? 1 : log2(B),
@@ -105,9 +100,9 @@ module flit_buffer #(
     assign  rd  =   (rd_en)?  vc_num_rd : ssa_rd;
 
 
-    integer dump_file_0,dump_file_1,dump_file_2,dump_file_3, dump_all;     
+    integer trace_dump_flit;     
     // Assertion variables
-    string instance_name = $sformatf("%m");
+    // string instance_name = $sformatf("%m");
     // integer packet_age [10          :0]; // Counting packet age
     reg [15     :   0] packet_age [10          :0]; // Counting packet age
     reg [15     :   0] packet_age_check [10          :0]; // Counting packet age
@@ -117,27 +112,17 @@ module flit_buffer #(
     reg [4     :   0] b6_buffer_counter [10          :0]; // Packet counter
     reg packet_count_flag_in;
     reg packet_count_flag_out;
-
-
-
     integer x,y,z,p,q;
-
- 
-	reg trigger_in;
-	reg [31:0] trace_din;
-
-    assign trace_signal = trace_din;
-    assign trace_trigger = trigger_in;
 
 genvar i;
 
 
 initial begin
-    dump_file_0 = $fopen("router_0_dump.txt","w");
-    dump_file_1 = $fopen("router_1_dump.txt","w");
-    dump_file_2 = $fopen("router_2_dump.txt","w");
-    dump_file_3 = $fopen("router_3_dump.txt","a");
-    dump_all = $fopen("router_all_dump.txt","a");
+    trace_dump_flit = $fopen("trace_flit_dump.txt","w");
+    // dump_file_1 = $fopen("router_1_dump.txt","w");
+    // dump_file_2 = $fopen("router_2_dump.txt","w");
+    // dump_file_3 = $fopen("router_3_dump.txt","a");
+    // dump_all = $fopen("router_all_dump.txt","a");
     for(x=0;x<10;x=x+1) begin :assertion_loop0
         b5_check_ptr[x] <= 1'b0;
         b6_buffer_counter[x] <= 1'b0;
@@ -147,8 +132,6 @@ initial begin
     end
     packet_count_flag_in<=1'b0;
     packet_count_flag_out<=1'b0;
-    trigger_in <= 1'b0;
-	trace_din <= 32'd0;
 end
 
 
@@ -246,10 +229,7 @@ generate
         .rd_en          (rd_en),
         .clk            (clk),
         .rd_data        (fifo_ram_dout)
-    ); 
-
-
-
+    );  
 
     for(i=0;i<V;i=i+1) begin :loop0
         
@@ -264,8 +244,6 @@ generate
                 rd_ptr  [i] <= {Bw{1'b0}};
                 wr_ptr  [i] <= {Bw{1'b0}};
                 depth   [i] <= {DEPTHw{1'b0}};
-                trigger_in<=1'b0;
-                trace_din <= 32'd0;
             end
             else begin
                 if (wr[i] ) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
@@ -305,96 +283,101 @@ generate
         end//always
         //synopsys  translate_on
         //synthesis translate_on
-    
-        // `ifdef ASSERTION_ENABLE
+
+        always@(posedge clk) begin
+                //b1.1
+                if (wr[i] && (!rd[i] && !(depth[i] == B) || rd[i])) begin
+                    $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                    #1
+                    if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+
+                end
+                //b1.2
+                if (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) begin
+                    $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+
+                    #1
+                    if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+
+                end
+                //b3.1 trying to write to full buffer
+                if (wr[i] && !rd[i] && (depth[i] == B) ) begin
+                    $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                    #1
+                    if ( wr_ptr[i]== wr_ptr_check[i] ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+
+                end
+                //b3.2 trying to read from empty buffer
+                if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
+                    $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                    #1
+                    if ( rd_ptr[i]== rd_ptr_check[i] )  $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+
+                end
+                //b4 buffer cannot be empty and full at the same time
+                // if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
+                
+
+            end
+        
+        `ifdef ASSERTION_ENABLE
      
             // Asserting the Property b1 : Read and write pointers are incremented when r_en/w_en are set
             // Asserting the property b3 : Read and Write pointers are not incremented when the buffer is empty and full
             // Asserting the property b4 : Buffer can not be both full and empty at the same time
                             
             // Branch statements
-            // Signal selection and trigger generation
             always@(posedge clk) begin
-                //b1.1 --> A1
+                //b1.1
                 if (wr[i] && (!rd[i] && !(depth[i] == B) || rd[i])) begin
                     //$display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
-                    trigger_in <= 1'b1;
-                    trace_din <= {4'b0001,1'b0,27'(wr_ptr[i])};
-                    // wr_ptr_check[i] <= wr_ptr[i];
-                    // $display("pre-trigger");
+                    wr_ptr_check[i] <= wr_ptr[i];
                     #1
-                    trigger_in <= 1'b1;
-                    trace_din <= {4'b0001,1'b0,27'(wr_ptr[i])};
-                    // // $display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
-                    // if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $display(" b1.1 succeeded");
-                    // else $display(" $error :b1.1 failed in %m at %t", $time);
+                    // $display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
+                    if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $display(" b1.1 succeeded");
+                    else $display(" $error :b1.1 failed in %m at %t", $time);
                 end
-                else trigger_in <= 1'b0;
-                //b1.2 --> A1
+                //b1.2
                 if (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) begin
-                    // rd_ptr_check[i] <= rd_ptr[i];
-                    trigger_in <= 1'b1;
-                    trace_din <= {4'b0001,1'b1,27'(rd_ptr[i])};
+                    rd_ptr_check[i] <= rd_ptr[i];
                     #1
-                    trigger_in <= 1'b1;
-                    trace_din <= {4'b0001,1'b1,27'(rd_ptr[i])};
-                    // if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $display(" b1.2 succeeded");
-                    // else $display(" $error :b1.2 failed in %m at %t", $time);
+                    if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $display(" b1.2 succeeded");
+                    else $display(" $error :b1.2 failed in %m at %t", $time);
                 end
-                else trigger_in <= 1'b0;
-                //b3.1 --> A3 trying to write to full buffer
+                //b3.1 trying to write to full buffer
                 if (wr[i] && !rd[i] && (depth[i] == B) ) begin
-                    // wr_ptr_check[i] <= wr_ptr[i];
-                    trigger_in <= 1'b1;
-                    trace_din <= {4'b0011,1'b0,27'(wr_ptr[i])};
+                    wr_ptr_check[i] <= wr_ptr[i];
                     #1
-                    trigger_in <= 1'b1;
-                    trace_din <= {4'b0011,1'b0,27'(wr_ptr[i])};
-                    // if ( wr_ptr[i]== wr_ptr_check[i] ) $display(" b3.1 succeeded");
-                    // else $display(" $error :b3.1 failed in %m at %t", $time);
+                    if ( wr_ptr[i]== wr_ptr_check[i] ) $display(" b3.1 succeeded");
+                    else $display(" $error :b3.1 failed in %m at %t", $time);
                 end
-                else trigger_in <= 1'b0;
-                //b3.2 --> A3 trying to read from empty buffer
+                //b3.2 trying to read from empty buffer
                 if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
-                    // rd_ptr_check[i] <= rd_ptr[i];
-                    trigger_in <= 1'b1;
-                    trace_din <= {4'b0011,1'b1,27'(rd_ptr[i])};
+                    rd_ptr_check[i] <= rd_ptr[i];
                     #1
-                    trigger_in <= 1'b1;
-                    trace_din <= {4'b0011,1'b1,27'(rd_ptr[i])};
-                    // if ( rd_ptr[i]== rd_ptr_check[i] ) $display(" b3.2 succeeded");
-                    // else $display(" $error :b3.2 failed in %m at %t", $time);
+                    if ( rd_ptr[i]== rd_ptr_check[i] ) $display(" b3.2 succeeded");
+                    else $display(" $error :b3.2 failed in %m at %t", $time);
                 end
-                else trigger_in <= 1'b0;
-                //b4 --> A4 buffer cannot be empty and full at the same time
-                // if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
-                // else $display(" $error :b4 failed in %m at %t", $time);
+                //b4 buffer cannot be empty and full at the same time
+                if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
+                else $display(" $error :b4 failed in %m at %t", $time);
                 
 
             end
             
-            // // Assert statements
-            // //b1.1 --> A1
-            // b1_1: assert property ( @(posedge clk) ( wr[i] && (!rd[i] && !(depth[i] == B) || rd[i]) ) ##1  ( wr_ptr[i] == $past(wr_ptr[i])+1 ));
-            // //b1.2 --> A1
-            // b1_2: assert property ( @(posedge clk) (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) ##1  ( rd_ptr[i] == $past(rd_ptr[i])+1 )); 
-            // //b3.1 --> A3
-            // b3_1: assert property ( @(posedge clk) (wr[i] && !rd[i] && (depth[i] == B) ) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )); 
-            // //b3.2 --> A3
-            // b3_2: assert property ( @(posedge clk) (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )) ; 
-            // //b4 --> A4
-            // b4: assert property ( @(posedge clk) (!(depth[i] == {DEPTHw{1'b0}} && depth[i] == B))); 
-        //  `endif 
-         
-       
+            // Assert statements
+            //b1.1
+            b1_1: assert property ( @(posedge clk) ( wr[i] && (!rd[i] && !(depth[i] == B) || rd[i]) ) ##1  ( wr_ptr[i] == $past(wr_ptr[i])+1 ));
+            //b1.2
+            b1_2: assert property ( @(posedge clk) (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) ##1  ( rd_ptr[i] == $past(rd_ptr[i])+1 )); 
+            //b3.1
+            b3_1: assert property ( @(posedge clk) (wr[i] && !rd[i] && (depth[i] == B) ) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )); 
+            //b3.2
+            b3_2: assert property ( @(posedge clk) (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )) ; 
+            //b4
+            b4: assert property ( @(posedge clk) (!(depth[i] == {DEPTHw{1'b0}} && depth[i] == B))); 
+         `endif 
     end//for
-
-    // always @(*) begin
-	// 	if (trace_trigger) begin
-	// 		// $display("%d,%d,%d,%d,%d",trigger_0 , trigger_1 , trigger_2 , trigger_3 , trigger_noc);
-	// 		$display("%d",trace_din);
-	// 	end
-	// end
 
     `ifdef DUMP_ENABLE
         // Dumping buffer input values to files
@@ -404,20 +387,33 @@ generate
                 // $display(instance_name.substr(29,29));
                 // $display(instance_name.substr(25,35));
                 // $display(instance_name);
-                if (instance_name.substr(29,29)=="0")
-                    $fwrite(dump_file_0,"%h \n",din);
-                if (instance_name.substr(29,29)=="1")
-                    $fwrite(dump_file_1,"%h \n",din);
-                if (instance_name.substr(29,29)=="2")
-                    $fwrite(dump_file_2,"%h \n",din);
-                if (instance_name.substr(29,29)=="3")
-                    $fwrite(dump_file_3,"%b \n",din);
+                // if (instance_name.substr(29,29)=="0")
+                //     $fwrite(dump_file_0,"%h \n",din);
+                // if (instance_name.substr(29,29)=="1")
+                //     $fwrite(dump_file_1,"%h \n",din);
+                // if (instance_name.substr(29,29)=="2")
+                //     $fwrite(dump_file_2,"%h \n",din);
+                // if (instance_name.substr(29,29)=="3")
+                //     $fwrite(dump_file_3,"%b \n",din);
                 
-                $fwrite(dump_all, "%b | %m \n", din);
+                // $fwrite(dump_all, "%b | %m \n", din);
             end
+            // if (rd_en) begin      
+            // //     $display(instance_name.substr(29,29));
+            // //     $display(instance_name.substr(25,35));
+            // //     $display(instance_name);
+            //     // if (instance_name.substr(29,29)=="0")
+            //     //      $fwrite(dump_file_0,"%b\n", "%d",dout);
+            //     // if (instance_name.substr(29,29)=="1")
+            //     //     $fwrite(dump_file_1,"%b\n", "%d",dout);
+            //     // if (instance_name.substr(29,29)=="2")
+            //     //     $fwrite(dump_file_2,"%b\n", "%d",dout);
+            //     // if (instance_name.substr(29,29)=="3")
+            //     //    $fwrite(dump_file_3,"%b\n", "%d",dout);
+            // end
         end
     `endif 
-
+    
     `ifdef ASSERTION_ENABLE
         always @(posedge clk) begin
             if (wr_en) begin      
@@ -453,7 +449,7 @@ generate
 
             if (rd_en) begin      
 
-                // b5 --> A5: removing the header from the monitoring list
+                // b5 : removing the header from the monitoring list
                 if (dout[35]==1'b1) begin // Header found
                     // $display (" buffer out %b",dout[31:0]);
                     for(z=0;z<$size(b5_check_buffer)+1;z=z+1) begin :asserion_check_loop2
@@ -493,11 +489,11 @@ generate
                 if (dout[34]==1'b1) begin // tail packet found
                     packet_count_flag_out<=1'b0;
                     // branch statement
-                    //b6 --> A6
+                    //b6
                     if (b6_buffer_counter[z]==1'b0) $display(" b6 succeeded");
                     else $display(" $error :b6 failed in %m at %t", $time);
                     // assertion statements
-                    //b6 --> A6
+                    //b6
                     b6: assert (b6_buffer_counter[z]==1'b0);
                 end
             end
@@ -538,10 +534,145 @@ generate
         b5_psl: assert property (@(posedge clk) wr_en |-> s_eventually din[8:0]==dout[8:0]);
 
 
-    `endif  
+    `endif   
 
     
     end 
+    //  else begin :no_pow2    //pow2
+
+
+
+
+
+//     /*****************      
+//         Buffer width is not power of 2
+//      ******************/
+
+
+
+
+    
+//     //pointers
+//     reg [BVw- 1     :   0] rd_ptr [V-1          :0];
+//     reg [BVw- 1     :   0] wr_ptr [V-1          :0];
+    
+//     // memory address
+//     wire [BVw- 1    :   0]  wr_addr;
+//     wire [BVw- 1    :   0]  rd_addr;
+    
+//     //pointer array      
+//     wire [BVwV- 1   :   0]  wr_addr_all;
+//     wire [BVwV- 1   :   0]  rd_addr_all;
+    
+//     for(i=0;i<V;i=i+1) begin :loop0
+        
+//         assign  wr_addr_all[(i+1)*BVw- 1        :   i*BVw]   =       wr_ptr[i];
+//         assign  rd_addr_all[(i+1)*BVw- 1        :   i*BVw]   =       rd_ptr[i];       
+//         assign  vc_not_empty    [i] =   (depth[i] > 0);
+    
+//      /* verilator lint_off WIDTH */ 
+//         always @(posedge clk or posedge reset)
+//         begin
+//             if (reset) begin
+               
+//                 rd_ptr  [i] <= (B*i);
+//                 wr_ptr  [i] <= (B*i);
+//                 depth   [i] <= {DEPTHw{1'b0}};
+//             end
+//             else begin
+//                 if (wr[i] ) wr_ptr[i] <=(wr_ptr[i]==(B*(i+1))-1)? (B*i) : wr_ptr [i]+ 1'h1;
+//                 if (rd[i] ) rd_ptr[i] <=(rd_ptr[i]==(B*(i+1))-1)? (B*i) : rd_ptr [i]+ 1'h1;
+//                 if (wr[i] & ~rd[i]) depth [i]<=
+// //synthesis translate_off
+// //synopsys  translate_off
+//                    #1
+// //synopsys  translate_on
+// //synthesis translate_on
+//                    depth[i] + 1'h1;
+//                 else if (~wr[i] & rd[i]) depth [i]<=
+// //synthesis translate_off
+// //synopsys  translate_off
+//                    #1          
+// //synopsys  translate_on
+// //synthesis translate_on
+//                    depth[i] - 1'h1;
+//             end//else
+//         end//always  
+//          /* verilator lint_on WIDTH */ 
+        
+// //synthesis translate_off
+// //synopsys  translate_off
+    
+
+//         always @(posedge clk) begin
+//             if(~reset)begin
+//                 if (wr[i] && (depth[i] == B) && !rd[i])
+//                    $display("%t: ERROR: Attempt to write to full FIFO:FIFO size is %d. %m",$time,B);
+//                 /* verilator lint_off WIDTH */
+//                 if (rd[i] && (depth[i] == {DEPTHw{1'b0}}  &&  SSA_EN !="YES"  ))
+//                     $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
+//                 if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}} &&  SSA_EN =="YES" ))
+//                     $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
+//                 /* verilator lint_on WIDTH */
+                
+//         //if (wr_en)       $display($time, " %h is written on fifo ",din);
+//             end//~reset
+//         end//always
+    
+// //synopsys  translate_on
+// //synthesis translate_on
+        
+              
+    
+//     end//FOR
+    
+    
+//     one_hot_mux #(
+//         .IN_WIDTH(BVwV),
+//         .SEL_WIDTH(V),
+//         .OUT_WIDTH(BVw)
+//     )
+//     wr_mux
+//     (
+//         .mux_in(wr_addr_all),
+//         .mux_out(wr_addr),
+//         .sel(vc_num_wr)
+//     );
+    
+//     one_hot_mux #(
+//         .IN_WIDTH(BVwV),
+//         .SEL_WIDTH(V),
+//         .OUT_WIDTH(BVw)
+//     )
+//     rd_mux
+//     (
+//         .mux_in(rd_addr_all),
+//         .mux_out(rd_addr),
+//         .sel(vc_num_rd)
+//     );
+    
+//     fifo_ram_mem_size #(
+//        .DATA_WIDTH (RAM_DATA_WIDTH),
+//        .MEM_SIZE (BV ),
+//        .SSA_EN(SSA_EN)       
+//     )
+//     the_queue
+//     (
+//         .wr_data        (fifo_ram_din), 
+//         .wr_addr        (wr_addr),
+//         .rd_addr        (rd_addr),
+//         .wr_en          (wr_en),
+//         .rd_en          (rd_en),
+//         .clk            (clk),
+//         .rd_data        (fifo_ram_dout)
+//     );  
+    
+    
+    
+    
+    
+    
+    // end
     endgenerate
     
     

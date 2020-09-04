@@ -66,9 +66,7 @@ module mor1k_tile #(
 	ni_flit_in, 
 	ni_flit_in_wr, 
 	ni_flit_out, 
-	ni_flit_out_wr,
-	trace_signal,
-	trace_trigger
+	ni_flit_out_wr
 );
   
   	function integer log2;
@@ -173,26 +171,6 @@ module mor1k_tile #(
  	input			ni_flit_in_wr;
  	output	 [ ni_Fw-1   :   0    ] ni_flit_out;
  	output			ni_flit_out_wr;
-	
-	output reg [31:0] trace_signal;
-	output reg trace_trigger;
-
-	wire trigger_0,trigger_1;
-    wire [31:0] trace_signal_0,trace_signal_1;
-
-	initial begin
-        trace_trigger <= 1'b0;
-        trace_signal <= 32'b0;
-    end
-    always @(*) begin
-        trace_trigger <= trigger_0 | trigger_1;
-        
-        case ({trigger_0 , trigger_1})
-            2'b10  : trace_signal <= trace_signal_0;
-            2'b01  : trace_signal <= trace_signal_1;
-            default : trace_signal <= 32'b0; 
-        endcase
-    end
 
   	wire			 source_socket_clk_0_clk_o;
  	wire			 source_socket_reset_0_reset_o;
@@ -635,9 +613,7 @@ module mor1k_tile #(
 		.s_dat_o(ni_plug_wb_slave_0_dat_o),
 		.s_sel_i(ni_plug_wb_slave_0_sel_i),
 		.s_stb_i(ni_plug_wb_slave_0_stb_i),
-		.s_we_i(ni_plug_wb_slave_0_we_i),
-		.trigger(trace_trigger_0),
-		.trace_signal(trace_signal_0)
+		.s_we_i(ni_plug_wb_slave_0_we_i)
 	);
  wb_single_port_ram #(
  		.Dw(ram_Dw),
@@ -735,11 +711,11 @@ module mor1k_tile #(
 		.s_tag_o_all(bus_socket_wb_slave_array_tag_o),
 		.s_we_o_all(bus_socket_wb_slave_array_we_o),
 		.snoop_adr_o(bus_socket_snoop_0_snoop_adr_o),
-		.snoop_en_o(bus_socket_snoop_0_snoop_en_o),
-		.trigger(trigger_1),
-        .trace_signal(trace_signal_1)
+		.snoop_en_o(bus_socket_snoop_0_snoop_en_o)
 	);
-	
+ 
+
+ 
  	assign  uart_plug_clk_0_clk_i = source_socket_clk_0_clk_o;
  	assign  uart_plug_reset_0_reset_i = source_socket_reset_0_reset_o;
  	assign  bus_socket_wb_slave_3_ack_i  = uart_plug_wb_slave_0_ack_o;
@@ -888,8 +864,5 @@ module mor1k_tile #(
  	assign bus_socket_wb_addr_map_0_sel_one_hot[0] = ((bus_socket_wb_addr_map_0_grant_addr >= ram_WB0_BASE_ADDR)   & (bus_socket_wb_addr_map_0_grant_addr <= ram_WB0_END_ADDR));
  /* timer wb_slave 0 */
  	assign bus_socket_wb_addr_map_0_sel_one_hot[2] = ((bus_socket_wb_addr_map_0_grant_addr >= timer_WB0_BASE_ADDR)   & (bus_socket_wb_addr_map_0_grant_addr <= timer_WB0_END_ADDR));
- 
-
- 
  endmodule
 

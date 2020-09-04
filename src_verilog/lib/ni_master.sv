@@ -104,11 +104,7 @@ module  ni_master #(
     m_receive_ack_i,
     
     //intruupt interface
-    irq,
-
-    //DfD signals
-    trace_signal,
-    trigger    
+    irq    
 
 );
 
@@ -166,49 +162,8 @@ module  ni_master #(
     input                           m_receive_ack_i;   
     
       //Interrupt  interface
-    output                          irq; 
-
-     //DfD signals
-    output reg [31:0] trace_signal;
-    output reg  trigger; 
-
-    wire [31:0] trace_signal_flit, trace_signal_route,trace_signal_0,trace_signal_1;
-    wire trigger_flit,trigger_route,trigger_0,trigger_1;
-    
-    // assign trigger = ((trigger_flit | trigger_route))? 1'b1: ($isunknown(trigger_flit | trigger_route))?1'b0 :1'b0;
-    // assign trace_signal = (trigger_flit? trace_signal_flit : (trigger_route? trace_signal_route :32'd0));
-
-    initial begin
-        trigger <= 1'b0;
-        trace_signal <= 32'b0;
-    end
-    always @(*) begin
-        trigger <= trigger_flit | trigger_route | trigger_0 | trigger_1;
-        
-        case ({trigger_flit , trigger_route, trigger_0, trigger_1})
-            4'b1000  : trace_signal <= trace_signal_flit;
-            4'b0100  : trace_signal <= trace_signal_route;
-            4'b0010  : trace_signal <= trace_signal_0;
-            4'b0001  : trace_signal <= trace_signal_1;
-            default : trace_signal <= 32'b0; 
-        endcase
-    end
-
-    // always @(*) begin
-	// 	if (trigger_flit | trigger_route) begin
-    //         // trigger = (trigger_flit | trigger_route);
-    //         // if (trigger_flit) trace_signal <= trace_signal_flit ;
-    //         // else if (trigger_route) trace_signal <= trace_signal_route ;
-    
-
-	// 		$display("%d -Ni",trigger);
-	// 		$display("%d- Ni",trace_signal);
-    //         // $display("%d,%d, %d",trigger_0 , trigger_1,trigger_2);
-	// 		// $display("%d,%d,%d",trace_signal_0,trace_signal_1, trace_signal_2);
-	// 	end
-    //     // else trigger = 1'b0;
-	// end
-
+    output                          irq;  
+  
     wire                            s_ack_o_next;    
     
     localparam 
@@ -681,6 +636,18 @@ module  ni_master #(
         //always @(*) crc_miss_match = {V{1'b0}};
 	always @(posedge clk) crc_miss_match <= {V{1'b0}};
     end
+
+    `ifdef ASSERTION_ENABLE
+    // Asserting the Property r1 : Route can issue at most one request
+
+    always@(posedge clk) begin
+        //$display("%b", receive_vc_is_active);
+        if ($onehot(receive_vc_is_active) || receive_vc_is_active == 1'b0 ) begin
+            if ($onehot(receive_vc_is_active)) $display ("Assert check : Property r1 suceeded");
+        end
+        else $display("Assert check : $ Warning - Property r1 failed in %m at %t", $time);
+    end
+    `endif 
   
     if(V> 1) begin : multi_channel
     
@@ -693,9 +660,7 @@ module  ni_master #(
             .request (receive_vc_is_active),
             .grant  (receive_vc_enable),
             .clk (clk),
-            .reset (reset),
-            .trigger(trigger_0),
-            .trace_signal(trace_signal_0)
+            .reset (reset)
         );
                 
         bus_arbiter # (
@@ -706,9 +671,7 @@ module  ni_master #(
             .request (send_vc_is_active),
             .grant  (send_vc_enable),
             .clk (clk),
-            .reset (reset),
-            .trigger(trigger_1),
-            .trace_signal(trace_signal_1)
+            .reset (reset)
         );
         
         
@@ -760,9 +723,7 @@ module  ni_master #(
         .clk(clk),
         .current_r_addr(current_r_addr),
         .dest_e_addr(dest_e_addr),
-        .destport(destport),
-        .trigger(trigger_route),
-        .trace_signal(trace_signal_route)
+        .destport(destport)
     );
   
         
@@ -852,9 +813,7 @@ module  ni_master #(
         .vc_not_empty(ififo_vc_not_empty),
         .reset(reset),
         .clk(clk),
-        .ssa_rd({V{1'b0}}),
-        .trace_signal(trace_signal_flit),
-        .trace_trigger(trigger_flit)   
+        .ssa_rd({V{1'b0}})   
     ); 
     
    extract_header_flit_info #(

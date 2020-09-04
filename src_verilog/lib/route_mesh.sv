@@ -50,9 +50,7 @@ module xy_mesh_routing #(
     current_y,    // current router y address
     dest_x,        // destination x address
     dest_y,        // destination y address
-    destport,    // router output port
-    trigger,
-    trace_signal
+    destport    // router output port
         
 );
     
@@ -80,8 +78,6 @@ module xy_mesh_routing #(
     input  [Xw-1        :0]    dest_x;
     input  [Yw-1        :0]    dest_y;
     output [DSTw-1            :0]    destport;
-    output trigger;
-    output [31            :0] trace_signal;
 
     
     
@@ -96,53 +92,48 @@ module xy_mesh_routing #(
     reg [DSTw-1            :0]    destport_next;
     // reg [DSTw-1            :0]    destport_next_r3;
     
-    // Trigger
-    assign trigger = (dest_x>1'b1 || dest_y>1'b1 )? 1'b1: (($isunknown(dest_x) || $isunknown(dest_y))? 1'b0: 1'b0);
-    assign trace_signal =  !$isunknown(destport_next)? {4'b1000,28'(destport_next)} : 32'd0;
     
         
     assign    destport= destport_next;
     
     always@(*)begin
-        // $display("%bxy, %b , %b",trigger,dest_x,dest_y);
-        destport_next    = LOCAL [DSTw-1    :0];
-        if           (dest_x    > current_x)        destport_next    = EAST [DSTw-1    :0];
-        else if      (dest_x    < current_x)        destport_next    = WEST [DSTw-1    :0];
-        else begin
-            if         (dest_y    > current_y)        destport_next    = SOUTH [DSTw-1:0];
-            else if      (dest_y    < current_y)        destport_next    = NORTH [DSTw-1    :0];
-        end
-        // $display("Route mesh values dest port %b",destport);
-        // $display("Route mesh values dest x %b , y %b",dest_x,dest_y);
-        // if (trigger) $display("triggered");
-        `ifdef ASSERTION_ENABLE
-            // Asserting the Property r1 : Route can issue at most one request 
-            // Asserting the Property r2 : Route should issue a request whenever a data is valid
-            // Asserting the Property r3 : Desired routing algorithm should be correctly implemented
-
-            // Branch statements
-            //r1 --> A7
-            if ($onehot0(destport)) $display (" r1 succeeded");
-            else if ( !$isunknown(destport) )$display(" $error :r1 failed in %m at %t", $time);
-            //r2 --> A8
-            if (dest_x<=1'b1 && dest_y<=1'b1) $display (" r2 succeeded");
+            destport_next    = LOCAL [DSTw-1    :0];
+            if           (dest_x    > current_x)        destport_next    = EAST [DSTw-1    :0];
+            else if      (dest_x    < current_x)        destport_next    = WEST [DSTw-1    :0];
             else begin
-                if (!$isunknown(dest_x) || !$isunknown(dest_y)) $display(" $error :r2 failed in %m at %t", $time);
+                if         (dest_y    > current_y)        destport_next    = SOUTH [DSTw-1:0];
+                else if      (dest_y    < current_y)        destport_next    = NORTH [DSTw-1    :0];
             end
-            //r3 --> A9
-            if ((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL)) $display (" r3 succeeded");
-            else $display(" $error :r3 failed in %m at %t", $time);
+            // $display("Route mesh values dest port %b",destport);
+            // $display("Route mesh values dest x %b , y %b",dest_x,dest_y);
 
-            // Assert statments
-            //r1 --> A7
-            r1: assert ($onehot0(destport) || $isunknown(destport));
-            //r2 --> A8
-            r2: assert (dest_x<=1'b1 && dest_y<=1'b1 || ($isunknown(dest_x) || $isunknown(dest_y)));
-            // r3 --> A9
-            r3: assert ((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL)); 
+            `ifdef ASSERTION_ENABLE
+                // Asserting the Property r1 : Route can issue at most one request 
+                // Asserting the Property r2 : Route should issue a request whenever a data is valid
+                // Asserting the Property r3 : Desired routing algorithm should be correctly implemented
 
-        `endif
+                // Branch statements
+                //r1
+                if ($onehot0(destport)) $display (" r1 succeeded");
+                else if ( !$isunknown(destport) )$display(" $error :r1 failed in %m at %t", $time);
+                //r2
+                if (dest_x<=1'b1 && dest_y<=1'b1) $display (" r2 succeeded");
+                else begin
+                    if (!$isunknown(dest_x) || !$isunknown(dest_y)) $display(" $error :r2 failed in %m at %t", $time);
+                end
+                //r3
+                if ((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL)) $display (" r3 succeeded");
+                else $display(" $error :r3 failed in %m at %t", $time);
 
+                // Assert statments
+                //r1
+                r1: assert ($onehot0(destport) || $isunknown(destport));
+                //r2
+                r2: assert (dest_x<=1'b1 && dest_y<=1'b1 || ($isunknown(dest_x) || $isunknown(dest_y)));
+                // r3
+                r3: assert ((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL)); 
+
+            `endif
     end
     
     

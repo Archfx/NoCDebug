@@ -69,9 +69,7 @@ module mesh_torus_noc #(
     credit_in_all,
     flit_in_all,  
     flit_in_wr_all,  
-    credit_out_all,
-    trigger,
-    trace_signal
+    credit_out_all    
 );
 
     `define INCLUDE_TOPOLOGY_LOCALPARAM
@@ -102,45 +100,9 @@ module mesh_torus_noc #(
     input  [NEV-1 : 0] credit_in_all;
     input  [NEFw-1 : 0] flit_in_all;
     input  [NE-1 : 0] flit_in_wr_all;  
-    output [NEV-1 : 0] credit_out_all; 
-    output reg trigger;
-    output reg [31:0] trace_signal;
-
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_signal_0, trace_signal_1;                  
-    
-    // assign trigger = (trigger_0 | trigger_1)? 1'b1: 1'b0;
-    // assign trace_signal = trigger_0? trace_signal_0 : (trigger_1? trace_signal_1 : 32'd0);
-
-    initial begin
-        trigger <= 1'b0;
-        trace_signal <= 32'b0;
-    end
-    always @(*) begin
-        trigger <= trigger_0 | trigger_1;
-        
-        case ({trigger_0 , trigger_1})
-            2'b10  : trace_signal <= trace_signal_0;
-            2'b01  : trace_signal <= trace_signal_1;
-            default : trace_signal <= 32'b0; 
-        endcase
-    end
-
-    always @(*) begin
-		if (trigger_0 | trigger_1 ) begin
-            // trigger = (trigger_0 | trigger_1);
-            // if (trigger_0) trace_signal = trace_signal_0 ;
-            // else if (trigger_1) trace_signal = trace_signal_1 ;
-
-    
-
-			$display("%d-mesh torus",trigger);
-			$display("%d-mesh torus",trace_signal);
-            // $display("%d,%d, %d",trigger_0 , trigger_1,trigger_2);
-			// $display("%d,%d,%d",trace_signal_0,trace_signal_1, trace_signal_2);
-		end
-        // else trigger = 1'b0;
-	end                
+    output [NEV-1 : 0] credit_out_all;                
+                    
+                    
                    
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
     wire [MAX_P-1 : 0] router_flit_in_we_all [NR-1 :0];    
@@ -230,9 +192,7 @@ generate
                 .congestion_out_all(router_congestion_out_all[x]),
             
                 .clk(clk),
-                .reset(reset),
-                .trigger(trigger_0),
-                .trace_signal(trace_signal_0)
+                .reset(reset)
         
             );
         
@@ -357,9 +317,7 @@ generate
                 .congestion_out_all(router_congestion_out_all[`router_id(x,y)]),
             
                 .clk(clk),
-                .reset(reset),
-                .trigger(trigger_1),
-                .trace_signal(trace_signal_1)
+                .reset(reset)
         
             );
     /*

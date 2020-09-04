@@ -54,9 +54,7 @@ module  fattree_noc #(
     credit_in_all,
     flit_in_all,  
     flit_in_wr_all,  
-    credit_out_all,
-    trigger,
-    trace_signal    
+    credit_out_all    
 );        
   
    `define INCLUDE_TOPOLOGY_LOCALPARAM
@@ -108,9 +106,7 @@ module  fattree_noc #(
     input  [NEV-1 : 0] credit_in_all;
     input  [NEFw-1 : 0] flit_in_all;
     input  [NE-1 : 0] flit_in_wr_all;  
-    output [NEV-1 : 0] credit_out_all; 
-    output reg trigger;
-    output reg [31:0] trace_signal;               
+    output [NEV-1 : 0] credit_out_all;                
                         
                 
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
@@ -138,26 +134,7 @@ module  fattree_noc #(
     wire [LKw-1 : 0] current_pos_addr [NR-1 :0];
     wire [Lw-1  : 0] current_layer_addr [NR-1 :0];   
     wire [RAw-1 : 0] current_r_addr [NR-1 : 0];
-
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_signal_0,trace_signal_1;
-
-    // assign trigger = trigger_0 | trigger_1 ;
-    // assign trace_signal = (trigger_0)? trace_signal_0 : (trigger_1? trace_signal_1 : 32'd0);
     
-    initial begin
-        trigger <= 1'b0;
-        trace_signal <= 32'b0;
-    end
-    always @(*) begin
-        trigger <= trigger_0 | trigger_1;
-        
-        case ({trigger_0 , trigger_1})
-            2'b10  : trace_signal <= trace_signal_0;
-            2'b01  : trace_signal <= trace_signal_1;
-            default : trace_signal <= 32'b0; 
-        endcase
-    end
 //add roots
 
 genvar pos,level,port;
@@ -211,9 +188,7 @@ for( pos=0; pos<NRL; pos=pos+1) begin : root
                 .congestion_out_all(router_congestion_out_all[pos][(K*CONGw)-1 : 0]),
             
                 .clk(clk),
-                .reset(reset),
-                .trigger(trigger_0),
-                .trace_signal(trace_signal_0)
+                .reset(reset)
         
             );  
    
@@ -271,9 +246,7 @@ for( level=1; level<L; level=level+1) begin :level_lp
                 .congestion_out_all(router_congestion_out_all[NRL*level+pos]),
             
                 .clk(clk),
-                .reset(reset),
-                .trigger(trigger_1),
-                .trace_signal(trace_signal_1)
+                .reset(reset)
         
             );  
    

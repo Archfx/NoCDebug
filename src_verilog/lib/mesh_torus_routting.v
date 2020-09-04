@@ -21,9 +21,7 @@ module mesh_torus_look_ahead_routing #(
     destport_encoded,   // current router destination port number       
     lkdestport_encoded, // look ahead destination port number
     reset,
-    clk,
-    trigger,
-    trace_signal
+    clk
 );
     
      /* verilator lint_off WIDTH */ 
@@ -50,14 +48,11 @@ module mesh_torus_look_ahead_routing #(
     input   [P_1-1  :   0]  destport_encoded;
     output  [P_1-1  :   0]  lkdestport_encoded;
     input                   reset,clk;
-    // Trace
-    output trigger;
-    output [31:0] trace_signal;
-
+    
     reg     [Xw-1   :   0]  destx_delayed;
     reg     [Yw-1   :   0]  desty_delayed;
     reg     [P_1-1  :   0]  destport_delayed;
-     
+    
     
     // routing algorithm
     generate 
@@ -78,9 +73,7 @@ module mesh_torus_look_ahead_routing #(
              .dest_x(destx_delayed),
              .dest_y(desty_delayed),
              .destport(destport_delayed),
-             .lkdestport(lkdestport_encoded),
-             .trigger(trigger),
-             .trace_signal(trace_signal)
+             .lkdestport(lkdestport_encoded)
          );
     
     end else begin :adapt
@@ -146,9 +139,8 @@ module  mesh_torus_deterministic_look_ahead_routing #(
         dest_x,  // destination router x address          
         dest_y,  // destination router y address                  
         destport,   // current router destination port number       
-        lkdestport, // look ahead destination port number
-        trigger, // Trace signals
-        trace_signal
+        lkdestport // look ahead destination port number
+      
  );
     
    
@@ -173,8 +165,6 @@ module  mesh_torus_deterministic_look_ahead_routing #(
     input   [Yw-1   :   0]  dest_y;
     input   [P_1-1  :   0]  destport;
     output  [P_1-1  :   0]  lkdestport;
-    output trigger;
-    output [31:0] trace_signal;
    
  
     wire    [P-1    :   0]  destport_one_hot,receive_port,lkdestport_one_hot;
@@ -232,9 +222,7 @@ module  mesh_torus_deterministic_look_ahead_routing #(
         .current_y(next_y),
         .dest_x(dest_x),
         .dest_y(dest_y),
-        .destport(lkdestport_one_hot),
-        .trigger(trigger),
-        .trace_signal(trace_signal)
+        .destport(lkdestport_one_hot)
         
     );
  
@@ -276,9 +264,8 @@ module  mesh_torus_adaptive_look_ahead_routing #(
         dest_x,  // destination router x address          
         dest_y,  // destination router y address                  
         destport_encoded,   // current router destination port      
-        lkdestport_encoded, // look ahead destination port 
-        trigger,
-        trace_signal
+        lkdestport_encoded // look ahead destination port 
+     
  );
     
     
@@ -303,44 +290,7 @@ module  mesh_torus_adaptive_look_ahead_routing #(
     input   [Yw-1   :   0]  dest_y;
     input   [P_1-1  :   0]  destport_encoded;
     output  [P_1-1  :   0]  lkdestport_encoded;
-    output  reg trigger;
-    output  reg [31            :0] trace_signal;
-
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_signal_0, trace_signal_1;                  
-    
-    // assign trigger = (trigger_0 | trigger_1)? 1'b1: 1'b0;
-    // assign trace_signal = trigger_0? trace_signal_0 : (trigger_1? trace_signal_1 : 32'd0);
-    
-    initial begin
-        trigger <= 1'b0;
-        trace_signal <= 32'b0;
-    end
-    always @(*) begin
-        trigger <= trigger_0 | trigger_1 ;
-        
-        case ({trigger_0 , trigger_1})
-            2'b10  : trace_signal <= trace_signal_0;
-            2'b01  : trace_signal <= trace_signal_1;
-            default : trace_signal <= 32'b0; 
-        endcase
-    end
-
-    // always @(*) begin
-	// 	if (trigger_0 | trigger_1 ) begin
-    //         // trigger = (trigger_0 | trigger_1 );
-    //         // if (trigger_0) trace_signal = trace_signal_0 ;
-    //         // else if (trigger_1) trace_signal = trace_signal_1 ;
-    
-
-	// 		$display("%d",trigger);
-	// 		$display("%d",trace_signal);
-    //         // $display("%d,%d, %d",trigger_0 , trigger_1,trigger_2);
-	// 		// $display("%d,%d,%d",trace_signal_0,trace_signal_1, trace_signal_2);
-	// 	end
-    //     // else trigger = 1'b0;
-	// end
-
+   
  /*
  destination-port coded
             x:  1 EAST, 0 WEST  
@@ -417,9 +367,7 @@ module  mesh_torus_adaptive_look_ahead_routing #(
         .current_y(current_y),
         .dest_x(dest_x),
         .dest_y(dest_y),
-        .destport(lkdestport_x),
-        .trigger(trigger_0),
-        .trace_signal(trace_signal_0)
+        .destport(lkdestport_x)
     );
  
     mesh_torus_ni_conventional_routing #(
@@ -436,10 +384,7 @@ module  mesh_torus_adaptive_look_ahead_routing #(
         .current_y(next_y),
         .dest_x(dest_x),
         .dest_y(dest_y),
-        .destport(lkdestport_y),
-        .trigger(trigger_1),
-        .trace_signal(trace_signal_1)
-
+        .destport(lkdestport_y)
     );
  //take the value of a&b only.  x&y can be obtained from destport in the router
  assign lkdestport_encoded = {lkdestport_x[1:0],lkdestport_y[1:0]};
@@ -790,9 +735,7 @@ module mesh_torus_conventional_routing #(
     current_y,
     dest_x,
     dest_y,
-    destport,
-    trigger,
-    trace_signal
+    destport
 
     );
     
@@ -818,8 +761,6 @@ module mesh_torus_conventional_routing #(
     input   [Yw-1         :0] dest_y;
     
     output  [DSTw-1       :0] destport;
-    output trigger;
-    output [31:0] trace_signal;
   
   
     generate 
@@ -839,17 +780,9 @@ module mesh_torus_conventional_routing #(
                     .current_y(current_y),
                     .dest_x(dest_x),
                     .dest_y(dest_y),
-                    .destport(destport),
-                    .trigger(trigger),
-                    .trace_signal(trace_signal)
+                    .destport(destport)
                  );        
                 
-            always @(*) begin
-                if (trigger) begin
-                    $display("%d-soc-xy",trigger);
-                    $display("%d-soc-xy",trace_signal);
-                end
-            end
                 
             end //"XY"
             /* verilator lint_off WIDTH */ 
@@ -1122,9 +1055,7 @@ module mesh_torus_ni_conventional_routing #(
     current_y,
     dest_x,
     dest_y,
-    destport,
-    trigger,
-    trace_signal 
+    destport  
 
     );
     
@@ -1154,8 +1085,6 @@ module mesh_torus_ni_conventional_routing #(
     input   [Xw-1         :0] dest_x;
     input   [Yw-1         :0] dest_y;
     output  [P_1-1        :0] destport;
-    output trigger;
-    output [31            :0] trace_signal;
     
     wire [DSTw-1          :0] destport_one_hot;
    
@@ -1174,9 +1103,7 @@ module mesh_torus_ni_conventional_routing #(
         .current_y(current_y),
         .dest_x(dest_x),
         .dest_y(dest_y),
-        .destport(destport_one_hot),
-        .trigger(trigger),
-        .trace_signal(trace_signal)
+        .destport(destport_one_hot)
         
     );
     

@@ -101,11 +101,7 @@ module inout_ports #(
     iport_weight_all,
     oports_weight_all,
     refresh_w_counter,
-    clk,reset,
-
-    //to Trace buffer
-    trigger,
-    trace_signal 
+    clk,reset
     
 );
 
@@ -173,10 +169,6 @@ module inout_ports #(
     input refresh_w_counter;
 
     input clk,reset;
-
-    // to traceBuffer
-    output trigger;
-    output [31:0] trace_signal;
 
   
     wire [PVV-1 : 0] candidate_ovc_all;
@@ -568,9 +560,7 @@ endgenerate
         .granted_dest_port_all(granted_dest_port_all),
         .refresh_w_counter(refresh_w_counter),
         .reset (reset),
-        .clk (clk),
-        .trigger(trigger),
-        .trace_signal(trace_signal)
+        .clk (clk)
     );               
 
 endmodule
@@ -600,9 +590,7 @@ endmodule
     output reg [V-1 :0] cand_vc,
     input                                               cand_wr_vc_en,
     input                                                   clk,
-    input                                                   reset,
-    output trigger,
-    output [31:0]    trace_signal
+    input                                                   reset
 );
 
     
@@ -659,9 +647,7 @@ endmodule
                     .reset          (reset),
                     .request            (request),
                     .grant          (cand_vc_next),
-                    .any_grant       (),
-                    .trigger(trigger),
-                    .trace_signal (trigger_signal)
+                    .any_grant       ()
                 );
 
         end else begin : min_depth_select

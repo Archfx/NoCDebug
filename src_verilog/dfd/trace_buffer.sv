@@ -114,9 +114,15 @@ module trace_buffer #(
         end
     end
 `endif
-
-
 endmodule 
+
+interface trace ();
+	logic [31:0]    signal;
+	logic           trigger;
+
+    modport SRC  (output trigger, output signal);
+    modport DST (input trigger, input signal);
+endinterface
 
 // module trace_handler #(
 //     parameter Fpay     =   32,

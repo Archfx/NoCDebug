@@ -44,9 +44,7 @@ module ni_conventional_routing #(
     clk,
     current_r_addr,
     dest_e_addr,
-    destport,
-    trigger,
-    trace_signal
+    destport
 );    
 
     function integer log2;
@@ -62,8 +60,7 @@ module ni_conventional_routing #(
     input   [RAw-1   :0] current_r_addr;
     input   [EAw-1   :0] dest_e_addr;
     output  [DSTPw-1 :0] destport;
-    output trigger;
-    output [31            :0] trace_signal;
+    
  generate 
     /* verilator lint_off WIDTH */ 
     if(TOPOLOGY == "MESH" || TOPOLOGY == "TORUS"  || TOPOLOGY ==  "RING" || TOPOLOGY ==  "LINE") begin :mesh_torus
@@ -131,9 +128,7 @@ module ni_conventional_routing #(
             .current_y(current_ry),
             .dest_x(dest_ex),
             .dest_y(dest_ey),
-            .destport(destport),
-            .trigger(trigger),
-            .trace_signal(trace_signal)
+            .destport(destport)
         );
     
     end else begin : others
@@ -228,9 +223,7 @@ module look_ahead_routing #(
     destport_encoded,   // current router destination port number       
     lkdestport_encoded, // look ahead destination port number
     reset,
-    clk,
-    trigger, // Trace
-    trace_signal
+    clk
 );
     
      function integer log2;
@@ -259,9 +252,6 @@ module look_ahead_routing #(
     input   [DSTPw-1  :   0]  destport_encoded;
     output  [DSTPw-1  :   0]  lkdestport_encoded;
     input                   reset,clk;
-    // Trace
-    output trigger;
-    output [31:0 ] trace_signal;
     
     genvar i;
     generate 
@@ -333,9 +323,7 @@ module look_ahead_routing #(
         	.destport_encoded(destport_encoded),
         	.lkdestport_encoded(lkdestport_encoded),
         	.reset(reset),
-        	.clk(clk),
-            .trigger(trigger),
-            .trace_signal(trace_signal)
+        	.clk(clk)
         );
     /* verilator lint_off WIDTH */      
     end else if (TOPOLOGY == "FATTREE") begin: fat
@@ -393,9 +381,7 @@ module look_ahead_routing #(
         	.neighbors_ry(neighbors_ry_tree),
         	.lkdestport_encoded(lkdestport_encoded),
         	.reset(reset),
-        	.clk(clk)//,
-            // .trigger(trigger),
-            // .trace_signal(trace_signal)
+        	.clk(clk)
         );    
     end    
     endgenerate

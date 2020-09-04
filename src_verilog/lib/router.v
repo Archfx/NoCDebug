@@ -78,10 +78,7 @@ module router # (
     credit_in_all,
     congestion_out_all,
     
-    clk,reset,
-
-    trigger,
-    trace_signal
+    clk,reset
 
 );
 
@@ -126,26 +123,6 @@ module router # (
     output [CONG_ALw-1 :  0]  congestion_out_all;
     
     input clk,reset;
-
-    output reg trigger;
-    output reg [31:0] trace_signal;
-
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_signal_0,trace_signal_1;
-
-    initial begin
-        trigger <= 1'b0;
-        trace_signal <= 32'b0;
-    end
-    always @(*) begin
-        trigger <= trigger_0 | trigger_1;
-        
-        case ({trigger_0 , trigger_1})
-            2'b10  : trace_signal <= trace_signal_0;
-            2'b01  : trace_signal <= trace_signal_1;
-            default : trace_signal <= 32'b0; 
-        endcase
-    end
 
     
     //internal wires
@@ -256,9 +233,7 @@ module router # (
         .iport_weight_is_consumed_all(iport_weight_is_consumed_all), 
         .refresh_w_counter(refresh_w_counter), 
         .clk(clk), 
-        .reset(reset),
-        .trigger(trigger_0),
-        .trace_signal(trace_signal_0)
+        .reset(reset)
     );
 
 
@@ -296,9 +271,7 @@ module router # (
         .vc_weight_is_consumed_all(vc_weight_is_consumed_all),  
         .iport_weight_is_consumed_all(iport_weight_is_consumed_all),  
         .clk(clk), 
-        .reset(reset),
-        .trigger(trigger_1),
-        .trace_signal(trace_signal_1) 
+        .reset(reset)
         );
         
    

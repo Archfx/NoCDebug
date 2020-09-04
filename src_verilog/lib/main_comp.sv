@@ -88,13 +88,13 @@ module one_hot_mux #(
         if (sel!=1'b0 && $onehot(sel)) begin
             for(x=0;x<SEL_WIDTH;x=x+1) begin :asserion_check_loop0
                 // Branch statement
-                //m1 --> A15
+                //m1
                 if (sel[x]==1) begin
                     if (mux_in[OUT_WIDTH*(x)+:OUT_WIDTH]==mux_out) $display(" m1 succeeded");  
                     else $display(" $error :m1 failed in %m at %t", $time);          
                 end
                 // Assert statement
-                //m1 --> A15
+                //m1
                 m1: assert (!$onehot(sel) || sel!=1'b0 || (sel[x]==1'b1 && (mux_in[OUT_WIDTH*(x)+:OUT_WIDTH]==mux_out))==1);
             end
         end

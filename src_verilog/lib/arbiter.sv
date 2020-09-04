@@ -45,9 +45,7 @@ module arbiter #(
    reset, 
    request, 
    grant,
-   any_grant,
-   trigger,
-   trace_signal
+   any_grant
 );
 
     
@@ -56,8 +54,6 @@ module arbiter #(
     output                                        any_grant;
     input                                        clk;
     input                                        reset;
-    output reg trigger;
-    output reg [31            :0] trace_signal;
 
 
 
@@ -95,8 +91,43 @@ module arbiter #(
     end
     endgenerate
 
+    integer trace_dump_arb,p,j; 
+    reg [ARBITER_WIDTH-1             :    0] request_flag ; 
+
+    initial begin
+        trace_dump_arb = $fopen("trace_arb_dump.txt","w");
+    end
+
+    always @(posedge clk) begin
+        if ($onehot(request)) begin
+            for(p=0;p<$size(request);p=p+1) begin :loop0
+                if(request[p]==1'b1) begin
+                    request_flag[p]<=1'b1;
+                    // while(request[i]==1'b1) begin 
+                    //     @(posedge clk); // when clock signal gets high
+                    //     if ( grant[i]==1'b1) $fwrite(trace_dump_arb,"%d \n",grant);
+                    // end
+                    
+                end
+                else request_flag[p]<=1'b0;
+            end
+            // if ($onehot(grant) && grant[i]==1'b1 && request!=grant) $display(" $error :a2 failed in %m at %t", $time);
+        end
+
+        for(j=0;j<$size(request_flag);j=j+1) begin :loop1
+            if (request_flag[j]==1'b1) begin
+                $fwrite(trace_dump_arb,"%d \n",grant);
+                if (grant[j]==1'b1) begin
+                    $fwrite(trace_dump_arb,"%d \n",grant);
+                    request_flag[j]<=1'b0;        
+                end
+            end
+        end
+        
+    end
+
     
-    // `ifdef ASSERTION_ENABLE
+    `ifdef ASSERTION_ENABLE
     // Asserting the Property a1 : Always at most one grant issued by the arbiter
     // Asserting the Property a2 : As long as the request is available, it will eeventually be granted by the arbiter within T cycles
     // Asserting the Property a3 : No grant can be issued without a request
@@ -115,31 +146,23 @@ module arbiter #(
         rx_t={0,0,0,0};
         tx_flag={0,0,0,0};
         tx_flag_2={0,0,0,0};
-
-        trigger <= 1'b0;
-	    trace_signal <= 32'd0;
     end
     // Branch statements
     always@(posedge clk) begin
         //$display("%b", grant);
-        //a1 --> A10
-        // if ($onehot0(grant)) begin
-        //     if ($onehot(grant)) $display (" a1 succeeded");
-        // end
-        // else $display(" $error :a1 failed in %m at %t", $time);
-        //a2 --> A11
+        //a1
+        if ($onehot0(grant)) begin
+            if ($onehot(grant)) $display (" a1 succeeded");
+        end
+        else $display(" $error :a1 failed in %m at %t", $time);
+        //a2
         if ($onehot(request)) begin
-            trigger<=1'b1;
-            trace_signal <= {4'b1010,28'(grant)};
             for(i=0;i<$size(request);i=i+1) begin :loop0
                 if(request[i]==1'b1) begin
                     counter = 0; // clock counter initialization
                     while(request[i]==1'b1) begin 
                         @(posedge clk); // when clock signal gets high
-                        if ( grant[i]==1'b1) begin
-                           $display (" a2 Request granted after %d clock cycles", counter); 
-                           trace_signal <= {4'b1010,28'(grant)}; 
-                        end 
+                        if ( grant[i]==1'b1) $display (" a2 Request granted after %d clock cycles", counter); 
                         counter++; // increase counter by 1
                     end
                     
@@ -147,93 +170,89 @@ module arbiter #(
             end
             if ($onehot(grant) && grant[i]==1'b1 && request!=grant) $display(" $error :a2 failed in %m at %t", $time);
         end
-        else begin
-            trigger<=1'b0;
-            trace_signal <= 32'b0; 
-        end
        
-        //a3 --> A12
-        // for(x=0;x<$size(request);x=x+1) begin :loop1
-        //     if (!request[x]) begin
-        //         #1
-        //         if (!grant[x]) $display (" a3 succeeded");
-        //         else $display(" $error :a3 failed in %m at %t", $time);
-        //     end
-        // end
+        //a3
+        for(x=0;x<$size(request);x=x+1) begin :loop1
+            if (!request[x]) begin
+                #1
+                if (!grant[x]) $display (" a3 succeeded");
+                else $display(" $error :a3 failed in %m at %t", $time);
+            end
+        end
 
-        // //a4 --> A13
-        // if($onehot(grant)) begin
-        //     // $display("%d $size(grant)",$size(grant));
-        //     for(y=0;y<$size(grant);y=y+1) begin :loop2
-        //         if (grant[y]==1'b1) begin
-        //             if (rx_t[y]==0 && tx_flag[y]==0) begin
-        //                 tx_flag[y]=1;
-        //                 while(tx_flag[y]==1 && request[y]==1'b1) begin 
-        //                     @(posedge clk); // when clock signal gets high
-        //                     rx_t[y]++; // increase counter by 1
-        //                     // $display("counter is %d for %d", rx_t[y],y);
-        //                 end
-        //             end
-        //             else tx_flag[y]=0;
-        //         end
-        //     end
+        //a4
+        if($onehot(grant)) begin
+            // $display("%d $size(grant)",$size(grant));
+            for(y=0;y<$size(grant);y=y+1) begin :loop2
+                if (grant[y]==1'b1) begin
+                    if (rx_t[y]==0 && tx_flag[y]==0) begin
+                        tx_flag[y]=1;
+                        while(tx_flag[y]==1 && request[y]==1'b1) begin 
+                            @(posedge clk); // when clock signal gets high
+                            rx_t[y]++; // increase counter by 1
+                            // $display("counter is %d for %d", rx_t[y],y);
+                        end
+                    end
+                    else tx_flag[y]=0;
+                end
+            end
 
-        //     for(z=0;z<$size(grant);z=z+1) begin :loop3
-        //         if (grant[z]==1'b1 && tx_flag_2[z]==0) begin
-        //                 tx_flag_2[z]=1;
-        //                 rx_t_2[z]=0;
-        //                 while(tx_flag_2[z]==1 && request[z]==1'b1) begin 
-        //                     @(posedge clk); // when clock signal gets high
-        //                     rx_t_2[z]++; // increase counter by 1
-        //                     $display("real time counter is %d for %d", rx_t[z],z);
-        //                 end
-        //         end
-        //         if (grant[z]==1'b1 && tx_flag_2[z]==1) begin    
-        //             tx_flag_2[z]=0;
-        //             if (rx_t[z]==rx_t_2[z] && rx_t[z]!=0) $display(" a4 (real time check) succeeded");
-        //             else $display(" $error :a4 (real time check) failed in %m at %t", $time);
-        //         end
-        //     end
+            for(z=0;z<$size(grant);z=z+1) begin :loop3
+                if (grant[z]==1'b1 && tx_flag_2[z]==0) begin
+                        tx_flag_2[z]=1;
+                        rx_t_2[z]=0;
+                        while(tx_flag_2[z]==1 && request[z]==1'b1) begin 
+                            @(posedge clk); // when clock signal gets high
+                            rx_t_2[z]++; // increase counter by 1
+                            $display("real time counter is %d for %d", rx_t[z],z);
+                        end
+                end
+                if (grant[z]==1'b1 && tx_flag_2[z]==1) begin    
+                    tx_flag_2[z]=0;
+                    if (rx_t[z]==rx_t_2[z] && rx_t[z]!=0) $display(" a4 (real time check) succeeded");
+                    else $display(" $error :a4 (real time check) failed in %m at %t", $time);
+                end
+            end
 
-        //     if (rx_t[0]==rx_t[1]==rx_t[2]==rx_t[3] && tx_flag[0]==tx_flag[1]==tx_flag[2]==tx_flag[3]==0 && rx_t[0]!=0) $display (" a4 (first time check) succeeded");
-        //     else $display(" $error :a4 (first time check) failed in %m at %t", $time);
+            if (rx_t[0]==rx_t[1]==rx_t[2]==rx_t[3] && tx_flag[0]==tx_flag[1]==tx_flag[2]==tx_flag[3]==0 && rx_t[0]!=0) $display (" a4 (first time check) succeeded");
+            else $display(" $error :a4 (first time check) failed in %m at %t", $time);
             
-        // end
+        end
     end
 
-    // // Assert statements
-    // //a1 --> A10
-    // a1: assert property (@(posedge clk) $onehot0(grant));
+    // Assert statements
+    //a1
+    a1: assert property (@(posedge clk) $onehot0(grant));
     
-    // //a2 --> A11
-    // genvar j;
-    // generate
-    //     for (j=0; j < $size(request); j++) begin
-    //         // From SystemVerilog Assertions and Functional Coverage: Guide to Language pg: 85
-    //         a2: assert property(@(posedge clk) disable iff (!$onehot(request)) $rose(request[j]) |-> request[j][*1:$] ##0 $rose(grant[j]));
-    //         a2_liveliness: assert property (@(posedge clk) request[j] |-> s_eventually grant[j]); // liveliness property with infinite counter examples
-    //         a2_safety: assert property (@(posedge clk) request[j] until_with grant[j]); // if grant[j] does not happen, request[j] holds forever
-    //         a2_general: assert property (@(posedge clk) request[j] s_until_with grant[j]); // grant[j] must eventually happen
-    //     end
-    // endgenerate  
+    //a2
+    genvar j;
+    generate
+        for (j=0; j < $size(request); j++) begin
+            // From SystemVerilog Assertions and Functional Coverage: Guide to Language pg: 85
+            a2: assert property(@(posedge clk) disable iff (!$onehot(request)) $rose(request[j]) |-> request[j][*1:$] ##0 $rose(grant[j]));
+            a2_liveliness: assert property (@(posedge clk) request[j] |-> s_eventually grant[j]); // liveliness property with infinite counter examples
+            a2_safety: assert property (@(posedge clk) request[j] until_with grant[j]); // if grant[j] does not happen, request[j] holds forever
+            a2_general: assert property (@(posedge clk) request[j] s_until_with grant[j]); // grant[j] must eventually happen
+        end
+    endgenerate  
 
-    // //a3 --> A12
-    // genvar k;
-    // generate
-    //     for (k=0; k < $size(request); k++) begin
-    //         a3: assert property (@(posedge clk) !request[k] |-> ##1 !grant[k]);
-    //     end
-    // endgenerate
-    // //a4 --> A13
-    // genvar l;
-    // generate
-    //     for (l=0; l < $size(grant); l++) begin
-    //         a4_1: assert property (@(posedge clk) grant[l]==1'b1 && tx_flag_2[l]==1 && rx_t[l]==rx_t_2[l] && rx_t[l]!=0); // time of north to north, east to east.... check
+    //a3
+    genvar k;
+    generate
+        for (k=0; k < $size(request); k++) begin
+            a3: assert property (@(posedge clk) !request[k] |-> ##1 !grant[k]);
+        end
+    endgenerate
+    //a4
+    genvar l;
+    generate
+        for (l=0; l < $size(grant); l++) begin
+            a4_1: assert property (@(posedge clk) grant[l]==1'b1 && tx_flag_2[l]==1 && rx_t[l]==rx_t_2[l] && rx_t[l]!=0); // time of north to north, east to east.... check
             
-    //     end
-    // endgenerate
-    // a4_2: assert property (@(posedge clk) rx_t[0]==rx_t[1]==rx_t[2]==rx_t[3] && tx_flag[0]==tx_flag[1]==tx_flag[2]==tx_flag[3]==0 && rx_t[0]!=0); // time of north, east, west, south check
-    // `endif
+        end
+    endgenerate
+    a4_2: assert property (@(posedge clk) rx_t[0]==rx_t[1]==rx_t[2]==rx_t[3] && tx_flag[0]==tx_flag[1]==tx_flag[2]==tx_flag[3]==0 && rx_t[0]!=0); // time of north, east, west, south check
+    `endif
 
 endmodule
 
@@ -769,9 +788,7 @@ module tree_arbiter #(
    reset, 
    request, 
    grant,
-   any_grant,
-   trigger,
-   trace_signal
+   any_grant
 );
 
  
@@ -794,8 +811,6 @@ module tree_arbiter #(
   input  [N-1:0]  request;
   output [N-1:0]  grant;
   output          any_grant;
-  output trigger;
-  output [31:0] trace_signal;
 
 
     localparam GROUP_WIDTH    =    ARBITER_WIDTH/GROUP_NUM;
@@ -827,9 +842,7 @@ module tree_arbiter #(
             .reset        (reset), 
             .request        (group_req[i]), 
             .grant        (group_grant[i]),
-            .any_grant    (),
-            .trigger(trigger),
-            .trace_signal(trace_signal)
+            .any_grant    ()
         );
         
     // mask the non selected groups        
