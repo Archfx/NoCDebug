@@ -66,7 +66,9 @@ module mor1k_tile #(
 	ni_flit_in, 
 	ni_flit_in_wr, 
 	ni_flit_out, 
-	ni_flit_out_wr
+	ni_flit_out_wr,
+	trigger,
+	trace
 );
   
   	function integer log2;
@@ -171,6 +173,10 @@ module mor1k_tile #(
  	input			ni_flit_in_wr;
  	output	 [ ni_Fw-1   :   0    ] ni_flit_out;
  	output			ni_flit_out_wr;
+
+	// DfD
+	output trigger;
+	output [31:0] trace;
 
   	wire			 source_socket_clk_0_clk_o;
  	wire			 source_socket_reset_0_reset_o;
@@ -613,7 +619,9 @@ module mor1k_tile #(
 		.s_dat_o(ni_plug_wb_slave_0_dat_o),
 		.s_sel_i(ni_plug_wb_slave_0_sel_i),
 		.s_stb_i(ni_plug_wb_slave_0_stb_i),
-		.s_we_i(ni_plug_wb_slave_0_we_i)
+		.s_we_i(ni_plug_wb_slave_0_we_i),
+        .trigger(trigger),
+        .trace(trace)
 	);
  wb_single_port_ram #(
  		.Dw(ram_Dw),

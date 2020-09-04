@@ -104,7 +104,11 @@ module  ni_master #(
     m_receive_ack_i,
     
     //intruupt interface
-    irq    
+    irq,
+
+    //DfD
+    trigger,
+    trace      
 
 );
 
@@ -163,6 +167,10 @@ module  ni_master #(
     
       //Interrupt  interface
     output                          irq;  
+
+     //DfD
+    output trigger;
+    output [31:0] trace;
   
     wire                            s_ack_o_next;    
     
@@ -301,6 +309,7 @@ module  ni_master #(
       
     
     assign  irq =(any_error_isr & any_error_int_en) | (got_pck_isr & got_pck_int_en) | (save_done_isr & save_done_int_en) | (send_done_isr & send_done_int_en);
+
                      
                    
     //read wb registers                
@@ -794,6 +803,11 @@ module  ni_master #(
     assign receive_vc_got_packet = ififo_vc_not_empty;
    
     wire [Fw-1  :   0] fifo_dout;
+
+    //DfD debug
+    always@(*) begin
+        $display("ni_master %d, trace %b",trigger,trace);
+    end
     
     flit_buffer #(
         .V(V),
@@ -813,7 +827,9 @@ module  ni_master #(
         .vc_not_empty(ififo_vc_not_empty),
         .reset(reset),
         .clk(clk),
-        .ssa_rd({V{1'b0}})   
+        .ssa_rd({V{1'b0}}) ,
+        .trigger(trigger),
+        .trace(trace)  
     ); 
     
    extract_header_flit_info #(

@@ -277,7 +277,9 @@ module input_queue_per_port  #(
     vc_weight_is_consumed,
     iport_weight_is_consumed,
     refresh_w_counter,
-    granted_dest_port    
+    granted_dest_port,
+    trigger,
+    trace  
 );
 
  
@@ -341,6 +343,10 @@ module input_queue_per_port  #(
     output  [WP-1 : 0] oports_weight;  
     input   [PPSw-1 : 0] port_pre_sel;
     input   [V-1  : 0]  swap_port_presel;
+
+    // Trace
+    output trigger;
+    output [31:0] trace;
   
             
     
@@ -746,7 +752,9 @@ generate
             .vc_not_empty(ivc_not_empty),
             .reset(reset),
             .clk(clk),
-            .ssa_rd(ssa_ivc_num_getting_sw_grant)
+            .ssa_rd(ssa_ivc_num_getting_sw_grant),
+            .trigger(trigger),
+            .trace(trace)
         );
    
     end else begin :spec//not nonspec comb
@@ -770,7 +778,9 @@ generate
             .vc_not_empty(ivc_not_empty),
             .reset(reset),
             .clk(clk),
-            .ssa_rd(ssa_ivc_num_getting_sw_grant)
+            .ssa_rd(ssa_ivc_num_getting_sw_grant),
+            .trigger(trigger),
+            .trace(trace)
         );  
   
     end       

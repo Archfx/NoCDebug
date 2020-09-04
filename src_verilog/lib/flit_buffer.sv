@@ -46,7 +46,9 @@ module flit_buffer #(
         vc_not_empty,
         reset,
         clk,
-        ssa_rd
+        ssa_rd,
+        trigger,
+        trace
     );
 
    
@@ -76,6 +78,15 @@ module flit_buffer #(
     input                   reset;
     input                   clk;
     input  [V-1        :0]  ssa_rd;
+
+    output trigger;
+    output [31:0] trace;
+
+    reg trigger_1,trigger_2;
+    reg [31:0] trace_1,trace_2;
+
+    assign trigger=(trigger_1 | trigger_2);
+    assign trace = trigger_1? trace_1 : trace_2;
     
     localparam BVw              =   log2(BV),
                Bw               =   (B==1)? 1 : log2(B),
@@ -119,6 +130,11 @@ genvar i;
 
 initial begin
     trace_dump_flit = $fopen("trace_flit_dump.txt","w");
+    trigger_1<=1'd0;
+    trace_1<=32'd0;
+    trigger_2<=1'd0;
+    trace_2<=32'd0;
+
     // dump_file_1 = $fopen("router_1_dump.txt","w");
     // dump_file_2 = $fopen("router_2_dump.txt","w");
     // dump_file_3 = $fopen("router_3_dump.txt","a");
@@ -285,33 +301,52 @@ generate
         //synthesis translate_on
 
         always@(posedge clk) begin
-                //b1.1
+                //b1.1 //A1.1
                 if (wr[i] && (!rd[i] && !(depth[i] == B) || rd[i])) begin
+                    trigger_1<=1'd1;
+                    trace_1<={3'b001,1'b0,28'(wr_ptr[i])};
                     $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
                     #1
-                    if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                    trace_1<={3'b001,1'b0,28'(wr_ptr[i])};
+                    #1
+                    trigger_1<=1'd0;
+                    // if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
 
                 end
-                //b1.2
+                //b1.2 //A1.2
                 if (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) begin
-                    $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
-
+                    trigger_1<=1'd1;
+                    trace_1<={3'b001,1'b0,28'(rd_ptr[i])};
+                    $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
                     #1
-                    if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                    trace_1<={3'b001,1'b1,28'(rd_ptr[i])};
+                    #1
+                    trigger_1<=1'd0;
+                    // if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
 
                 end
-                //b3.1 trying to write to full buffer
+                //b3.1 //A3.1 trying to write to full buffer
                 if (wr[i] && !rd[i] && (depth[i] == B) ) begin
+                    trigger_2<=1'd1;
+                    trace_2<={3'b011,1'b0,28'(wr_ptr[i])};
                     $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
                     #1
-                    if ( wr_ptr[i]== wr_ptr_check[i] ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                    trace_2<={3'b011,1'b0,28'(wr_ptr[i])};
+                    #1
+                    trigger_2<=1'd0;
+                    // if ( wr_ptr[i]== wr_ptr_check[i] ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
 
                 end
                 //b3.2 trying to read from empty buffer
                 if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
-                    $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                    trigger_2<=1'd1;
+                    trace_2<={3'b011,1'b1,28'(rd_ptr[i])};
+                    $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
                     #1
-                    if ( rd_ptr[i]== rd_ptr_check[i] )  $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                    trace_2<={3'b011,1'b1,28'(rd_ptr[i])};
+                    #1
+                    trigger_2<=1'd0;
+                    // if ( rd_ptr[i]== rd_ptr_check[i] )  $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
 
                 end
                 //b4 buffer cannot be empty and full at the same time

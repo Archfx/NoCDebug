@@ -103,11 +103,6 @@ module arbiter #(
             for(p=0;p<$size(request);p=p+1) begin :loop0
                 if(request[p]==1'b1) begin
                     request_flag[p]<=1'b1;
-                    // while(request[i]==1'b1) begin 
-                    //     @(posedge clk); // when clock signal gets high
-                    //     if ( grant[i]==1'b1) $fwrite(trace_dump_arb,"%d \n",grant);
-                    // end
-                    
                 end
                 else request_flag[p]<=1'b0;
             end
@@ -117,9 +112,11 @@ module arbiter #(
         for(j=0;j<$size(request_flag);j=j+1) begin :loop1
             if (request_flag[j]==1'b1) begin
                 $fwrite(trace_dump_arb,"%d \n",grant);
+                // $display("Flag raised");
                 if (grant[j]==1'b1) begin
                     $fwrite(trace_dump_arb,"%d \n",grant);
-                    request_flag[j]<=1'b0;        
+                    request_flag[j]<=1'b0;
+                    // $display("Grant recieved");        
                 end
             end
         end

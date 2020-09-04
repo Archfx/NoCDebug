@@ -91,7 +91,11 @@ module mor1k_mpsoc (
 	wire [NE-1      :   0]  flit_in_wr_all;  
 	wire [NEV-1     :   0]  credit_out_all;
 	
-	wire 					noc_clk,noc_reset;    
+	wire 					noc_clk,noc_reset;  
+
+	// Trace
+    wire trigger,trigger_0,trigger_1,trigger_2,trigger_3;
+    wire [31:0] trace,trace_0,trace_1,trace_2,trace_3;  
     
 //NoC
  	noc #(
@@ -190,7 +194,9 @@ endgenerate
 		.ni_flit_in(ni_flit_in[0]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[0]) , 
 		.ni_flit_out(ni_flit_out[0]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[0]) 
+		.ni_flit_out_wr(ni_flit_out_wr[0]),
+        .trigger(trigger_0),
+        .trace(trace_0) 
 	);
  
 
@@ -225,7 +231,9 @@ endgenerate
 		.ni_flit_in(ni_flit_in[1]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[1]) , 
 		.ni_flit_out(ni_flit_out[1]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[1]) 
+		.ni_flit_out_wr(ni_flit_out_wr[1]),
+        .trigger(trigger_1),
+        .trace(trace_1) 
 	);
  
 
@@ -260,7 +268,9 @@ endgenerate
 		.ni_flit_in(ni_flit_in[2]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[2]) , 
 		.ni_flit_out(ni_flit_out[2]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[2]) 
+		.ni_flit_out_wr(ni_flit_out_wr[2]),
+        .trigger(trigger_2),
+        .trace(trace_2) 
 	);
  
 
@@ -295,7 +305,22 @@ endgenerate
 		.ni_flit_in(ni_flit_in[3]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[3]) , 
 		.ni_flit_out(ni_flit_out[3]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[3]) 
+		.ni_flit_out_wr(ni_flit_out_wr[3]),
+        .trigger(trigger_3),
+        .trace(trace_3) 
 	);
+
+	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 :(trigger_2? trace_2 : trace_3));
+
+	always@(*) begin
+        $display("MpSoc_0 %d, trace %b",trigger_0,trace_0);
+		$display("MpSoc_1 %d, trace %b",trigger_1,trace_1);
+        $display("MpSoc_2 %d, trace %b",trigger_2,trace_2);
+        $display("MpSoc_3 %d, trace %b",trigger_3,trace_3);
+		$display("SoC %d, trace %b",trigger,trace);
+        $display("SoC %d, trace %b",trigger,trace);
+
+    end
  
 endmodule
