@@ -107,7 +107,7 @@ module trace_buffer #(
 
     always@(*) begin
         if (trigger) begin 
-            $display("trace_buff %d, trace %b",trigger,trace);
+            // $display("trace_buff %d, trace %b",trigger,trace);
             $fwrite(trace_dump,"%h \n",trace);
         end
     end

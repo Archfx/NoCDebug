@@ -45,7 +45,9 @@ module arbiter #(
    reset, 
    request, 
    grant,
-   any_grant
+   any_grant//,
+//    trigger,
+//    trace
 );
 
     
@@ -55,7 +57,11 @@ module arbiter #(
     input                                        clk;
     input                                        reset;
 
+    // output trigger;
+    // output [31:0] trace;
 
+    reg trigger_0;
+    reg [31:0] trace_0;
 
     generate 
     if(ARBITER_WIDTH==1)  begin: w1
@@ -94,15 +100,18 @@ module arbiter #(
     integer trace_dump_arb,p,j; 
     reg [ARBITER_WIDTH-1             :    0] request_flag ; 
 
-    initial begin
-        trace_dump_arb = $fopen("trace_arb_dump.txt","w");
-    end
+    // initial begin
+    //     trace_dump_arb = $fopen("trace_arb_dump.txt","w");
+    // end
 
     always @(posedge clk) begin
         if ($onehot(request)) begin
+            trigger_0 <= 1'b1;
+            trace_0={3'b101,1'b0,28'(request)};
             for(p=0;p<$size(request);p=p+1) begin :loop0
                 if(request[p]==1'b1) begin
                     request_flag[p]<=1'b1;
+                    trigger_0 <= 1'b0;
                 end
                 else request_flag[p]<=1'b0;
             end
@@ -111,10 +120,14 @@ module arbiter #(
 
         for(j=0;j<$size(request_flag);j=j+1) begin :loop1
             if (request_flag[j]==1'b1) begin
-                $fwrite(trace_dump_arb,"%d \n",grant);
+                // $fwrite(trace_dump_arb,"%d \n",grant);
+                trigger_0 <= 1'b1;
                 // $display("Flag raised");
                 if (grant[j]==1'b1) begin
-                    $fwrite(trace_dump_arb,"%d \n",grant);
+                    trace_0={3'b101,1'b0,28'(grant)};
+                    #1
+                    trigger_0 <= 1'b0;
+                    // $fwrite(trace_dump_arb,"%d \n",grant);
                     request_flag[j]<=1'b0;
                     // $display("Grant recieved");        
                 end
@@ -122,6 +135,11 @@ module arbiter #(
         end
         
     end
+
+// DfD debug
+    // always@(*) begin
+    //     $display("arbiter %b, trace %b ",trigger_0,trace_0);
+    // end
 
     
     `ifdef ASSERTION_ENABLE
@@ -809,6 +827,9 @@ module tree_arbiter #(
   output [N-1:0]  grant;
   output          any_grant;
 
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
+
 
     localparam GROUP_WIDTH    =    ARBITER_WIDTH/GROUP_NUM;
   
@@ -819,6 +840,12 @@ module tree_arbiter #(
   wire [GROUP_NUM-1            :    0] any_group_member_req;
   wire [GROUP_NUM-1            :    0] any_group_member_grant;
  
+ // Dfd Debug
+    // always@(*) begin
+    //     $display("tree_arbiter_0 %d, trace %b",trigger_0,trace_0);
+	// 	$display("tree_arbiter_1 %d, trace %b",trigger_1,trace_1);
+    //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
+    // end
     
     genvar i;
     generate
@@ -839,7 +866,9 @@ module tree_arbiter #(
             .reset        (reset), 
             .request        (group_req[i]), 
             .grant        (group_grant[i]),
-            .any_grant    ()
+            .any_grant    (),
+            .trigger(trigger_0),
+            .trace(trace_0)
         );
         
     // mask the non selected groups        
@@ -863,7 +892,11 @@ module tree_arbiter #(
             .reset        (reset), 
             .request    (any_group_member_req), 
             .grant        (any_group_member_grant),
-            .any_grant    (any_grant)
+            .any_grant    (any_grant),
+            .trigger(trigger_0),
+            .trace(trace_0)
+        
+            
         );
                 
     

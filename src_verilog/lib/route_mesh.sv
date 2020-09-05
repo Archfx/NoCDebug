@@ -50,8 +50,9 @@ module xy_mesh_routing #(
     current_y,    // current router y address
     dest_x,        // destination x address
     dest_y,        // destination y address
-    destport    // router output port
-        
+    destport//,   // router output port
+    // trigger,
+    // trace    
 );
     
 
@@ -78,9 +79,15 @@ module xy_mesh_routing #(
     input  [Xw-1        :0]    dest_x;
     input  [Yw-1        :0]    dest_y;
     output [DSTw-1            :0]    destport;
+    // DfD
+    // output trigger;
+    // output [31:0] trace;
 
+    reg trigger_0;
+    reg [31:0] trace_0;
     
-    
+    // assign trigger = trigger_0;
+    // assign trace = trace_0;
 
     localparam  LOCAL    =    (OUT_BIN==1)?    0    :  1 ,//5'b00001
                 EAST     =    (OUT_BIN==1)?    1    :  2 ,//5'b00010 
@@ -92,6 +99,10 @@ module xy_mesh_routing #(
     reg [DSTw-1            :0]    destport_next;
     // reg [DSTw-1            :0]    destport_next_r3;
     
+    initial begin
+        trigger_0=1'b0;
+        trace_0=32'd0;
+    end
     
         
     assign    destport= destport_next;
@@ -141,6 +152,16 @@ module xy_mesh_routing #(
                 r3: assert ((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL)); 
 
             `endif
+    end
+
+    always@(*) begin
+        trigger_0=1'b1;
+        trace_0={3'b101,1'b0,28'(destport_next)};
+        // $display("route_mesh %b, trace %b ",trigger_0,trace_0);
+
+        trigger_0=1'b0;
+        // $display("route_mesh %b",trigger_0);
+
     end
     
     

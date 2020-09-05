@@ -89,6 +89,14 @@ module flit_buffer #(
     assign trigger=(trigger_1[0] | trigger_1[1] | trigger_2[0] | trigger_2[1]);
     assign trace = trigger_1[0]? trace_1[0] : (trigger_1[1]? trace_1[1] : (trigger_2[0]? trace_2[0] : trace_2[1]));
     
+    // Noc debug
+    // always@(*) begin
+    //     // $display("input_queue_per_port_0 %d, trace %b",trigger_0,trace_0);
+	// 	// $display("input_queue_per_port_1 %d, trace %b",trigger_1,trace_1);
+    //     $display("Flit_buffer %d, trace %b",trigger,trace);
+
+    // end
+
     localparam BVw              =   log2(BV),
                Bw               =   (B==1)? 1 : log2(B),
                Vw               =  (V==1)? 1 : log2(V),

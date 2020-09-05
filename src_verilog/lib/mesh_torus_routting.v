@@ -735,7 +735,9 @@ module mesh_torus_conventional_routing #(
     current_y,
     dest_x,
     dest_y,
-    destport
+    destport//,
+    // trigger,
+    // trace
 
     );
     
@@ -761,6 +763,16 @@ module mesh_torus_conventional_routing #(
     input   [Yw-1         :0] dest_y;
     
     output  [DSTw-1       :0] destport;
+    // DfD
+    // output trigger;
+    // output [31:0] trace;
+
+    // Dfd Debug
+    // always@(*) begin
+    //     $display("xy_mesh_routing %d, trace %b",trigger,trace);
+	// 	// $display("input_queue_per_port_1 %d, trace %b",trigger_1,trace_1);
+    //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
+    // end
   
   
     generate 
@@ -780,7 +792,9 @@ module mesh_torus_conventional_routing #(
                     .current_y(current_y),
                     .dest_x(dest_x),
                     .dest_y(dest_y),
-                    .destport(destport)
+                    .destport(destport)//,
+                    // .trigger(trigger),
+                    // .trace(trace)
                  );        
                 
                 

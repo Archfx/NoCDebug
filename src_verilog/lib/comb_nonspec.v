@@ -157,10 +157,19 @@ module comb_nonspec_allocator #(
     wire   [V-1 : 0]  vc_pririty [PV-1 : 0] ;
     
     assign assigned_ovc_request_all      =   ivc_request_all &   ovc_is_assigned_all;
-        
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
+    
+    always@(*) begin
+        $display("comb_nonspec_0 %d, trace %b",trigger_0,trace_0);
+		$display("comb_nonspec_1 %d, trace %b",trigger_1,trace_1);
+        // $display("input_queue_per_port %d, trace %b",trigger,trace);
+    end
+
     genvar i,j;
     
-    
+   
     generate 
     // IVC loop
     for(i=0;i< PV;i=i+1) begin :total_vc_loop
@@ -369,6 +378,16 @@ module  comb_nonspec_v2_allocator #(
     input   clk,reset;
     input   [PV-1 : 0] vc_weight_is_consumed_all;
     input   [P-1 : 0] iport_weight_is_consumed_all;
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
+    
+    always@(*) begin
+        $display("comb_nonspec_V2_0 %d, trace %b",trigger_0,trace_0);
+		$display("comb_nonspec_V2_1 %d, trace %b",trigger_1,trace_1);
+        // $display("input_queue_per_port %d, trace %b",trigger,trace);
+    end
+    
 
     //internal wires switch allocator
     wire    [PV-1 : 0] first_arbiter_granted_ivc_all;

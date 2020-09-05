@@ -210,6 +210,7 @@ module canonical_vc_alloc #(
     input  [PVP_1-1:  0]  dest_port_all;
     output [PVV-1:  0]  spec_ovc_num_all;
     input  clk,reset;
+
     
     wire    [V-1:  0]  ovc_granted_ivc [PV-1:  0]  ;
     wire    [P_1-1: 0]  dest_port_ivc  [PV-1:  0]  ;
@@ -220,7 +221,15 @@ module canonical_vc_alloc #(
     wire    [VP_1-1 : 0]  second_arbiter_grant [PV-1:  0]  ;
     wire    [VP_1-1 : 0]  granted_ovc_array [PV-1:  0]  ;
     genvar i,j;
-        
+    
+    // wire trigger_0,trigger_1;
+    // wire [31:0] trace_0,trace_1;
+    
+    // always@(*) begin
+    //     $display("canonic_vc_alloc %d, trace %b",trigger_0,trace_0);
+	// 	$display("canonic_vc_alloc %d, trace %b",trigger_1,trace_1);
+    //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
+    // end
     
     generate
     
@@ -241,7 +250,9 @@ module canonical_vc_alloc #(
         .reset       (reset), 
         .request       (masked_ovc_request  [i]), 
         .grant       (first_arbiter_grant[i]),
-        .any_grant   ()
+        .any_grant   (),
+        .trigger(),
+        .trace()
        );
        
        assign spec_ovc_num_all[(i+1)*V-1 :i*V]   = first_arbiter_grant[i];
@@ -297,7 +308,9 @@ module canonical_vc_alloc #(
               .reset (reset), 
               .request (second_arbiter_request[i]), 
               .grant (second_arbiter_grant  [i]),
-              .any_grant (ovc_allocated_all[i])
+              .any_grant (ovc_allocated_all[i]),
+              .trigger(),
+              .trace()
         );
        end
        

@@ -217,9 +217,9 @@ generate
     end//for      
 endgenerate
 
-    always@(*) begin
-        $display("input_ports %d, trace %b",trigger,trace);
-    end 
+    // always@(*) begin
+    //     $display("input_ports %d, trace %b",trigger,trace);
+    // end 
 
 endmodule 
 
@@ -360,11 +360,11 @@ module input_queue_per_port  #(
     output trigger;
     output [31:0] trace;
    
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_0,trace_1;
+    // wire trigger_0,trigger_1;
+    // wire [31:0] trace_0,trace_1;
 
-    assign trigger = trigger_0;//(COMBINATION_TYPE == "COMB_NONSPEC")? trigger_0 :trigger_1;
-    assign trace = trace_0;//(COMBINATION_TYPE == "COMB_NONSPEC")? trace_0 : trace_1;
+    // assign trigger = 1'b0;// COMBINATION_TYPE == "COMB_NONSPEC" ? trigger_0 :trigger_1;
+    // assign trace = 32'b0;//COMBINATION_TYPE == "COMB_NONSPEC" ? trace_0 : trace_1;
   
             
     
@@ -749,8 +749,13 @@ generate
         end   
         
     /* verilator lint_off WIDTH */
-    if(COMBINATION_TYPE == "COMB_NONSPEC") begin  : nonspec  
-    /* verilator lint_on WIDTH */ 
+    // if(COMBINATION_TYPE == "COMB_NONSPEC") begin  : nonspec  
+    /* verilator lint_on WIDTH */
+
+    endgenerate   
+
+    // assign trigger = trigger_0;
+    // assign trace = trace_0;
            
         flit_buffer #(
             .V(V),
@@ -771,46 +776,48 @@ generate
             .reset(reset),
             .clk(clk),
             .ssa_rd(ssa_ivc_num_getting_sw_grant),
-            .trigger(trigger_0),
-            .trace(trace_0)
+            .trigger(trigger),
+            .trace(trace)
         );
    
-    end else begin :spec//not nonspec comb
- 
+    // end else begin :spec//not nonspec comb
+        
+    //     assign trigger = trigger_1;
+    //     assign trace = trace_1;
 
-        flit_buffer #(
-            .V(V),
-            .B(B),   // buffer space :flit per VC 
-            .Fpay(Fpay),
-            .DEBUG_EN(DEBUG_EN),
-            .SSA_EN(SSA_EN)
-        )
-        the_flit_buffer
-        (
-            .din(flit_in),     // Data in
-            .vc_num_wr(vc_num_in),//write vertual channel   
-            .vc_num_rd(ivc_num_getting_sw_grant),//read vertual channel     
-            .wr_en(flit_in_we),   // Write enable
-            .rd_en(any_ivc_sw_request_granted),     // Read the next word
-            .dout(buffer_out),    // Data out
-            .vc_not_empty(ivc_not_empty),
-            .reset(reset),
-            .clk(clk),
-            .ssa_rd(ssa_ivc_num_getting_sw_grant),
-            .trigger(trigger_1),
-            .trace(trace_1)
-        );  
+    //     flit_buffer #(
+    //         .V(V),
+    //         .B(B),   // buffer space :flit per VC 
+    //         .Fpay(Fpay),
+    //         .DEBUG_EN(DEBUG_EN),
+    //         .SSA_EN(SSA_EN)
+    //     )
+    //     the_flit_buffer
+    //     (
+    //         .din(flit_in),     // Data in
+    //         .vc_num_wr(vc_num_in),//write vertual channel   
+    //         .vc_num_rd(ivc_num_getting_sw_grant),//read vertual channel     
+    //         .wr_en(flit_in_we),   // Write enable
+    //         .rd_en(any_ivc_sw_request_granted),     // Read the next word
+    //         .dout(buffer_out),    // Data out
+    //         .vc_not_empty(ivc_not_empty),
+    //         .reset(reset),
+    //         .clk(clk),
+    //         .ssa_rd(ssa_ivc_num_getting_sw_grant),
+    //         .trigger(trigger_1),
+    //         .trace(trace_1)
+    //     );  
   
-    end  
+    // end  
     // Dfd Debug
-    always@(*) begin
-        // $display("input_queue_per_port_0 %d, trace %b",trigger_0,trace_0);
-		// $display("input_queue_per_port_1 %d, trace %b",trigger_1,trace_1);
-        $display("input_queue_per_port %d, trace %b",trigger,trace);
+    // always@(*) begin
+    //     $display("input_queue_per_port_0 %d, trace %b",trigger_0,trace_0);
+	// 	$display("input_queue_per_port_1 %d, trace %b",trigger_1,trace_1);
+    //     $display("input_queue_per_port %d, trace %b",trigger,trace);
 
-    end
+    // end
 
-endgenerate    
+// endgenerate    
 
     look_ahead_routing #(
     	.T1(T1),
