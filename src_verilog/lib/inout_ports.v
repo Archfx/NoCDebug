@@ -589,112 +589,129 @@ endmodule
  
  ******************/
  
- module output_vc_status #(
-    parameter V     =   4,
-    parameter B =   16,
-    parameter CAND_VC_SEL_MODE      =   0   // 0: use arbieration between not full vcs, 1: select the vc with most availble free space
+//  module output_vc_status #(
+//     parameter V     =   4,
+//     parameter B =   16,
+//     parameter CAND_VC_SEL_MODE      =   0   // 0: use arbieration between not full vcs, 1: select the vc with most availble free space
 
-)
+// )
 
-(
-    input    [V-1 :0] wr_in,
-    input   [V-1 :0] credit_in,
-    output  [V-1 :0] nearly_full_vc,
-    output  [V-1 :0] empty_vc,
-    output reg [V-1 :0] cand_vc,
-    input                                               cand_wr_vc_en,
-    input                                                   clk,
-    input                                                   reset
-);
+// (
+//     input    [V-1 :0] wr_in,
+//     input   [V-1 :0] credit_in,
+//     output  [V-1 :0] nearly_full_vc,
+//     output  [V-1 :0] empty_vc,
+//     output reg [V-1 :0] cand_vc,
+//     input                                               cand_wr_vc_en,
+//     input                                                   clk,
+//     input                                                   reset
+// );
 
     
-    function integer log2;
-      input integer number; begin   
-         log2=(number <=1) ? 1: 0;    
-         while(2**log2<number) begin    
-            log2=log2+1;    
-         end 	   
-      end   
-    endfunction // log2 
+//     function integer log2;
+//       input integer number; begin   
+//          log2=(number <=1) ? 1: 0;    
+//          while(2**log2<number) begin    
+//             log2=log2+1;    
+//          end 	   
+//       end   
+//     endfunction // log2 
     
-    localparam  BUFF_WIDTH  =   log2(B);
-    localparam  DEPTH_WIDTH =   BUFF_WIDTH+1;
-    localparam  [DEPTH_WIDTH-1 : 0] B_1         =   B-1;
-    localparam  [DEPTH_WIDTH-1 : 0] B_2         =   B-2;
+//     localparam  BUFF_WIDTH  =   log2(B);
+//     localparam  DEPTH_WIDTH =   BUFF_WIDTH+1;
+//     localparam  [DEPTH_WIDTH-1 : 0] B_1         =   B-1;
+//     localparam  [DEPTH_WIDTH-1 : 0] B_2         =   B-2;
     
     
-    reg  [DEPTH_WIDTH-1 : 0] depth    [V-1 : 0];
-    wire  [V-1 : 0] cand_vc_next;
-    wire  [V-1 : 0] full_vc;
+//     reg  [DEPTH_WIDTH-1 : 0] depth    [V-1 : 0];
+//     wire  [V-1 : 0] cand_vc_next;
+//     wire  [V-1 : 0] full_vc;
+
+//     wire trigger_0,trigger_1;
+//     wire [31:0] trace_0,trace_1;
     
-    genvar i;
-    generate
-        for(i=0;i<V;i=i+1) begin : vc_loop
-            always@(posedge clk or posedge reset)begin
-                    if(reset)begin
-                        depth[i]<={DEPTH_WIDTH{1'b0}};
-                    end else begin
-                        if(  wr_in[i]  && ~credit_in[i])   depth[i] <= depth[i]+1'b1;
-                        if( ~wr_in[i]  &&  credit_in[i])   depth[i] <= depth[i]-1'b1;
-                    end //reset
-            end//always
+//     // DfD debug
+//     // always@(*) begin
+//     //     $display("output_vc_status %d, trace %b",trigger_0,trace_0);
+// 	// 	$display("output_vc_status %d, trace %b",trigger_1,trace_1);
+//     //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
+//     // end
+//     always@(posedge clk) begin
+//         $display("output_vc_status");// %d, trace %b",trigger_0,trace_0);
+// 		// $display("swa_output_port_arbiter %d, trace %b",trigger_1,trace_1);
+//         // $display("input_queue_per_port %d, trace %b",trigger,trace);
+//     end
+    
+//     genvar i;
+//     generate
+//         for(i=0;i<V;i=i+1) begin : vc_loop
+//             always@(posedge clk or posedge reset)begin
+//                     if(reset)begin
+//                         depth[i]<={DEPTH_WIDTH{1'b0}};
+//                     end else begin
+//                         if(  wr_in[i]  && ~credit_in[i])   depth[i] <= depth[i]+1'b1;
+//                         if( ~wr_in[i]  &&  credit_in[i])   depth[i] <= depth[i]-1'b1;
+//                     end //reset
+//             end//always
 
-            assign  full_vc[i]   = (depth[i] == B);
-            assign  nearly_full_vc[i]= (depth[i] >= B_1);
-            assign  empty_vc[i]  = (depth[i] == {DEPTH_WIDTH{1'b0}});
-
-
-        end//for
-        if(CAND_VC_SEL_MODE==0) begin : nic_arbiter
-            wire  [V-1 :0] request;
-            for(i=0;i<V;i=i+1) begin :req_loop
-                assign  request[i]   = ~ nearly_full_vc[i] & cand_wr_vc_en;
-            end //for
-
-
-            arbiter #(
-                .ARBITER_WIDTH      (V)
-                )
-                the_nic_arbiter
-                (
-                    .clk                (clk),
-                    .reset          (reset),
-                    .request            (request),
-                    .grant          (cand_vc_next),
-                    .any_grant       ()
-                );
-
-        end else begin : min_depth_select
-
-        wire [(V*DEPTH_WIDTH)-1 : 0] depth_array;
-        for(i=0;i<V;i=i+1) begin :depth_loop
-            assign depth_array[((i+1)*(DEPTH_WIDTH))-1  : i*DEPTH_WIDTH]=depth[i];
-        end //for
-
-        fast_minimum_number#(
-            .NUM_OF_INPUTS (V),
-            .DATA_WIDTH (DEPTH_WIDTH)
-
-        )
-        the_min_depth
-        (
-            .in_array (depth_array),
-            .min_out (cand_vc_next)
-        );
-
-        end //else
-
-        always @(posedge clk or posedge reset)begin
-            if          (reset)          cand_vc    <= {V{1'b0}};
-            else    if(cand_wr_vc_en)    cand_vc    <=  cand_vc_next;
-        end
-
-    endgenerate
+//             assign  full_vc[i]   = (depth[i] == B);
+//             assign  nearly_full_vc[i]= (depth[i] >= B_1);
+//             assign  empty_vc[i]  = (depth[i] == {DEPTH_WIDTH{1'b0}});
 
 
+//         end//for
+//         if(CAND_VC_SEL_MODE==0) begin : nic_arbiter
+//             wire  [V-1 :0] request;
+//             for(i=0;i<V;i=i+1) begin :req_loop
+//                 assign  request[i]   = ~ nearly_full_vc[i] & cand_wr_vc_en;
+//             end //for
 
 
-endmodule
+//             arbiter #(
+//                 .ARBITER_WIDTH      (V)
+//                 )
+//                 the_nic_arbiter
+//                 (
+//                     .clk                (clk),
+//                     .reset          (reset),
+//                     .request            (request),
+//                     .grant          (cand_vc_next),
+//                     .any_grant       (),
+//                     .trigger(),
+//                     .trace()
+//                 );
+
+//         end else begin : min_depth_select
+
+//         wire [(V*DEPTH_WIDTH)-1 : 0] depth_array;
+//         for(i=0;i<V;i=i+1) begin :depth_loop
+//             assign depth_array[((i+1)*(DEPTH_WIDTH))-1  : i*DEPTH_WIDTH]=depth[i];
+//         end //for
+
+//         fast_minimum_number#(
+//             .NUM_OF_INPUTS (V),
+//             .DATA_WIDTH (DEPTH_WIDTH)
+
+//         )
+//         the_min_depth
+//         (
+//             .in_array (depth_array),
+//             .min_out (cand_vc_next)
+//         );
+
+//         end //else
+
+//         always @(posedge clk or posedge reset)begin
+//             if          (reset)          cand_vc    <= {V{1'b0}};
+//             else    if(cand_wr_vc_en)    cand_vc    <=  cand_vc_next;
+//         end
+
+//     endgenerate
+
+
+
+
+// endmodule
 
 
 /*************************

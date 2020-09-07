@@ -45,9 +45,9 @@ module arbiter #(
    reset, 
    request, 
    grant,
-   any_grant//,
-//    trigger,
-//    trace
+   any_grant,
+   trigger,
+   trace
 );
 
     
@@ -57,11 +57,14 @@ module arbiter #(
     input                                        clk;
     input                                        reset;
 
-    // output trigger;
-    // output [31:0] trace;
+    output trigger;
+    output [31:0] trace;
 
     reg trigger_0;
     reg [31:0] trace_0;
+
+    assign trigger = trigger_0;
+    assign trace = trace_0;
 
     generate 
     if(ARBITER_WIDTH==1)  begin: w1
@@ -100,9 +103,10 @@ module arbiter #(
     integer trace_dump_arb,p,j; 
     reg [ARBITER_WIDTH-1             :    0] request_flag ; 
 
-    // initial begin
-    //     trace_dump_arb = $fopen("trace_arb_dump.txt","w");
-    // end
+    initial begin
+        trace_dump_arb = $fopen("trace_arb_dump.txt","w");
+        trigger_0 <= 1'b0;
+    end
 
     always @(posedge clk) begin
         if ($onehot(request)) begin
@@ -117,18 +121,24 @@ module arbiter #(
             end
             // if ($onehot(grant) && grant[i]==1'b1 && request!=grant) $display(" $error :a2 failed in %m at %t", $time);
         end
+        else begin
+            trigger_0 <= 1'b1;
+            trace_0={3'b101,1'b0,28'(request)};
+        end
 
         for(j=0;j<$size(request_flag);j=j+1) begin :loop1
             if (request_flag[j]==1'b1) begin
                 // $fwrite(trace_dump_arb,"%d \n",grant);
-                trigger_0 <= 1'b1;
+                // trigger_0 <= 1'b1;
                 // $display("Flag raised");
                 if (grant[j]==1'b1) begin
+                    trigger_0 <= 1'b1;
                     trace_0={3'b101,1'b0,28'(grant)};
-                    #1
+                    request_flag[j]<=1'b0;
+                    #5
                     trigger_0 <= 1'b0;
                     // $fwrite(trace_dump_arb,"%d \n",grant);
-                    request_flag[j]<=1'b0;
+                    
                     // $display("Grant recieved");        
                 end
             end
@@ -794,114 +804,116 @@ endmodule
 * 
 *******************************/
 
-module tree_arbiter #(
-        parameter    GROUP_NUM        =4,
-        parameter    ARBITER_WIDTH    =16
-)
-(    
-   clk, 
-   reset, 
-   request, 
-   grant,
-   any_grant
-);
+// module tree_arbiter #(
+//         parameter    GROUP_NUM        =4,
+//         parameter    ARBITER_WIDTH    =16
+// )
+// (    
+//    clk, 
+//    reset, 
+//    request, 
+//    grant,
+//    any_grant
+// );
 
+// // Not used
  
-    function integer log2;
-      input integer number; begin   
-         log2=(number <=1) ? 1: 0;    
-         while(2**log2<number) begin    
-            log2=log2+1;    
-         end 	   
-      end   
-    endfunction // log2 
+//     function integer log2;
+//       input integer number; begin   
+//          log2=(number <=1) ? 1: 0;    
+//          while(2**log2<number) begin    
+//             log2=log2+1;    
+//          end 	   
+//       end   
+//     endfunction // log2 
 
-  localparam N = ARBITER_WIDTH;
-  localparam S = log2(ARBITER_WIDTH); // ceil of log_2 of N - put manually
+//   localparam N = ARBITER_WIDTH;
+//   localparam S = log2(ARBITER_WIDTH); // ceil of log_2 of N - put manually
   
 
-  // I/O interface
-  input           clk;
-  input           reset;
-  input  [N-1:0]  request;
-  output [N-1:0]  grant;
-  output          any_grant;
+//   // I/O interface
+//   input           clk;
+//   input           reset;
+//   input  [N-1:0]  request;
+//   output [N-1:0]  grant;
+//   output          any_grant;
 
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_0,trace_1;
+//     wire trigger_0,trigger_1;
+//     wire [31:0] trace_0,trace_1;
 
 
-    localparam GROUP_WIDTH    =    ARBITER_WIDTH/GROUP_NUM;
+//     localparam GROUP_WIDTH    =    ARBITER_WIDTH/GROUP_NUM;
   
-  wire [GROUP_WIDTH-1        :    0]    group_req    [GROUP_NUM-1        :    0];
-  wire [GROUP_WIDTH-1        :    0]    group_grant [GROUP_NUM-1        :    0];
-  wire [GROUP_WIDTH-1        :    0]    grant_masked[GROUP_NUM-1        :    0];
+//   wire [GROUP_WIDTH-1        :    0]    group_req    [GROUP_NUM-1        :    0];
+//   wire [GROUP_WIDTH-1        :    0]    group_grant [GROUP_NUM-1        :    0];
+//   wire [GROUP_WIDTH-1        :    0]    grant_masked[GROUP_NUM-1        :    0];
   
-  wire [GROUP_NUM-1            :    0] any_group_member_req;
-  wire [GROUP_NUM-1            :    0] any_group_member_grant;
+//   wire [GROUP_NUM-1            :    0] any_group_member_req;
+//   wire [GROUP_NUM-1            :    0] any_group_member_grant;
  
- // Dfd Debug
-    // always@(*) begin
-    //     $display("tree_arbiter_0 %d, trace %b",trigger_0,trace_0);
-	// 	$display("tree_arbiter_1 %d, trace %b",trigger_1,trace_1);
-    //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
-    // end
+//  // Dfd Debug
+//     always@(posedge clk) begin
+//         $display("tree_arbiter_1");
+//         // $display("tree_arbiter_0 %d, trace %b",trigger_0,trace_0);
+// 		// $display("tree_arbiter_1 %d, trace %b",trigger_1,trace_1);
+//         // $display("input_queue_per_port %d, trace %b",trigger,trace);
+//     end
     
-    genvar i;
-    generate
-    for (i=0;i<GROUP_NUM;i=i+1) begin :group_lp
+//     genvar i;
+//     generate
+//     for (i=0;i<GROUP_NUM;i=i+1) begin :group_lp
         
-        //seprate inputs in group
-        assign group_req[i]    =    request[(i+1)*GROUP_WIDTH-1        :    i*GROUP_WIDTH];
+//         //seprate inputs in group
+//         assign group_req[i]    =    request[(i+1)*GROUP_WIDTH-1        :    i*GROUP_WIDTH];
         
-        //check if any member of qrup has request
-        assign any_group_member_req[i]    =    | group_req[i];
+//         //check if any member of qrup has request
+//         assign any_group_member_req[i]    =    | group_req[i];
         
-        //arbiterate one request from each group
-        arbiter #(
-            .ARBITER_WIDTH    (GROUP_WIDTH)
-        )group_member_arbiter
-        (    
-            .clk            (clk), 
-            .reset        (reset), 
-            .request        (group_req[i]), 
-            .grant        (group_grant[i]),
-            .any_grant    (),
-            .trigger(trigger_0),
-            .trace(trace_0)
-        );
+//         //arbiterate one request from each group
+//         arbiter #(
+//             .ARBITER_WIDTH    (GROUP_WIDTH)
+//         )group_member_arbiter
+//         (    
+//             .clk            (clk), 
+//             .reset        (reset), 
+//             .request        (group_req[i]), 
+//             .grant        (group_grant[i]),
+//             .any_grant    (),
+//             .trigger(trigger_0),
+//             .trace(trace_0)
+//         );
         
-    // mask the non selected groups        
-        assign grant_masked [i] = (any_group_member_grant[i])?    group_grant[i]: {GROUP_WIDTH{1'b0}};
+//     // mask the non selected groups        
+//         assign grant_masked [i] = (any_group_member_grant[i])?    group_grant[i]: {GROUP_WIDTH{1'b0}};
     
-    //assemble the grants
-        assign grant [(i+1)*GROUP_WIDTH-1        :    i*GROUP_WIDTH] = grant_masked [i];
+//     //assemble the grants
+//         assign grant [(i+1)*GROUP_WIDTH-1        :    i*GROUP_WIDTH] = grant_masked [i];
     
     
-    end
-    endgenerate
+//     end
+//     endgenerate
     
-    //select one group which has atleast one active request
+//     //select one group which has atleast one active request
     
-    //arbiterate one request from each group
-        arbiter #(
-            .ARBITER_WIDTH    (GROUP_NUM)
-        )second_arbiter
-        (    
-            .clk        (clk), 
-            .reset        (reset), 
-            .request    (any_group_member_req), 
-            .grant        (any_group_member_grant),
-            .any_grant    (any_grant),
-            .trigger(trigger_0),
-            .trace(trace_0)
+//     //arbiterate one request from each group
+//         arbiter #(
+//             .ARBITER_WIDTH    (GROUP_NUM)
+//         )second_arbiter
+//         (    
+//             .clk        (clk), 
+//             .reset        (reset), 
+//             .request    (any_group_member_req), 
+//             .grant        (any_group_member_grant),
+//             .any_grant    (any_grant),
+//             .trigger(trigger_0),
+//             .trace(trace_0)
         
             
-        );
+//         );
                 
     
  
- endmodule 
+//  endmodule 
  
 
 

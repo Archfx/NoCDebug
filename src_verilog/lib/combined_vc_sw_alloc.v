@@ -59,7 +59,9 @@ module combined_vc_sw_alloc #(
     pck_is_single_flit_all,
     granted_dst_is_from_a_single_flit_pck,
     clk,
-    reset
+    reset,
+    trigger,
+    trace
 
 );
 
@@ -95,6 +97,15 @@ module combined_vc_sw_alloc #(
     output [P-1 : 0] granted_dst_is_from_a_single_flit_pck;
     
     input clk,reset;
+
+    output trigger;
+    output [31:0] trace;
+
+    // always@(posedge clk) begin
+    //     // $display("comb_nonspec");//_0 %d, trace %b",trigger_0,trace_0);
+	// 	$display("combine_vc_sw_alloc- iiiiiiiiiiiiiiiiiiiiiii %d, trace %b",trigger_0,trace_0);
+    //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
+    // end
 
     generate
     /* verilator lint_off WIDTH */
@@ -268,7 +279,9 @@ module combined_vc_sw_alloc #(
                 .pck_is_single_flit_all(pck_is_single_flit_all),
                 .granted_dst_is_from_a_single_flit_pck(granted_dst_is_from_a_single_flit_pck),  
                 .clk(clk), 
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger),
+                .trace(trace)
             );
         end
         

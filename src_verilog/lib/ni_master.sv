@@ -670,7 +670,9 @@ module  ni_master #(
             .clk (clk),
             .reset (reset)
         );
-        
+        // always@(posedge clk) begin
+        //     $display ("ni master");
+        // end
         
         one_hot_to_bin #(
             .ONE_HOT_WIDTH(V),

@@ -459,6 +459,10 @@ generate
 			.clk (clk),
 			.reset (reset)
 		);
+
+        // always@(posedge clk) begin
+        //     $display ("wishbone_bus");
+        // end
 	end else begin // if we have just one master there is no needs for arbitration
 		assign m_grant_onehot = m_cyc_i_all;
 	end
@@ -484,16 +488,26 @@ module bus_arbiter # (
 	request,
 	grant,
 	clk,
-	reset
+	reset//,
+    // trigger,
+    // trace
 );
 
     input   [M-1    :       0]  request;
     output  [M-1    :       0]  grant;
     input                       clk, reset;
 
+    // output trigger;
+    // output [31:0] trace;
+
     wire                    comreq;
     wire    [M-1	:	0]	one_hot_arb_req, one_hot_arb_grant;
     reg     [M-1	:	0]	grant_registered;
+
+    wire trigger;
+    wire [31:0] trace;
+    
+    
 
     assign 	one_hot_arb_req	=	request  & {M{~comreq}};
     assign	grant					=	grant_registered;
@@ -518,9 +532,18 @@ module bus_arbiter # (
 	   .grant		(one_hot_arb_grant),
 	   .any_grant	(),
 	   .clk			(clk),
-	   .reset		(reset)
+	   .reset		(reset),
+       .trigger(trigger),
+       .trace(trace)
+
     );
 
+    // // Noc Dfd
+    // always@(posedge clk) begin
+    //     // $display("bus_arbiter");// %d, trace %b",trigger_0,trace_0);
+	// 	$display("bus_arbiter %d, trace %b",trigger,trace);
+    //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
+    // end
 
 
 

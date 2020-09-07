@@ -15,6 +15,8 @@
 | A12 |                |           |              |
 |     |                |           |              |
 
+# note : removed modules
+bus_arbiter
 
 <!-- | prop. | Formalization  | Assert | Branch | Module |
 |---|---|---|---|---|

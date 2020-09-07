@@ -178,159 +178,161 @@ endmodule
 
 
 
-module canonical_vc_alloc #(
-    parameter TREE_ARBITER_EN = 1,
-    parameter V = 4,
-    parameter P = 5
-)
-(
-    granted_ovc_num_all,
-    ivc_num_getting_ovc_grant,
-    ovc_allocated_all,
-    dest_port_all,
-    masked_ovc_request_all,
-    spec_ovc_num_all,
-    clk,
-    reset    
-);
+// module canonical_vc_alloc #(
+//     parameter TREE_ARBITER_EN = 1,
+//     parameter V = 4,
+//     parameter P = 5
+// )
+// (
+//     granted_ovc_num_all,
+//     ivc_num_getting_ovc_grant,
+//     ovc_allocated_all,
+//     dest_port_all,
+//     masked_ovc_request_all,
+//     spec_ovc_num_all,
+//     clk,
+//     reset    
+// );
 
+// //not used
 
-    localparam  
-        P_1 = P-1,//assumed that no port request for itself!
-        PV  = V * P,
-        PVV = PV * V,
-        PVP_1 = PV * P_1,
-        VP_1 = V * P_1;
+//     localparam  
+//         P_1 = P-1,//assumed that no port request for itself!
+//         PV  = V * P,
+//         PVV = PV * V,
+//         PVP_1 = PV * P_1,
+//         VP_1 = V * P_1;
         
-    //input/output
-    output [PVV-1:  0]  granted_ovc_num_all;
-    output [PV-1:  0]  ovc_allocated_all;
-    output [PV-1:  0] ivc_num_getting_ovc_grant;
-    input  [PVV-1:  0]  masked_ovc_request_all;
-    input  [PVP_1-1:  0]  dest_port_all;
-    output [PVV-1:  0]  spec_ovc_num_all;
-    input  clk,reset;
+//     //input/output
+//     output [PVV-1:  0]  granted_ovc_num_all;
+//     output [PV-1:  0]  ovc_allocated_all;
+//     output [PV-1:  0] ivc_num_getting_ovc_grant;
+//     input  [PVV-1:  0]  masked_ovc_request_all;
+//     input  [PVP_1-1:  0]  dest_port_all;
+//     output [PVV-1:  0]  spec_ovc_num_all;
+//     input  clk,reset;
 
     
-    wire    [V-1:  0]  ovc_granted_ivc [PV-1:  0]  ;
-    wire    [P_1-1: 0]  dest_port_ivc  [PV-1:  0]  ;
-    wire    [V-1:  0]  masked_ovc_request [PV-1:  0]  ;
-    wire    [V-1:  0] first_arbiter_grant [PV-1:  0]  ;
-    wire    [VP_1-1 : 0]  ovc_demuxed  [PV-1:  0]  ;
-    wire    [VP_1-1 : 0]  second_arbiter_request  [PV-1:  0]  ;
-    wire    [VP_1-1 : 0]  second_arbiter_grant [PV-1:  0]  ;
-    wire    [VP_1-1 : 0]  granted_ovc_array [PV-1:  0]  ;
-    genvar i,j;
+//     wire    [V-1:  0]  ovc_granted_ivc [PV-1:  0]  ;
+//     wire    [P_1-1: 0]  dest_port_ivc  [PV-1:  0]  ;
+//     wire    [V-1:  0]  masked_ovc_request [PV-1:  0]  ;
+//     wire    [V-1:  0] first_arbiter_grant [PV-1:  0]  ;
+//     wire    [VP_1-1 : 0]  ovc_demuxed  [PV-1:  0]  ;
+//     wire    [VP_1-1 : 0]  second_arbiter_request  [PV-1:  0]  ;
+//     wire    [VP_1-1 : 0]  second_arbiter_grant [PV-1:  0]  ;
+//     wire    [VP_1-1 : 0]  granted_ovc_array [PV-1:  0]  ;
+//     genvar i,j;
     
-    // wire trigger_0,trigger_1;
-    // wire [31:0] trace_0,trace_1;
+//     // wire trigger_0,trigger_1;
+//     // wire [31:0] trace_0,trace_1;
     
-    // always@(*) begin
-    //     $display("canonic_vc_alloc %d, trace %b",trigger_0,trace_0);
-	// 	$display("canonic_vc_alloc %d, trace %b",trigger_1,trace_1);
-    //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
-    // end
+//     always@(posedge clk) begin
+//         $display("canonic_arb");
+//         // $display("canonic_vc_alloc %d, trace %b",trigger_0,trace_0);
+// 		// $display("canonic_vc_alloc %d, trace %b",trigger_1,trace_1);
+//         // $display("input_queue_per_port %d, trace %b",trigger,trace);
+//     end
     
-    generate
+//     generate
     
        
-    // IVC loop
-    for(i=0;i< PV;i=i+1) begin :total_vc_loop
-       //seprate input/output
-       assign granted_ovc_num_all    [(i+1)*V-1:  i*V ] = ovc_granted_ivc[i] ;
-       assign masked_ovc_request     [i]  = masked_ovc_request_all[(i+1)*V-1:  i*V ];
-       assign dest_port_ivc   [i]    =   dest_port_all [(i+1)*P_1-1:  i*P_1   ];
+//     // IVC loop
+//     for(i=0;i< PV;i=i+1) begin :total_vc_loop
+//        //seprate input/output
+//        assign granted_ovc_num_all    [(i+1)*V-1:  i*V ] = ovc_granted_ivc[i] ;
+//        assign masked_ovc_request     [i]  = masked_ovc_request_all[(i+1)*V-1:  i*V ];
+//        assign dest_port_ivc   [i]    =   dest_port_all [(i+1)*P_1-1:  i*P_1   ];
        
-       //first level arbiter
-       arbiter #(
-        .ARBITER_WIDTH  (V)
-       )first_arbiter
-       (    
-        .clk        (clk), 
-        .reset       (reset), 
-        .request       (masked_ovc_request  [i]), 
-        .grant       (first_arbiter_grant[i]),
-        .any_grant   (),
-        .trigger(),
-        .trace()
-       );
+//        //first level arbiter
+//        arbiter #(
+//         .ARBITER_WIDTH  (V)
+//        )first_arbiter
+//        (    
+//         .clk        (clk), 
+//         .reset       (reset), 
+//         .request       (masked_ovc_request  [i]), 
+//         .grant       (first_arbiter_grant[i]),
+//         .any_grant   (),
+//         .trigger(),
+//         .trace()
+//        );
        
-       assign spec_ovc_num_all[(i+1)*V-1 :i*V]   = first_arbiter_grant[i];
-       //demultiplexer
+//        assign spec_ovc_num_all[(i+1)*V-1 :i*V]   = first_arbiter_grant[i];
+//        //demultiplexer
        
-       one_hot_demux    #(
-        .IN_WIDTH   (V),
-        .SEL_WIDTH  (P_1)
-       )demux
-       (
-        .demux_sel  (dest_port_ivc [i]),//selectore
-        .demux_in   (first_arbiter_grant[i]),//repeated
-        .demux_out  (ovc_demuxed[i])
-       );
+//        one_hot_demux    #(
+//         .IN_WIDTH   (V),
+//         .SEL_WIDTH  (P_1)
+//        )demux
+//        (
+//         .demux_sel  (dest_port_ivc [i]),//selectore
+//         .demux_in   (first_arbiter_grant[i]),//repeated
+//         .demux_out  (ovc_demuxed[i])
+//        );
        
-       //second arbiter input/output generate
+//        //second arbiter input/output generate
        
 
-       for(j=0;j<PV;    j=j+1)begin: assign_loop2
-        if((i/V)<(j/V))begin: jj
-              assign second_arbiter_request[i][j-V] = ovc_demuxed[j][i] ;
-              assign granted_ovc_array[j][i]    = second_arbiter_grant  [i][j-V]    ;
-        end else if((i/V)>(j/V)) begin: hh
-              assign second_arbiter_request[i][j]   = ovc_demuxed[j][i-V]   ;
-              assign granted_ovc_array[j][i-V]  = second_arbiter_grant  [i][j]  ;
-        end
-        //if(i==j)  s are left disconnected  
+//        for(j=0;j<PV;    j=j+1)begin: assign_loop2
+//         if((i/V)<(j/V))begin: jj
+//               assign second_arbiter_request[i][j-V] = ovc_demuxed[j][i] ;
+//               assign granted_ovc_array[j][i]    = second_arbiter_grant  [i][j-V]    ;
+//         end else if((i/V)>(j/V)) begin: hh
+//               assign second_arbiter_request[i][j]   = ovc_demuxed[j][i-V]   ;
+//               assign granted_ovc_array[j][i-V]  = second_arbiter_grant  [i][j]  ;
+//         end
+//         //if(i==j)  s are left disconnected  
        
-       end
+//        end
     
        
-       //second level arbiter 
-       if(TREE_ARBITER_EN) begin :tree 
-        tree_arbiter #(
-              .GROUP_NUM (P_1),
-              .ARBITER_WIDTH (VP_1)
-        )
-        second_arbiter
-        (   
-              .clk (clk), 
-              .reset (reset), 
-              .request (second_arbiter_request[i]), 
-              .grant (second_arbiter_grant  [i]),
-              .any_grant (ovc_allocated_all[i])
-        );
-       end else begin :arb
-        arbiter #(
-              .ARBITER_WIDTH    (VP_1)
-        )
-        second_arbiter
-        (   
-              .clk (clk), 
-              .reset (reset), 
-              .request (second_arbiter_request[i]), 
-              .grant (second_arbiter_grant  [i]),
-              .any_grant (ovc_allocated_all[i]),
-              .trigger(),
-              .trace()
-        );
-       end
+//        //second level arbiter 
+//        if(TREE_ARBITER_EN) begin :tree 
+//         tree_arbiter #(
+//               .GROUP_NUM (P_1),
+//               .ARBITER_WIDTH (VP_1)
+//         )
+//         second_arbiter
+//         (   
+//               .clk (clk), 
+//               .reset (reset), 
+//               .request (second_arbiter_request[i]), 
+//               .grant (second_arbiter_grant  [i]),
+//               .any_grant (ovc_allocated_all[i])
+//         );
+//        end else begin :arb
+//         arbiter #(
+//               .ARBITER_WIDTH    (VP_1)
+//         )
+//         second_arbiter
+//         (   
+//               .clk (clk), 
+//               .reset (reset), 
+//               .request (second_arbiter_request[i]), 
+//               .grant (second_arbiter_grant  [i]),
+//               .any_grant (ovc_allocated_all[i]),
+//               .trigger(),
+//               .trace()
+//         );
+//        end
        
-       custom_or #(
-        .IN_NUM (P_1),
-        .OUT_WIDTH (V)
+//        custom_or #(
+//         .IN_NUM (P_1),
+//         .OUT_WIDTH (V)
         
-       )
-       or_gate
-       (
-        .or_in  (granted_ovc_array[i]),
-        .or_out (ovc_granted_ivc[i])
-       );
+//        )
+//        or_gate
+//        (
+//         .or_in  (granted_ovc_array[i]),
+//         .or_out (ovc_granted_ivc[i])
+//        );
        
-       assign ivc_num_getting_ovc_grant[i]  =   |ovc_granted_ivc[i];
+//        assign ivc_num_getting_ovc_grant[i]  =   |ovc_granted_ivc[i];
        
-    end//for
-    endgenerate
+//     end//for
+//     endgenerate
     
-endmodule  
+// endmodule  
 
 
  /*************************************
