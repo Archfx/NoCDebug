@@ -39,161 +39,166 @@
 
  `timescale  1ns/1ps
 
-module  wrra #(
-    parameter ARBITER_WIDTH = 8,
-    parameter WEIGHTw = 4, // maximum weight size in bits
-    parameter EXT_P_EN = 1 
+// module  wrra #(
+//     parameter ARBITER_WIDTH = 8,
+//     parameter WEIGHTw = 4, // maximum weight size in bits
+//     parameter EXT_P_EN = 1 
         
-)
-(  
+// )
+// (  
    
-   ext_pr_en_i,
-   clk, 
-   reset, 
-   request, 
-   grant,
-   any_grant,
-   weight_array,
-   winner_weight_consumed
-);
+//    ext_pr_en_i,
+//    clk, 
+//    reset, 
+//    request, 
+//    grant,
+//    any_grant,
+//    weight_array,
+//    winner_weight_consumed
+// );
 
-    localparam WEIGHT_ARRAYw= WEIGHTw * ARBITER_WIDTH;
+//     localparam WEIGHT_ARRAYw= WEIGHTw * ARBITER_WIDTH;
 
-    input                                  ext_pr_en_i;
-    input     [ARBITER_WIDTH-1  :    0]    request;
-    output    [ARBITER_WIDTH-1  :    0]    grant;
-    output                                 any_grant;
-    input                                  clk;
-    input                                  reset;
-    input    [WEIGHT_ARRAYw-1   :   0]     weight_array;
-    output                                 winner_weight_consumed;
+//     input                                  ext_pr_en_i;
+//     input     [ARBITER_WIDTH-1  :    0]    request;
+//     output    [ARBITER_WIDTH-1  :    0]    grant;
+//     output                                 any_grant;
+//     input                                  clk;
+//     input                                  reset;
+//     input    [WEIGHT_ARRAYw-1   :   0]     weight_array;
+//     output                                 winner_weight_consumed;
 
 
-    wire [WEIGHTw-1 :   0] weight [ARBITER_WIDTH-1  :   0];
-    wire [ARBITER_WIDTH-1:  0] weight_counter_is_reset;
+//     wire [WEIGHTw-1 :   0] weight [ARBITER_WIDTH-1  :   0];
+//     wire [ARBITER_WIDTH-1:  0] weight_counter_is_reset;
     
-    genvar i;
-    generate 
-    for (i=0; i<ARBITER_WIDTH; i=i+1) begin : wcount 
-        // seperate wieghts
-        assign weight [i] = weight_array [ ((i+1)*WEIGHTw)-1    :   i*WEIGHTw];
+//     genvar i;
+//     generate 
+//     for (i=0; i<ARBITER_WIDTH; i=i+1) begin : wcount 
+//         // seperate wieghts
+//         assign weight [i] = weight_array [ ((i+1)*WEIGHTw)-1    :   i*WEIGHTw];
        
-        weight_counter #(
-            .WEIGHTw(WEIGHTw)
-        )
-        w_counter
-        (
-            .load_i(1'b0),
-            .weight_i(weight [i]),
-            .reset(reset),
-            .clk(clk),
-            .decr(grant[i]),
-            .out(weight_counter_is_reset[i])
-        );
+//         weight_counter #(
+//             .WEIGHTw(WEIGHTw)
+//         )
+//         w_counter
+//         (
+//             .load_i(1'b0),
+//             .weight_i(weight [i]),
+//             .reset(reset),
+//             .clk(clk),
+//             .decr(grant[i]),
+//             .out(weight_counter_is_reset[i])
+//         );
     
-    end
-    endgenerate
+//     end
+//     endgenerate
     
-      
+//     always@(posedge clk) begin
+//         $display("6");
+//     end    
     
-    // one hot mux
+//     // one hot mux
     
-    one_hot_mux #(
-        .IN_WIDTH(ARBITER_WIDTH),
-        .SEL_WIDTH(ARBITER_WIDTH),
-        .OUT_WIDTH(1)
-    )
-    mux
-    (
-        .mux_in(weight_counter_is_reset),
-        .mux_out(winner_weight_consumed),
-        .sel(grant)
-    );
+//     one_hot_mux #(
+//         .IN_WIDTH(ARBITER_WIDTH),
+//         .SEL_WIDTH(ARBITER_WIDTH),
+//         .OUT_WIDTH(1)
+//     )
+//     mux
+//     (
+//         .mux_in(weight_counter_is_reset),
+//         .mux_out(winner_weight_consumed),
+//         .sel(grant)
+//     );
     
-    wire priority_en = (EXT_P_EN == 1) ? ext_pr_en_i & winner_weight_consumed : winner_weight_consumed;
+//     wire priority_en = (EXT_P_EN == 1) ? ext_pr_en_i & winner_weight_consumed : winner_weight_consumed;
 
-    //round robin arbiter with external priority
+//     //round robin arbiter with external priority
 
-     arbiter_priority_en #(
-        .ARBITER_WIDTH(ARBITER_WIDTH)
-    )
-    rra
-    (
-        .request(request),
-        .grant(grant),
-        .any_grant(any_grant),
-        .clk(clk),
-        .reset(reset),
-        .priority_en(priority_en)
-    );
+//      arbiter_priority_en #(
+//         .ARBITER_WIDTH(ARBITER_WIDTH)
+//     )
+//     rra
+//     (
+//         .request(request),
+//         .grant(grant),
+//         .any_grant(any_grant),
+//         .clk(clk),
+//         .reset(reset),
+//         .priority_en(priority_en)
+//     );
 
-endmodule
-
-
+// endmodule
 
 
 
 
-module  rra_priority_lock #(
-    parameter    ARBITER_WIDTH    =8        
-)
-(  
+
+
+// module  rra_priority_lock #(
+//     parameter    ARBITER_WIDTH    =8        
+// )
+// (  
    
-   ext_pr_en_i,
-   winner_weight_consumed,
-   pr_en_array_i,
+//    ext_pr_en_i,
+//    winner_weight_consumed,
+//    pr_en_array_i,
    
-   clk, 
-   reset, 
+//    clk, 
+//    reset, 
   
-   request, 
-   grant,
-   any_grant
-);
+//    request, 
+//    grant,
+//    any_grant
+// );
 
     
-    input     [ARBITER_WIDTH-1:     0]     pr_en_array_i;
-    input                                  ext_pr_en_i;
-    output                                 winner_weight_consumed;
-    input     [ARBITER_WIDTH-1  :    0]    request;
-    output    [ARBITER_WIDTH-1  :    0]    grant;
-    output                                 any_grant;
-    input                                  clk;
-    input                                  reset;  
+//     input     [ARBITER_WIDTH-1:     0]     pr_en_array_i;
+//     input                                  ext_pr_en_i;
+//     output                                 winner_weight_consumed;
+//     input     [ARBITER_WIDTH-1  :    0]    request;
+//     output    [ARBITER_WIDTH-1  :    0]    grant;
+//     output                                 any_grant;
+//     input                                  clk;
+//     input                                  reset;  
     
+//     // always@(posedge clk) begin
+//     //     $display("7");
+//     // end  
     
-    // one hot mux
+//     // one hot mux
     
-    one_hot_mux #(
-        .IN_WIDTH(ARBITER_WIDTH),
-        .SEL_WIDTH(ARBITER_WIDTH),
-        .OUT_WIDTH(1)
-    )
-    mux
-    (
-        .mux_in(pr_en_array_i),
-        .mux_out(winner_weight_consumed),
-        .sel(grant)
-    );
+//     one_hot_mux #(
+//         .IN_WIDTH(ARBITER_WIDTH),
+//         .SEL_WIDTH(ARBITER_WIDTH),
+//         .OUT_WIDTH(1)
+//     )
+//     mux
+//     (
+//         .mux_in(pr_en_array_i),
+//         .mux_out(winner_weight_consumed),
+//         .sel(grant)
+//     );
     
-    wire priority_en = ext_pr_en_i & winner_weight_consumed;
+//     wire priority_en = ext_pr_en_i & winner_weight_consumed;
 
-    //round robin arbiter with external priority
+//     //round robin arbiter with external priority
 
-     arbiter_priority_en #(
-        .ARBITER_WIDTH(ARBITER_WIDTH)
-    )
-    rra
-    (
-        .request(request),
-        .grant(grant),
-        .any_grant(any_grant),
-        .clk(clk),
-        .reset(reset),
-        .priority_en(priority_en)
-    );
+//      arbiter_priority_en #(
+//         .ARBITER_WIDTH(ARBITER_WIDTH)
+//     )
+//     rra
+//     (
+//         .request(request),
+//         .grant(grant),
+//         .any_grant(any_grant),
+//         .clk(clk),
+//         .reset(reset),
+//         .priority_en(priority_en)
+//     );
 
-endmodule
+// endmodule
 
 
 

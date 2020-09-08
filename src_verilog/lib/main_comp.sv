@@ -53,9 +53,20 @@ module one_hot_mux #(
     (
         input [IN_WIDTH-1       :0] mux_in,
         output[OUT_WIDTH-1  :0] mux_out,
-        input[SEL_WIDTH-1   :0] sel
+        input[SEL_WIDTH-1   :0] selm,
+        // DfD
+        output trigger,
+        output [31:0] trace
 
     );
+
+        
+
+    // reg trigger_0;
+    // reg [31:0] trace_0;
+
+    assign trigger = 1'b0;
+    assign trace = 32'd0;
 
     wire [IN_WIDTH-1    :0] mask;
     wire [IN_WIDTH-1    :0] masked_mux_in;

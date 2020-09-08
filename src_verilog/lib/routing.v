@@ -432,54 +432,58 @@ Determine the next router address based on the packet destination port
 ********************************************************/
 
 
-module next_router_addr_selector_onehot #(
-    parameter P = 5,
-    parameter RXw = 3,  // The router's x dimention adress width in bits
-    parameter RYw = 3  // The router's y dimention adress width in bits
-    )
-    (
-    destport_onehot,
-    neighbors_rx,
-    neighbors_ry,
-    next_rx,
-    next_ry     
-    );
+// module next_router_addr_selector_onehot #(
+//     parameter P = 5,
+//     parameter RXw = 3,  // The router's x dimention adress width in bits
+//     parameter RYw = 3  // The router's y dimention adress width in bits
+//     )
+//     (
+//     destport_onehot,
+//     neighbors_rx,
+//     neighbors_ry,
+//     next_rx,
+//     next_ry     
+//     );
     
-    localparam
-        PRXw = P * RXw,
-        PRYw = P * RYw; 
+//     localparam
+//         PRXw = P * RXw,
+//         PRYw = P * RYw; 
     
-    input [P-1   :  0]  destport_onehot;
-    input [PRXw-1:  0]  neighbors_rx;
-    input [PRYw-1:  0]  neighbors_ry;
-    output[RXw-1  :    0]  next_rx;
-    output[RYw-1  :    0]  next_ry;  
+//     input [P-1   :  0]  destport_onehot;
+//     input [PRXw-1:  0]  neighbors_rx;
+//     input [PRYw-1:  0]  neighbors_ry;
+//     output[RXw-1  :    0]  next_rx;
+//     output[RYw-1  :    0]  next_ry;  
+
+//     always@(*) begin
+//         $display("9");
+//     end  
     
-    one_hot_mux #(
-        .IN_WIDTH(PRXw),
-        .SEL_WIDTH(P),
-        .OUT_WIDTH(RXw)
-    )
-    next_x_mux
-    (
-        .mux_in(neighbors_rx),
-        .mux_out(next_rx),
-        .sel(destport_onehot)
-    );
+//     one_hot_mux #(
+//         .IN_WIDTH(PRXw),
+//         .SEL_WIDTH(P),
+//         .OUT_WIDTH(RXw)
+//     )
+//     next_x_mux
+//     (
+//         .mux_in(neighbors_rx),
+//         .mux_out(next_rx),
+//         .sel(destport_onehot)
+//     );
     
-    one_hot_mux #(
-        .IN_WIDTH(PRYw),
-        .SEL_WIDTH(P),
-        .OUT_WIDTH(RYw)
-    )
-    next_y_mux
-    (
-        .mux_in(neighbors_ry),
-        .mux_out(next_ry),
-        .sel(destport_onehot)
-    );
+//     one_hot_mux #(
+//         .IN_WIDTH(PRYw),
+//         .SEL_WIDTH(P),
+//         .OUT_WIDTH(RYw)
+//     )
+//     next_y_mux
+//     (
+//         .mux_in(neighbors_ry),
+//         .mux_out(next_ry),
+//         .sel(destport_onehot)
+//     );
         
-endmodule    
+// endmodule    
 
 
 

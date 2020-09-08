@@ -156,10 +156,10 @@ module xy_mesh_routing #(
 
     always@(*) begin
         trigger_0=1'b1;
-        trace_0={3'b101,1'b0,28'(destport_next)};
+        trace_0={4'b1000,1'b0,27'(destport_next)};
         // $display("route_mesh %b, trace %b ",trigger_0,trace_0);
 
-        trigger_0=1'b0;
+        // trigger_0=1'b0;
         // $display("route_mesh %b",trigger_0);
 
     end

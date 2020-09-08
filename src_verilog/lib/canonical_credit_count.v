@@ -422,102 +422,106 @@ endmodule
         
 
 *************************************/
-module inport_module_can #(
-    parameter V = 4, // vc_num_per_port
-    parameter P    = 5 // router port num
-)(
-    flit_is_tail,
-    assigned_ovc_num,
-    spec_ovc_num,
-    nonspec_granted_dest_port,
-    spec_granted_dest_port,
-    nonspec_first_arbiter_granted_ivc,
-    spec_first_arbiter_granted_ivc,
-    credit_decreased,
-    ovc_released
+// module inport_module_can #(
+//     parameter V = 4, // vc_num_per_port
+//     parameter P    = 5 // router port num
+// )(
+//     flit_is_tail,
+//     assigned_ovc_num,
+//     spec_ovc_num,
+//     nonspec_granted_dest_port,
+//     spec_granted_dest_port,
+//     nonspec_first_arbiter_granted_ivc,
+//     spec_first_arbiter_granted_ivc,
+//     credit_decreased,
+//     ovc_released
     
-);    
+// );    
     
-    localparam      VV        =    V        *    V,
-                    P_1    =    P-1    ,
-                    VP_1    =    V        *     P_1;            
+//     localparam      VV        =    V        *    V,
+//                     P_1    =    P-1    ,
+//                     VP_1    =    V        *     P_1;            
                     
                     
                     
-    input    [V-1        :    0]    flit_is_tail;
-    input    [VV-1        :    0]    assigned_ovc_num;
-    input    [VV-1        :    0] spec_ovc_num;
-    input    [P_1-1    :    0]    nonspec_granted_dest_port;
-    input    [P_1-1    :    0]    spec_granted_dest_port;
-    input    [V-1        :    0]    nonspec_first_arbiter_granted_ivc;
-    input    [V-1        :    0] spec_first_arbiter_granted_ivc;
-    output[VP_1-1    :    0]    credit_decreased;
-    output[VP_1-1    :    0]    ovc_released;
+//     input    [V-1        :    0]    flit_is_tail;
+//     input    [VV-1        :    0]    assigned_ovc_num;
+//     input    [VV-1        :    0] spec_ovc_num;
+//     input    [P_1-1    :    0]    nonspec_granted_dest_port;
+//     input    [P_1-1    :    0]    spec_granted_dest_port;
+//     input    [V-1        :    0]    nonspec_first_arbiter_granted_ivc;
+//     input    [V-1        :    0] spec_first_arbiter_granted_ivc;
+//     output[VP_1-1    :    0]    credit_decreased;
+//     output[VP_1-1    :    0]    ovc_released;
     
     
     
-    wire [V-1        :    0] nonspec_muxout1,spec_muxout1;
-    wire                        muxout2;
-    wire [VP_1-1    :    0]    nonspec_credit_decreased,spec_credit_decreased;
-    // assigned ovc mux 
-    one_hot_mux #(
-        .IN_WIDTH    (VV),
-        .SEL_WIDTH  (V)
-    )assigned_ovc_mux
-    (
-        .mux_in        (assigned_ovc_num),
-        .mux_out        (nonspec_muxout1),
-        .sel            (nonspec_first_arbiter_granted_ivc)
-    );
+//     wire [V-1        :    0] nonspec_muxout1,spec_muxout1;
+//     wire                        muxout2;
+//     wire [VP_1-1    :    0]    nonspec_credit_decreased,spec_credit_decreased;
+//     // assigned ovc mux 
+//     always@(*) begin
+//         $display("2");
+//     end  
+
+//     one_hot_mux #(
+//         .IN_WIDTH    (VV),
+//         .SEL_WIDTH  (V)
+//     )assigned_ovc_mux
+//     (
+//         .mux_in        (assigned_ovc_num),
+//         .mux_out        (nonspec_muxout1),
+//         .sel            (nonspec_first_arbiter_granted_ivc)
+//     );
     
     
-    one_hot_mux #(
-        .IN_WIDTH    (VV),
-        .SEL_WIDTH  (V)
-    )spec_ovc_mux
-    (
-        .mux_in        (spec_ovc_num),
-        .mux_out        (spec_muxout1),
-        .sel            (spec_first_arbiter_granted_ivc)
-    );
-    // tail mux 
-    one_hot_mux #(
-        .IN_WIDTH    (V),
-        .SEL_WIDTH  (V)
-    )tail_mux
-    (
-        .mux_in        (flit_is_tail),
-        .mux_out        (muxout2),
-        .sel            (nonspec_first_arbiter_granted_ivc)
-    );
+//     one_hot_mux #(
+//         .IN_WIDTH    (VV),
+//         .SEL_WIDTH  (V)
+//     )spec_ovc_mux
+//     (
+//         .mux_in        (spec_ovc_num),
+//         .mux_out        (spec_muxout1),
+//         .sel            (spec_first_arbiter_granted_ivc)
+//     );
+//     // tail mux 
+//     one_hot_mux #(
+//         .IN_WIDTH    (V),
+//         .SEL_WIDTH  (V)
+//     )tail_mux
+//     (
+//         .mux_in        (flit_is_tail),
+//         .mux_out        (muxout2),
+//         .sel            (nonspec_first_arbiter_granted_ivc)
+//     );
     
     
-    one_hot_demux    #(
-        .IN_WIDTH    (V),
-        .SEL_WIDTH    (P_1)
+//     one_hot_demux    #(
+//         .IN_WIDTH    (V),
+//         .SEL_WIDTH    (P_1)
         
-    ) nonspecdemux
-    (
-        .demux_sel    (nonspec_granted_dest_port),//selectore
-        .demux_in    (nonspec_muxout1),//repeated
-        .demux_out    (nonspec_credit_decreased)
-    );
+//     ) nonspecdemux
+//     (
+//         .demux_sel    (nonspec_granted_dest_port),//selectore
+//         .demux_in    (nonspec_muxout1),//repeated
+//         .demux_out    (nonspec_credit_decreased)
+//     );
     
-    one_hot_demux    #(
-        .IN_WIDTH    (V),
-        .SEL_WIDTH    (P_1)
+//     one_hot_demux    #(
+//         .IN_WIDTH    (V),
+//         .SEL_WIDTH    (P_1)
         
-    ) specdemux
-    (
-        .demux_sel    (spec_granted_dest_port),//selectore
-        .demux_in    (spec_muxout1),//repeated
-        .demux_out    (spec_credit_decreased)
-    );
+//     ) specdemux
+//     (
+//         .demux_sel    (spec_granted_dest_port),//selectore
+//         .demux_in    (spec_muxout1),//repeated
+//         .demux_out    (spec_credit_decreased)
+//     );
     
-    assign ovc_released         = (muxout2)? nonspec_credit_decreased : {VP_1{1'b0}};
-    assign credit_decreased    =    nonspec_credit_decreased | spec_credit_decreased;
+//     assign ovc_released         = (muxout2)? nonspec_credit_decreased : {VP_1{1'b0}};
+//     assign credit_decreased    =    nonspec_credit_decreased | spec_credit_decreased;
     
-endmodule
+// endmodule
 
 
 /**********************************
@@ -526,102 +530,105 @@ endmodule
 
 *********************************/
 
-module sw_mask_gen_can #(
-        parameter V = 4, // vc_num_per_port
-        parameter P    = 5 // router port num
-)(
-    assigned_ovc_num,
-    dest_port,
-    full,
-    credit_increased,
-    nearly_full,
-    ivc_getting_sw_grant,
-    assigned_ovc_is_full,
-    clk,reset
-);
-    localparam  P_1    =    P-1    ,
-                VP_1    =    V        *     P_1;                
+// module sw_mask_gen_can #(
+//         parameter V = 4, // vc_num_per_port
+//         parameter P    = 5 // router port num
+// )(
+//     assigned_ovc_num,
+//     dest_port,
+//     full,
+//     credit_increased,
+//     nearly_full,
+//     ivc_getting_sw_grant,
+//     assigned_ovc_is_full,
+//     clk,reset
+// );
+//     localparam  P_1    =    P-1    ,
+//                 VP_1    =    V        *     P_1;                
             
                     
-    input    [V-1            :    0]    assigned_ovc_num;
-    input    [P_1-1        :    0]    dest_port;
-    input    [VP_1-1        :    0]    full;
-    input    [VP_1-1        :    0]    credit_increased;
-    input    [VP_1-1        :    0]    nearly_full;
-    input                            ivc_getting_sw_grant;
-    output                        assigned_ovc_is_full;
-    input                         clk,reset;
+//     input    [V-1            :    0]    assigned_ovc_num;
+//     input    [P_1-1        :    0]    dest_port;
+//     input    [VP_1-1        :    0]    full;
+//     input    [VP_1-1        :    0]    credit_increased;
+//     input    [VP_1-1        :    0]    nearly_full;
+//     input                            ivc_getting_sw_grant;
+//     output                        assigned_ovc_is_full;
+//     input                         clk,reset;
 
 
-    wire        [VP_1-1        :    0]    full_muxin1,nearly_full_muxin1;
-    wire         [V-1            :    0]    full_muxout1,nearly_full_muxout1;
-    wire                                full_muxout2,nearly_full_muxout2;
-    reg    full_reg1,full_reg1_next;
-    reg    full_reg2,full_reg2_next;
+//     wire        [VP_1-1        :    0]    full_muxin1,nearly_full_muxin1;
+//     wire         [V-1            :    0]    full_muxout1,nearly_full_muxout1;
+//     wire                                full_muxout2,nearly_full_muxout2;
+//     reg    full_reg1,full_reg1_next;
+//     reg    full_reg2,full_reg2_next;
     
     
-    assign full_muxin1             = full & (~credit_increased);
-    assign nearly_full_muxin1     = nearly_full & (~credit_increased);
+//     assign full_muxin1             = full & (~credit_increased);
+//     assign nearly_full_muxin1     = nearly_full & (~credit_increased);
+    
+//     always@(posedge clk) begin
+//         $display("3");
+//     end  
+    
+//     // destport mux 
+//     one_hot_mux #(
+//         .IN_WIDTH    (VP_1),
+//         .SEL_WIDTH  (P_1)
+//     )full_mux1
+//     (
+//         .mux_in        (full_muxin1),
+//         .mux_out        (full_muxout1),
+//         .sel            (dest_port)
+//     );
+    
+//     one_hot_mux #(
+//         .IN_WIDTH    (VP_1),
+//         .SEL_WIDTH  (P_1)
+//     )nearly_full_mux1
+//     (
+//         .mux_in        (nearly_full_muxin1),
+//         .mux_out        (nearly_full_muxout1),
+//         .sel            (dest_port)
+//     );
+    
+//     // assigned ovc mux 
+//     one_hot_mux #(
+//         .IN_WIDTH    (V),
+//         .SEL_WIDTH  (V)
+//     )full_mux2
+//     (
+//         .mux_in        (full_muxout1),
+//         .mux_out        (full_muxout2),
+//         .sel            (assigned_ovc_num)
+//     );
     
     
-    // destport mux 
-    one_hot_mux #(
-        .IN_WIDTH    (VP_1),
-        .SEL_WIDTH  (P_1)
-    )full_mux1
-    (
-        .mux_in        (full_muxin1),
-        .mux_out        (full_muxout1),
-        .sel            (dest_port)
-    );
+//     one_hot_mux #(
+//         .IN_WIDTH    (V),
+//         .SEL_WIDTH  (V)
+//     )nearlfull_mux2
+//     (
+//         .mux_in        (nearly_full_muxout1),
+//         .mux_out        (nearly_full_muxout2),
+//         .sel            (assigned_ovc_num)
+//     );
     
-    one_hot_mux #(
-        .IN_WIDTH    (VP_1),
-        .SEL_WIDTH  (P_1)
-    )nearly_full_mux1
-    (
-        .mux_in        (nearly_full_muxin1),
-        .mux_out        (nearly_full_muxout1),
-        .sel            (dest_port)
-    );
+//     always @(*) begin 
+//         full_reg1_next    =    full_muxout2;
+//         full_reg2_next    =    nearly_full_muxout2 & ivc_getting_sw_grant;
+//     end
     
-    // assigned ovc mux 
-    one_hot_mux #(
-        .IN_WIDTH    (V),
-        .SEL_WIDTH  (V)
-    )full_mux2
-    (
-        .mux_in        (full_muxout1),
-        .mux_out        (full_muxout2),
-        .sel            (assigned_ovc_num)
-    );
+//     always @(posedge clk or posedge reset) begin 
+//         if(reset)  begin     
+//             full_reg1    <= 1'b0;
+//             full_reg2    <= 1'b0;
+//         end else begin 
+//             full_reg1    <= full_reg1_next;
+//             full_reg2    <= full_reg2_next;
+//         end
+//     end//always
     
+//     assign assigned_ovc_is_full    = full_reg1 | full_reg2;
     
-    one_hot_mux #(
-        .IN_WIDTH    (V),
-        .SEL_WIDTH  (V)
-    )nearlfull_mux2
-    (
-        .mux_in        (nearly_full_muxout1),
-        .mux_out        (nearly_full_muxout2),
-        .sel            (assigned_ovc_num)
-    );
-    
-    always @(*) begin 
-        full_reg1_next    =    full_muxout2;
-        full_reg2_next    =    nearly_full_muxout2 & ivc_getting_sw_grant;
-    end
-    
-    always @(posedge clk or posedge reset) begin 
-        if(reset)  begin     
-            full_reg1    <= 1'b0;
-            full_reg2    <= 1'b0;
-        end else begin 
-            full_reg1    <= full_reg1_next;
-            full_reg2    <= full_reg2_next;
-        end
-    end//always
-    
-    assign assigned_ovc_is_full    = full_reg1 | full_reg2;
-    
-endmodule
+// endmodule

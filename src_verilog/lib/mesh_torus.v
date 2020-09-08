@@ -670,52 +670,56 @@ module mesh_torus_port_selector #(
 
 
 
-module  mesh_torus_adaptive_dest_encoder #(
-    parameter V=4,
-    parameter P=5,
-    parameter DSTPw=P-1,
-    parameter Fw=37,
-    parameter DST_P_MSB=11, 
-    parameter DST_P_LSB=8
+// module  mesh_torus_adaptive_dest_encoder #(
+//     parameter V=4,
+//     parameter P=5,
+//     parameter DSTPw=P-1,
+//     parameter Fw=37,
+//     parameter DST_P_MSB=11, 
+//     parameter DST_P_LSB=8
 
-)(
-    sel,
-    flit_in,
-    dest_coded_out,
-    vc_num_delayed,
-    lk_dest
-);
+// )(
+//     sel,
+//     flit_in,
+//     dest_coded_out,
+//     vc_num_delayed,
+//     lk_dest
+// );
     
-    input [V-1 : 0]  sel;
-    output [DSTPw-1 : 0]dest_coded_out;
-    input [V-1 : 0]  vc_num_delayed;
-    input [DSTPw-1 : 0]  lk_dest;
-    input [Fw-1 : 0]  flit_in;
+//     input [V-1 : 0]  sel;
+//     output [DSTPw-1 : 0]dest_coded_out;
+//     input [V-1 : 0]  vc_num_delayed;
+//     input [DSTPw-1 : 0]  lk_dest;
+//     input [Fw-1 : 0]  flit_in;
 
-    wire [1 : 0]  ab,xy;
-    wire sel_muxed;
+//     wire [1 : 0]  ab,xy;
+//     wire sel_muxed;
 
-    one_hot_mux #(
-        .IN_WIDTH(V),
-        .SEL_WIDTH(V) 
-    )
-    sel_mux
-    (
-        .mux_in(sel),
-        .mux_out(sel_muxed),
-        .sel(vc_num_delayed)
-    );
+//     always@(*) begin
+//         $display("10");
+//     end  
+
+//     one_hot_mux #(
+//         .IN_WIDTH(V),
+//         .SEL_WIDTH(V) 
+//     )
+//     sel_mux
+//     (
+//         .mux_in(sel),
+//         .mux_out(sel_muxed),
+//         .sel(vc_num_delayed)
+//     );
     
     
-    //lkdestport = {lkdestport_x[1:0],lkdestport_y[1:0]};
-    // sel: 0: xdir     1: ydir
-    assign ab = (sel_muxed)? lk_dest[1:0] : lk_dest[3:2];
-    //if ab==00 change x and y direction
-    assign xy = (ab>0)? flit_in[DST_P_MSB  : DST_P_LSB+2] : ~flit_in[DST_P_MSB  : DST_P_LSB+2] ;
+//     //lkdestport = {lkdestport_x[1:0],lkdestport_y[1:0]};
+//     // sel: 0: xdir     1: ydir
+//     assign ab = (sel_muxed)? lk_dest[1:0] : lk_dest[3:2];
+//     //if ab==00 change x and y direction
+//     assign xy = (ab>0)? flit_in[DST_P_MSB  : DST_P_LSB+2] : ~flit_in[DST_P_MSB  : DST_P_LSB+2] ;
 
-    assign dest_coded_out={xy,ab};
+//     assign dest_coded_out={xy,ab};
 
-endmodule
+// endmodule
 
 
 

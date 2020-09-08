@@ -123,7 +123,7 @@ module arbiter #(
         end
         else begin
             trigger_0 <= 1'b1;
-            trace_0={3'b101,1'b0,28'(request)};
+            trace_0={4'b1011,1'b0,27'(request)};
         end
 
         for(j=0;j<$size(request_flag);j=j+1) begin :loop1
@@ -133,7 +133,7 @@ module arbiter #(
                 // $display("Flag raised");
                 if (grant[j]==1'b1) begin
                     trigger_0 <= 1'b1;
-                    trace_0={3'b101,1'b0,28'(grant)};
+                    trace_0={4'b1011,1'b0,27'(grant)};
                     request_flag[j]<=1'b0;
                     #5
                     trigger_0 <= 1'b0;

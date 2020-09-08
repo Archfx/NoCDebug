@@ -252,7 +252,9 @@ assign	m_ack_o_all	=	m_grant_onehot	& {M{any_s_ack}};
 assign	m_err_o_all	=	m_grant_onehot	& {M{any_s_err}}; 
 assign	m_rty_o_all	=	m_grant_onehot	& {M{any_s_rty}};
 
-
+// always@(posedge clk) begin
+//     $display("8");
+// end  
 
     		
 //convert one hot to bin 

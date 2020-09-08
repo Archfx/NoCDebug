@@ -15,12 +15,13 @@
 | A12 |                |           |              |
 |     |                |           |              |
 
-# note : removed modules
+### note : removed modules
 bus_arbiter, 
 sw_alloc_sub2, 
 spec_sw_alloc_sub2, 
 sw_alloc_sub,
-packet_gen
+packet_gen,
+wrra
 
 <!-- | prop. | Formalization  | Assert | Branch | Module |
 |---|---|---|---|---|

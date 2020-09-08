@@ -254,7 +254,10 @@ module comb_nonspec_allocator #(
             
             assign first_arbiter_granted_ivc_per_port[i]=first_arbiter_granted_ivc_all[(i+1)*V-1 : i*V];
             assign granted_dest_port_per_port[i]=granted_dest_port_all[(i+1)*P_1-1 : i*P_1];
-            
+        
+        // always@(posedge clk) begin
+        //     $display("4");
+        // end      
         
         // multiplex candidate OVC of first level switch allocatore winner    
         one_hot_mux #(
@@ -683,6 +686,9 @@ module nonspec_sw_alloc #(
             .trace(trace_0)
         );
         
+        // always@(posedge clk) begin
+        //     $display("5");
+        // end  
         
   
         //destination port multiplexer
@@ -700,6 +706,9 @@ module nonspec_sw_alloc #(
         if(MIN_PCK_SIZE == 1) begin :single_flit_supported             
             //single_flit req multiplexer
             assign pck_is_single_flit[i] = pck_is_single_flit_all [(i+1)*V-1 : i*V];
+            // always@(posedge clk) begin
+            //     $display("4");
+            // end  
             one_hot_mux #(
                 .IN_WIDTH       (V),
                 .SEL_WIDTH      (V)
@@ -853,8 +862,10 @@ module swa_input_port_arbiter #(
     /* verilator lint_off WIDTH */
     if(ARBITER_TYPE != "RRA") begin : wrra_m
     /* verilator lint_on WIDTH */
-        
-        // one hot mux    
+        // always@(posedge clk) begin
+        //     $display("18");
+        // end
+        // one hot mux   -Not used 
         one_hot_mux #(
             .IN_WIDTH(ARBITER_WIDTH),
             .SEL_WIDTH(ARBITER_WIDTH),

@@ -321,10 +321,10 @@ generate
                 //b1.1 //A1.1
                 if (wr[i] && (!rd[i] && !(depth[i] == B) || rd[i])) begin
                     trigger_1[i]<=1'd1;
-                    trace_1[i]<={3'b001,1'b0,28'(wr_ptr[i])};
+                    trace_1[i]<={4'b0001,1'b0,27'(wr_ptr[i])};
                     $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
                     #1
-                    trace_1[i]<={3'b001,1'b0,28'(wr_ptr[i])};
+                    trace_1[i]<={4'b0001,1'b0,27'(wr_ptr[i])};
                     #1
                     trigger_1[i]<=1'd0;
                     // if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
@@ -333,10 +333,10 @@ generate
                 //b1.2 //A1.2
                 if (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) begin
                     trigger_1[i]<=1'd1;
-                    trace_1[i]<={3'b001,1'b0,28'(rd_ptr[i])};
+                    trace_1[i]<={4'b0001,1'b0,27'(rd_ptr[i])};
                     $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
                     #1
-                    trace_1[i]<={3'b001,1'b1,28'(rd_ptr[i])};
+                    trace_1[i]<={4'b0001,1'b1,27'(rd_ptr[i])};
                     #1
                     trigger_1[i]<=1'd0;
                     // if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
@@ -345,10 +345,10 @@ generate
                 //b3.1 //A3.1 trying to write to full buffer
                 if (wr[i] && !rd[i] && (depth[i] == B) ) begin
                     trigger_2[i]<=1'd1;
-                    trace_2[i]<={3'b011,1'b0,28'(wr_ptr[i])};
+                    trace_2[i]<={4'b0011,1'b0,27'(wr_ptr[i])};
                     $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
                     #1
-                    trace_2[i]<={3'b011,1'b0,28'(wr_ptr[i])};
+                    trace_2[i]<={4'b0011,1'b0,27'(wr_ptr[i])};
                     #1
                     trigger_2[i]<=1'd0;
                     // if ( wr_ptr[i]== wr_ptr_check[i] ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
@@ -357,10 +357,10 @@ generate
                 //b3.2 trying to read from empty buffer
                 if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
                     trigger_2[i]<=1'd1;
-                    trace_2[i]<={3'b011,1'b1,28'(rd_ptr[i])};
+                    trace_2[i]<={4'b0011,1'b1,27'(rd_ptr[i])};
                     $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
                     #1
-                    trace_2[i]<={3'b011,1'b1,28'(rd_ptr[i])};
+                    trace_2[i]<={4'b0011,1'b1,27'(rd_ptr[i])};
                     #1
                     trigger_2[i]<=1'd0;
                     // if ( rd_ptr[i]== rd_ptr_check[i] )  $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
