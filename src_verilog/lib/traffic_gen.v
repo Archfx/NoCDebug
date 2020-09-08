@@ -831,149 +831,170 @@ endmodule
  **************************************/
  
  
- module packet_gen #(   
-    parameter P = 5,    
-    parameter T1= 4,    
-    parameter T2= 4,
-    parameter T3= 4,
-    parameter RAw = 3,  
-    parameter EAw = 3, 
-    parameter TOPOLOGY  = "MESH",
-    parameter DSTPw = 4,
-    parameter ROUTE_NAME = "XY",
-    parameter ROUTE_TYPE = "DETERMINISTIC",
-    parameter MAX_PCK_NUM   = 10000,
-    parameter MAX_SIM_CLKs  = 100000,
-    parameter TIMSTMP_FIFO_NUM=16,
-    parameter MIN_PCK_SIZE=2
+//  module packet_gen #(   
+//     parameter P = 5,    
+//     parameter T1= 4,    
+//     parameter T2= 4,
+//     parameter T3= 4,
+//     parameter RAw = 3,  
+//     parameter EAw = 3, 
+//     parameter TOPOLOGY  = "MESH",
+//     parameter DSTPw = 4,
+//     parameter ROUTE_NAME = "XY",
+//     parameter ROUTE_TYPE = "DETERMINISTIC",
+//     parameter MAX_PCK_NUM   = 10000,
+//     parameter MAX_SIM_CLKs  = 100000,
+//     parameter TIMSTMP_FIFO_NUM=16,
+//     parameter MIN_PCK_SIZE=2
  
- )(
-    clk_counter,
-    pck_wr,
-    pck_rd,
-    current_r_addr,
-    pck_number,
-    dest_e_addr,
-    pck_timestamp,
-    destport,
-    buffer_full,
-    pck_ready,
-    valid_dst,
-    clk,
-    reset 
- );
+//  )(
+//     clk_counter,
+//     pck_wr,
+//     pck_rd,
+//     current_r_addr,
+//     pck_number,
+//     dest_e_addr,
+//     pck_timestamp,
+//     destport,
+//     buffer_full,
+//     pck_ready,
+//     valid_dst,
+//     clk,
+//     reset,
+//     trigger,
+//     trace 
+//  );
  
  
-    function integer log2;
-      input integer number; begin   
-         log2=(number <=1) ? 1: 0;    
-         while(2**log2<number) begin    
-            log2=log2+1;    
-         end       
-      end   
-    endfunction // log2 
+//     function integer log2;
+//       input integer number; begin   
+//          log2=(number <=1) ? 1: 0;    
+//          while(2**log2<number) begin    
+//             log2=log2+1;    
+//          end       
+//       end   
+//     endfunction // log2 
      
-    localparam 
-        PCK_CNTw    =   log2(MAX_PCK_NUM+1),
-        CLK_CNTw    =   log2(MAX_SIM_CLKs+1);     
+//     localparam 
+//         PCK_CNTw    =   log2(MAX_PCK_NUM+1),
+//         CLK_CNTw    =   log2(MAX_SIM_CLKs+1);     
  
-    input  reset,clk, pck_wr, pck_rd;
-    input  [RAw-1  :0] current_r_addr;
-    input  [CLK_CNTw-1 :0] clk_counter;
+//     input  reset,clk, pck_wr, pck_rd;
+//     input  [RAw-1  :0] current_r_addr;
+//     input  [CLK_CNTw-1 :0] clk_counter;
      
-    output [PCK_CNTw-1 :0] pck_number;
-    input  [EAw-1  :0] dest_e_addr;
-    output [CLK_CNTw-1 :0] pck_timestamp;   
-    output buffer_full,pck_ready;
-    input  valid_dst; 
-    output [DSTPw-1    :0] destport; 
-    reg    [PCK_CNTw-1 :0] packet_counter;  
-    wire   buffer_empty; 
+//     output [PCK_CNTw-1 :0] pck_number;
+//     input  [EAw-1  :0] dest_e_addr;
+//     output [CLK_CNTw-1 :0] pck_timestamp;   
+//     output buffer_full,pck_ready;
+//     input  valid_dst; 
+//     output [DSTPw-1    :0] destport; 
+//     reg    [PCK_CNTw-1 :0] packet_counter;  
+//     wire   buffer_empty; 
  
-    assign pck_ready = ~buffer_empty & valid_dst;
+//     assign pck_ready = ~buffer_empty & valid_dst;
+
+//     // DfD
+//     output trigger;
+//     output [31:0] trace;
+   
+//     // wire trigger_0,trigger_1;
+//     // wire [31:0] trace_0,trace_1;
     
+//     // assign trigger = (trigger_0|trigger_1);
+// 	// assign trace = trigger_0? trace_0 : trace_1;
+    
+//     // Noc debug
+//     always@(posedge clk) begin
+//         // $display("input_queue_per_port_0 %d, trace %b",trigger_0,trace_0);
+// 		// $display("input_queue_per_port_1 %d, trace %b",trigger_1,trace_1);
+//         $display("packet gen %d, trace %b",trigger,trace);
+
+//     end
   
-    ni_conventional_routing #(
-        .TOPOLOGY(TOPOLOGY),
-        .ROUTE_NAME(ROUTE_NAME),
-        .ROUTE_TYPE(ROUTE_TYPE),
-        .T1(T1),
-        .T2(T2),
-        .T3(T3),
-        .RAw(RAw),
-        .EAw(EAw),
-        .DSTPw(DSTPw)
-    )
-    the_ni_conventional_routing
-    (
-        .reset(reset),
-        .clk(clk),
-        .current_r_addr(current_r_addr),
-        .dest_e_addr(dest_e_addr),
-        .destport(destport)
-    );
+//     ni_conventional_routing #(
+//         .TOPOLOGY(TOPOLOGY),
+//         .ROUTE_NAME(ROUTE_NAME),
+//         .ROUTE_TYPE(ROUTE_TYPE),
+//         .T1(T1),
+//         .T2(T2),
+//         .T3(T3),
+//         .RAw(RAw),
+//         .EAw(EAw),
+//         .DSTPw(DSTPw)
+//     )
+//     the_ni_conventional_routing
+//     (
+//         .reset(reset),
+//         .clk(clk),
+//         .current_r_addr(current_r_addr),
+//         .dest_e_addr(dest_e_addr),
+//         .destport(destport),
+//         .trigger(trigger),
+//         .trace(trace)
+//     );
 
-    wire timestamp_fifo_nearly_full , timestamp_fifo_full;
-    assign buffer_full = (MIN_PCK_SIZE==1) ? timestamp_fifo_nearly_full : timestamp_fifo_full;
+//     wire timestamp_fifo_nearly_full , timestamp_fifo_full;
+//     assign buffer_full = (MIN_PCK_SIZE==1) ? timestamp_fifo_nearly_full : timestamp_fifo_full;
 
 
-    wire recieve_more_than_0;
-    fwft_fifo #(
-        .DATA_WIDTH(CLK_CNTw),
-        .MAX_DEPTH(TIMSTMP_FIFO_NUM)        
-    )
-    timestamp_fifo
-    (
-        .din(clk_counter),
-        .wr_en(pck_wr),
-        .rd_en(pck_rd),
-        .dout(pck_timestamp),
-        .full(timestamp_fifo_full),
-        .nearly_full(timestamp_fifo_nearly_full),       
-        .recieve_more_than_0(recieve_more_than_0),
-        .recieve_more_than_1(),
-        .reset(reset),
-        .clk(clk)
-    );
+//     wire recieve_more_than_0;
+//     fwft_fifo #(
+//         .DATA_WIDTH(CLK_CNTw),
+//         .MAX_DEPTH(TIMSTMP_FIFO_NUM)        
+//     )
+//     timestamp_fifo
+//     (
+//         .din(clk_counter),
+//         .wr_en(pck_wr),
+//         .rd_en(pck_rd),
+//         .dout(pck_timestamp),
+//         .full(timestamp_fifo_full),
+//         .nearly_full(timestamp_fifo_nearly_full),       
+//         .recieve_more_than_0(recieve_more_than_0),
+//         .recieve_more_than_1(),
+//         .reset(reset),
+//         .clk(clk)
+//     );
     
-    assign buffer_empty = ~recieve_more_than_0;
+//     assign buffer_empty = ~recieve_more_than_0;
     
-    /*
+//     /*
 
-    fifo #(
-        .Dw(CLK_CNTw),
-        .B(TIMSTMP_FIFO_NUM)
-    )
-    timestamp_fifo
-    (
-        .din(clk_counter),
-        .wr_en(pck_wr),
-        .rd_en(pck_rd),
-        .dout(pck_timestamp),
-        .full(timestamp_fifo_full),
-        .nearly_full(timestamp_fifo_nearly_full),
-        .empty(buffer_empty),
-        .reset(reset),
-        .clk(clk)
-    );
-    */ 
+//     fifo #(
+//         .Dw(CLK_CNTw),
+//         .B(TIMSTMP_FIFO_NUM)
+//     )
+//     timestamp_fifo
+//     (
+//         .din(clk_counter),
+//         .wr_en(pck_wr),
+//         .rd_en(pck_rd),
+//         .dout(pck_timestamp),
+//         .full(timestamp_fifo_full),
+//         .nearly_full(timestamp_fifo_nearly_full),
+//         .empty(buffer_empty),
+//         .reset(reset),
+//         .clk(clk)
+//     );
+//     */ 
     
-    always @ (posedge clk or posedge reset) begin 
-        if(reset) begin 
-            packet_counter <= {PCK_CNTw{1'b0}};
+//     always @ (posedge clk or posedge reset) begin 
+//         if(reset) begin 
+//             packet_counter <= {PCK_CNTw{1'b0}};
             
-        end else begin 
-              if(pck_rd) begin 
-                packet_counter <= packet_counter+1'b1;
+//         end else begin 
+//               if(pck_rd) begin 
+//                 packet_counter <= packet_counter+1'b1;
                 
-            end
-        end
-    end
+//             end
+//         end
+//     end
  
-    assign pck_number = packet_counter;
+//     assign pck_number = packet_counter;
    
    
-endmodule    
+// endmodule    
  
  
  

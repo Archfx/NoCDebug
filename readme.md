@@ -16,7 +16,11 @@
 |     |                |           |              |
 
 # note : removed modules
-bus_arbiter
+bus_arbiter, 
+sw_alloc_sub2, 
+spec_sw_alloc_sub2, 
+sw_alloc_sub,
+packet_gen
 
 <!-- | prop. | Formalization  | Assert | Branch | Module |
 |---|---|---|---|---|

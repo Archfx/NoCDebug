@@ -50,9 +50,9 @@ module xy_mesh_routing #(
     current_y,    // current router y address
     dest_x,        // destination x address
     dest_y,        // destination y address
-    destport//,   // router output port
-    // trigger,
-    // trace    
+    destport,   // router output port
+    trigger,
+    trace    
 );
     
 
@@ -80,14 +80,14 @@ module xy_mesh_routing #(
     input  [Yw-1        :0]    dest_y;
     output [DSTw-1            :0]    destport;
     // DfD
-    // output trigger;
-    // output [31:0] trace;
+    output trigger;
+    output [31:0] trace;
 
     reg trigger_0;
     reg [31:0] trace_0;
     
-    // assign trigger = trigger_0;
-    // assign trace = trace_0;
+    assign trigger = 1'b0;//trigger_0;
+    assign trace = 32'd0;//trace_0;
 
     localparam  LOCAL    =    (OUT_BIN==1)?    0    :  1 ,//5'b00001
                 EAST     =    (OUT_BIN==1)?    1    :  2 ,//5'b00010 

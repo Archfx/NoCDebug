@@ -356,15 +356,16 @@ module input_queue_per_port  #(
     input   [PPSw-1 : 0] port_pre_sel;
     input   [V-1  : 0]  swap_port_presel;
 
-    // Trace
+    // DfD
     output trigger;
     output [31:0] trace;
    
-    // wire trigger_0,trigger_1;
-    // wire [31:0] trace_0,trace_1;
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
+    
+    assign trigger = (trigger_0|trigger_1);
+	assign trace = trigger_0? trace_0 : trace_1;
 
-    // assign trigger = 1'b0;// COMBINATION_TYPE == "COMB_NONSPEC" ? trigger_0 :trigger_1;
-    // assign trace = 32'b0;//COMBINATION_TYPE == "COMB_NONSPEC" ? trace_0 : trace_1;
   
             
     
@@ -776,8 +777,8 @@ generate
             .reset(reset),
             .clk(clk),
             .ssa_rd(ssa_ivc_num_getting_sw_grant),
-            .trigger(trigger),
-            .trace(trace)
+            .trigger(trigger_0),
+            .trace(trace_0)
         );
    
     // end else begin :spec//not nonspec comb
@@ -810,7 +811,7 @@ generate
   
     // end  
     // Dfd Debug
-    // always@(*) begin
+    // always@(posedge clk) begin
     //     $display("input_queue_per_port_0 %d, trace %b",trigger_0,trace_0);
 	// 	$display("input_queue_per_port_1 %d, trace %b",trigger_1,trace_1);
     //     $display("input_queue_per_port %d, trace %b",trigger,trace);
@@ -841,7 +842,9 @@ generate
         .destport_encoded(destport_in_encoded),
         .lkdestport_encoded(lk_destination_in_encoded),
         .reset(reset),
-        .clk(clk)
+        .clk(clk),
+        .trigger(trigger_1),
+        .trace(trace_1)
      );
 
     header_flit_update_lk_route_ovc #(

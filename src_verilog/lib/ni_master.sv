@@ -168,9 +168,15 @@ module  ni_master #(
       //Interrupt  interface
     output                          irq;  
 
-     //DfD
+    // DfD
     output trigger;
     output [31:0] trace;
+   
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
+    
+    assign trigger = (trigger_0|trigger_1);
+	assign trace = trigger_0? trace_0 : trace_1;
   
     wire                            s_ack_o_next;    
     
@@ -722,7 +728,9 @@ module  ni_master #(
         .clk(clk),
         .current_r_addr(current_r_addr),
         .dest_e_addr(dest_e_addr),
-        .destport(destport)
+        .destport(destport),
+        .trigger(trigger_0),
+        .trace(trace_0)
     );
   
         
@@ -818,8 +826,8 @@ module  ni_master #(
         .reset(reset),
         .clk(clk),
         .ssa_rd({V{1'b0}}) ,
-        .trigger(trigger),
-        .trace(trace)  
+        .trigger(trigger_1),
+        .trace(trace_1)  
     ); 
     
    extract_header_flit_info #(
