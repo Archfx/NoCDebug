@@ -172,11 +172,11 @@ module  ni_master #(
     output trigger;
     output [31:0] trace;
    
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_0,trace_1;
+    wire trigger_0,trigger_1,trigger_2,trigger_3;
+    wire [31:0] trace_0,trace_1,trace_2,trace_3;
     
-    assign trigger = (trigger_0|trigger_1);
-	assign trace = trigger_0? trace_0 : trace_1;
+    assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : (trigger_2? trace_2 : trace_3));
   
     wire                            s_ack_o_next;    
     
@@ -663,7 +663,9 @@ module  ni_master #(
             .request (receive_vc_is_active),
             .grant  (receive_vc_enable),
             .clk (clk),
-            .reset (reset)
+            .reset (reset),
+            .trigger(trigger_0),
+            .trace(trace_0)
         );
                 
         bus_arbiter # (
@@ -674,8 +676,11 @@ module  ni_master #(
             .request (send_vc_is_active),
             .grant  (send_vc_enable),
             .clk (clk),
-            .reset (reset)
+            .reset (reset),
+            .trigger(trigger_1),
+            .trace(trace_1)
         );
+
         // always@(posedge clk) begin
         //     $display ("ni master");
         // end
@@ -687,7 +692,9 @@ module  ni_master #(
         send_en_conv
         (
             .one_hot_code(send_vc_enable),
-            .bin_code(send_enable_binary)
+            .bin_code(send_enable_binary),
+            .trigger(trigger_2),
+            .trace(trace_2)
         );
         
         
@@ -698,8 +705,11 @@ module  ni_master #(
         receive_en_conv
         (
             .one_hot_code(receive_vc_enable),
-            .bin_code(receive_enable_binary)
+            .bin_code(receive_enable_binary),
+            .trigger(trigger_3),
+            .trace(trace_3)
         );
+
         
         
     end else begin : single_channel // if we have just one channel there is no need for arbitration

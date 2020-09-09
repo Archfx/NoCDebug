@@ -178,6 +178,12 @@ module mor1k_tile #(
 	output trigger;
 	output [31:0] trace;
 
+	wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
+
+    assign trigger = (trigger_0|trigger_1);
+	assign trace = trigger_0? trace_0 : trace_1;
+
   	wire			 source_socket_clk_0_clk_o;
  	wire			 source_socket_reset_0_reset_o;
 
@@ -620,8 +626,8 @@ module mor1k_tile #(
 		.s_sel_i(ni_plug_wb_slave_0_sel_i),
 		.s_stb_i(ni_plug_wb_slave_0_stb_i),
 		.s_we_i(ni_plug_wb_slave_0_we_i),
-        .trigger(trigger),
-        .trace(trace)
+        .trigger(trigger_0),
+        .trace(trace_0)
 	);
  wb_single_port_ram #(
  		.Dw(ram_Dw),
@@ -719,7 +725,9 @@ module mor1k_tile #(
 		.s_tag_o_all(bus_socket_wb_slave_array_tag_o),
 		.s_we_o_all(bus_socket_wb_slave_array_we_o),
 		.snoop_adr_o(bus_socket_snoop_0_snoop_adr_o),
-		.snoop_en_o(bus_socket_snoop_0_snoop_en_o)
+		.snoop_en_o(bus_socket_snoop_0_snoop_en_o),
+        .trigger(trigger_1),
+        .trace(trace_1)
 	);
  
 

@@ -1388,7 +1388,9 @@ module parallel_count_normalize #(
     conv
     (
         .one_hot_code(one_hot_out),
-        .bin_code(out)
+        .bin_code(out),
+        .trigger(),
+        .trace()
     );
  
  

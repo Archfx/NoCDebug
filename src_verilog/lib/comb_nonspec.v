@@ -859,8 +859,8 @@ module swa_input_port_arbiter #(
     output trigger;
     output [31:0] trace;
 
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_0,trace_1;
+    wire trigger_0,trigger_1,trigger_2;
+    wire [31:0] trace_0,trace_1,trace_2;
     
     // always@(posedge clk) begin
     //     // $display("swa_input_port_arb");// %d, trace %b",trigger_0,trace_0);
@@ -893,7 +893,9 @@ module swa_input_port_arbiter #(
         wire priority_en = (EXT_P_EN == 1) ? ext_pr_en_i & winner_weight_consumed : winner_weight_consumed;
 
         //round robin arbiter with external priority
-    
+        assign trigger = trigger_1;
+        assign trace = trace_1;
+
         arbiter_priority_en #(
             .ARBITER_WIDTH(ARBITER_WIDTH)
         )
@@ -904,15 +906,17 @@ module swa_input_port_arbiter #(
             .any_grant(any_grant),
             .clk(clk),
             .reset(reset),
-            .priority_en(priority_en)
+            .priority_en(priority_en),
+            .trigger(trigger_1),
+            .trace(trace_1)
         );
     
     end else begin : rra_m //RRA
         assign winner_weight_consumed = 1'bx;
         if(EXT_P_EN==1) begin : arbiter_ext_en
             
-            assign trigger = 1'b0;
-            assign trace = 32'd0;
+            assign trigger = trigger_2;
+            assign trace = trace_2;
 
             arbiter_priority_en #(
                 .ARBITER_WIDTH (ARBITER_WIDTH)
@@ -924,7 +928,9 @@ module swa_input_port_arbiter #(
                 .request (request), 
                 .grant (grant),
                 .any_grant (any_grant ),
-                .priority_en (ext_pr_en_i)        
+                .priority_en (ext_pr_en_i),
+                .trigger(trigger_2),
+                .trace(trace_2)       
             );
             
  

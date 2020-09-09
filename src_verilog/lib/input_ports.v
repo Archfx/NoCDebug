@@ -360,11 +360,11 @@ module input_queue_per_port  #(
     output trigger;
     output [31:0] trace;
    
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_0,trace_1;
+    wire trigger_0,trigger_1,trigger_2;
+    wire [31:0] trace_0,trace_1,trace_2;
     
-    assign trigger = (trigger_0|trigger_1);
-	assign trace = trigger_0? trace_0 : trace_1;
+    assign trigger = (trigger_0|trigger_1|trigger_2);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1: trace_2);
 
   
             
@@ -870,7 +870,9 @@ generate
         .lk_dest_not_registered(lk_destination_in_encoded),
         .sel (sel),
         .reset (reset),
-        .clk (clk)
+        .clk (clk),
+        .trigger(trigger_2),
+        .trace(trace_2)
     );
     
     assign flit_wr =(flit_in_we )? vc_num_in : {V{1'b0}};

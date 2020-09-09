@@ -694,7 +694,9 @@ module remove_receive_port_one_hot #(
     )
     convert1(
         .one_hot_code(receiver_port),
-        .bin_code(receiver_port_bin)
+        .bin_code(receiver_port_bin),
+        .trigger(),
+        .trace()
     );
     
      one_hot_to_bin #(
@@ -703,8 +705,13 @@ module remove_receive_port_one_hot #(
     )
     convert2(
         .one_hot_code(destport_in),
-        .bin_code(destport_in_bin)
+        .bin_code(destport_in_bin),
+        .trigger(),
+        .trace()
     );
+    //  always@(*) begin
+    //     $display("arbsss4");
+    // end
     
     
     wire [Pw-1      :   0] temp;

@@ -191,11 +191,11 @@ module wishbone_bus #(
     output [31:0] trace;  
 
     // Trace
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_0,trace_1;  
+    wire trigger_0,trigger_1,trigger_2,trigger_3,trigger_4;
+    wire [31:0] trace_0,trace_1,trace_2,trace_3,trace_4;  
 
-	assign trigger = (trigger_0|trigger_1);
-	assign trace = trigger_0? trace_0 : trace_1;  
+	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3|trigger_4);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : (trigger_2? trace_2 : (trigger_3? trace_3: trace_4)));  
 
     wire	                    any_s_ack,any_s_err,any_s_rty;
     wire                        m_grant_we,m_grant_stb,m_grant_cyc;
@@ -278,7 +278,9 @@ assign	m_rty_o_all	=	m_grant_onehot	& {M{any_s_rty}};
     s_sel_conv
     (
     	.one_hot_code(s_sel_one_hot),
-    	.bin_code(s_sel_bin)
+    	.bin_code(s_sel_bin),
+        .trigger(trigger_2),
+        .trace(trace_2)
     );
 
 
@@ -289,7 +291,9 @@ assign	m_rty_o_all	=	m_grant_onehot	& {M{any_s_rty}};
     m_grant_conv
     (
     	.one_hot_code	(m_grant_onehot),
-    	.bin_code		(m_grant_bin)
+    	.bin_code		(m_grant_bin),
+        .trigger(trigger_3),
+        .trace(trace_3)
     );
 
 
@@ -477,7 +481,9 @@ generate
 			.request (m_cyc_i_all),
 			.grant	(m_grant_onehot),
 			.clk (clk),
-			.reset (reset)
+			.reset (reset),
+            .trigger(trigger_4),
+            .trace(trace_4)
 		);
 
         // always@(posedge clk) begin
@@ -485,6 +491,8 @@ generate
         // end
 	end else begin // if we have just one master there is no needs for arbitration
 		assign m_grant_onehot = m_cyc_i_all;
+        assign trigger_4 = 1'b0;
+        assign trace_4 = 32'd0;
 	end
 endgenerate
 
@@ -508,17 +516,17 @@ module bus_arbiter # (
 	request,
 	grant,
 	clk,
-	reset//,
-    // trigger,
-    // trace
+	reset,
+    trigger,
+    trace
 );
 
     input   [M-1    :       0]  request;
     output  [M-1    :       0]  grant;
     input                       clk, reset;
 
-    // output trigger;
-    // output [31:0] trace;
+    output trigger;
+    output [31:0] trace;
 
     wire                    comreq;
     wire    [M-1	:	0]	one_hot_arb_req, one_hot_arb_grant;
@@ -558,7 +566,7 @@ module bus_arbiter # (
 
     );
 
-    // // Noc Dfd
+    // Noc Dfd
     // always@(posedge clk) begin
     //     // $display("bus_arbiter");// %d, trace %b",trigger_0,trace_0);
 	// 	$display("bus_arbiter %d, trace %b",trigger,trace);

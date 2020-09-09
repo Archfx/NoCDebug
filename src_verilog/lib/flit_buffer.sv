@@ -85,11 +85,11 @@ module flit_buffer #(
     reg [V-1                  :   0] trigger_1,trigger_2;
     reg [31:0] trace_1 [V-1                  :   0];
     reg [31:0] trace_2 [V-1                  :   0];
-    wire trigger_3,trigger_4;
-    wire [31:0] trace_3,trace_4;
+    wire trigger_3,trigger_4,trigger_5,trigger_6;
+    wire [31:0] trace_3,trace_4,trace_5,trace_6;
 
-    assign trigger=(trigger_1[0] | trigger_1[1] | trigger_2[0] | trigger_2[1] | trigger_3 | trigger_4);
-    assign trace = trigger_1[0]? trace_1[0] : (trigger_1[1]? trace_1[1] : (trigger_2[0]? trace_2[0] :(trigger_2[1]? trace_2[1] : (trigger_3? trace_3 : trace_4))));
+    assign trigger=(trigger_1[0] | trigger_1[1] | trigger_2[0] | trigger_2[1] | trigger_3 | trigger_4 | trigger_5 | trigger_6);
+    assign trace = trigger_1[0]? trace_1[0] : (trigger_1[1]? trace_1[1] : (trigger_2[0]? trace_2[0] :(trigger_2[1]? trace_2[1] : (trigger_3? trace_3 : (trigger_4? trace_4 : (trigger_5? trace_5 : trace_6))))));
     
     // Noc debug
     // always@(*) begin
@@ -235,7 +235,9 @@ generate
     wr_vc_start_addr
     (
     .one_hot_code   (vc_num_wr),
-    .bin_code       (wr_select_addr)
+    .bin_code       (wr_select_addr),
+    .trigger(trigger_5),
+    .trace(trace_5)
 
     );
     
@@ -246,7 +248,9 @@ generate
     rd_vc_start_addr
     (
     .one_hot_code   (vc_num_rd),
-    .bin_code       (rd_select_addr)
+    .bin_code       (rd_select_addr),
+    .trigger(trigger_6),
+    .trace(trace_6)
 
     );
 

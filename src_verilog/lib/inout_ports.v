@@ -178,6 +178,12 @@ module inout_ports #(
     output trigger;
     output [31:0] trace;  
 
+    wire trigger_0,trigger_1,trigger_2;
+    wire [31:0] trace_0,trace_1,trace_2;
+    
+    assign trigger = (trigger_0|trigger_1|trigger_2);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : trace_2);
+
   
     wire [PVV-1 : 0] candidate_ovc_all;
     wire [PVDSTPw-1 : 0] dest_port_encoded_all;
@@ -370,7 +376,11 @@ generate
     //synthesis translate_on
             
     if( COMBINATION_TYPE==  "BASELINE") begin : canonical
-        
+        // always@(posedge clk) begin
+        //     $display("BASELINE");
+        // end 
+        // not in loop
+
         canonical_credit_counter #(
             .V   (V),
             .P   (P),
@@ -406,11 +416,17 @@ generate
             .ssa_ovc_allocated_all                   (ssa_ovc_allocated_all),
             .ssa_decreased_credit_in_ss_ovc_all      (ssa_decreased_credit_in_ss_ovc_all),
             .reset                                   (reset),
-            .clk                                     (clk)
+            .clk                                     (clk),
+            .trigger(),
+            .trace()
         );
         
         end //canonical
         else begin : noncanonical
+            // always@(posedge clk) begin
+            //     $display("noncanonical");
+            // end
+            // in loop
             
             credit_counter #(
                 .V                        (V),
@@ -446,7 +462,9 @@ generate
                 .ssa_decreased_credit_in_ss_ovc_all         (ssa_decreased_credit_in_ss_ovc_all),
                 .granted_dst_is_from_a_single_flit_pck      (granted_dst_is_from_a_single_flit_pck),
                 .reset                                      (reset),
-                .clk                                        (clk)
+                .clk                                        (clk),
+                .trigger(trigger_0),
+                .trace(trace_0)
             );
     
         end//noncanonical
@@ -482,7 +500,9 @@ endgenerate
     	.clk(clk),
     	.destport_clear_all(destport_clear_all),
     	.ivc_num_getting_ovc_grant(ivc_num_getting_ovc_grant),
-    	.ssa_ivc_num_getting_ovc_grant_all(ssa_ivc_num_getting_ovc_grant_all)
+    	.ssa_ivc_num_getting_ovc_grant_all(ssa_ivc_num_getting_ovc_grant_all),
+        .trigger(trigger_2),
+        .trace(trace_2)
     );
 
    
@@ -569,8 +589,8 @@ endgenerate
         .refresh_w_counter(refresh_w_counter),
         .reset (reset),
         .clk (clk),
-        .trigger(trigger),
-        .trace(trace)  
+        .trigger(trigger_1),
+        .trace(trace_1)  
 
     ); 
     // always@(*) begin
@@ -745,7 +765,9 @@ module  vc_alloc_request_gen #(
     clk,    
     destport_clear_all,
     ivc_num_getting_ovc_grant, 
-    ssa_ivc_num_getting_ovc_grant_all      
+    ssa_ivc_num_getting_ovc_grant_all,
+    trigger,
+    trace    
 );
 
     localparam  P_1     =   P-1,
@@ -769,7 +791,10 @@ module  vc_alloc_request_gen #(
     input  reset,clk;
     output [PVDSTPw-1 : 0] destport_clear_all;
     input [PV-1 : 0] ivc_num_getting_ovc_grant; 
-    input [PV-1 : 0] ssa_ivc_num_getting_ovc_grant_all;       
+    input [PV-1 : 0] ssa_ivc_num_getting_ovc_grant_all;
+    output trigger;
+    output [31:0] trace; 
+
     
         
     generate   
@@ -789,12 +814,20 @@ module  vc_alloc_request_gen #(
         	.ovc_is_assigned_all(ovc_is_assigned_all),
         	.dest_port_in_all(dest_port_decoded_all),
         	.masked_ovc_request_all(masked_ovc_request_all),
-        	.candidate_ovc_all(candidate_ovc_all)
+        	.candidate_ovc_all(candidate_ovc_all),
+            .trigger(trigger),
+            .trace(trace)
         );
         
         assign swap_port_presel = {PV{1'bx}};
         assign destport_clear_all={PVDSTPw{1'bx}};
         assign sel = {PV{1'bx}};
+        
+        // always@(posedge clk) begin
+        //     $display("DETERMINISTIC");
+        //     // $display("crossbar_0 %d, trace %b",trigger_0,trace_0);
+        //     // $display("crossbar %d, trace %b",trigger,trace);
+        // end
     
     end else begin: adptv     
       
@@ -823,12 +856,15 @@ module  vc_alloc_request_gen #(
       	.ivc_num_getting_ovc_grant(ivc_num_getting_ovc_grant),
       	.ssa_ivc_num_getting_ovc_grant_all(ssa_ivc_num_getting_ovc_grant_all),
       	.reset(reset),
-      	.clk(clk)
+      	.clk(clk),
+        .trigger(),
+        .trace()
       ); 
       
       end else begin :ml_mesh // there are several local ports connected to one router. 
       //select the port first then select the available vc
-        
+
+      // not used  
                 
         
          mesh_torus_dynamic_portsel_control #(
@@ -869,6 +905,11 @@ module  vc_alloc_request_gen #(
             .masked_ovc_request_all(masked_ovc_request_all),
             .candidate_ovc_all(candidate_ovc_all)
         );
+        // always@(posedge clk) begin
+        //     $display("ml_mesh");
+        //     // $display("crossbar_0 %d, trace %b",trigger_0,trace_0);
+        //     // $display("crossbar %d, trace %b",trigger,trace);
+        // end
                  
       
       end      

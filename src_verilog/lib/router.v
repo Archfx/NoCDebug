@@ -131,11 +131,11 @@ module router # (
     output [31:0] trace;
 
     // Trace
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_0,trace_1;
+    wire trigger_0,trigger_1,trigger_2;
+    wire [31:0] trace_0,trace_1,trace_2;
 
-    assign trigger = (trigger_0|trigger_1);
-	assign trace = trigger_0? trace_0 : trace_1 ;
+    assign trigger = (trigger_0|trigger_1|trigger_2);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : trace_2) ;
 
 
     
@@ -318,7 +318,9 @@ module router # (
         .flit_out_we_all (flit_out_we_all),
         .ssa_flit_wr_all (ssa_flit_wr_all),
         .clk (clk),
-        .reset (reset)
+        .reset (reset),
+        .trigger(trigger_2),
+        .trace(trace_2)
         
     );    
      

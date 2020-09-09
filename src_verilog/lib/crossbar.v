@@ -82,8 +82,8 @@ module crossbar #(
     output trigger;
     output [31:0] trace;
 
-    wire trigger_0;
-    wire [31:0] trace_0;
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
     
     
     
@@ -152,8 +152,8 @@ module crossbar #(
             );
         end else begin : binary
 
-            assign trigger = 1'b0;
-            assign trace = 32'd0;
+            assign trigger = trigger_1;
+            assign trace = trace_1;
         
             one_hot_to_bin #(
                 .ONE_HOT_WIDTH(P_1),
@@ -162,7 +162,9 @@ module crossbar #(
             conv
             (
                 .one_hot_code(mux_sel[i]),
-                .bin_code(mux_sel_bin[i])
+                .bin_code(mux_sel_bin[i]),
+                .trigger(trigger_1),
+                .trace(trace_1)
         
             );
             

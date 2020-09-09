@@ -60,11 +60,11 @@ module arbiter #(
     output trigger;
     output [31:0] trace;
 
-    reg trigger_0;
-    reg [31:0] trace_0;
+    reg trigger_0,trigger_1;
+    reg [31:0] trace_0,trace_1;
 
-    assign trigger = trigger_0;
-    assign trace = trace_0;
+    assign trigger = (1'b0 | trigger_1);//trigger_0;
+    assign trace = trigger_0? trace_0 :trace_1;
 
     generate 
     if(ARBITER_WIDTH==1)  begin: w1
@@ -81,7 +81,9 @@ module arbiter #(
             .reset         (reset), 
             .request        (request), 
             .grant        (grant),
-            .any_grant    (any_grant)
+            .any_grant    (any_grant),
+            .trigger(trigger_1),
+            .trace(trace_1)
         );
     
     end else begin : wb4
@@ -298,7 +300,9 @@ module arbiter_priority_en #(
    request, 
    grant,
    any_grant,
-   priority_en
+   priority_en,
+   trace,
+   trigger
 );
 
   
@@ -310,14 +314,25 @@ module arbiter_priority_en #(
     input                                                clk;
     input                                                reset;
     input                                              priority_en;
+    // DfD
+    output trigger;
+    output [31:0] trace;
+
+    wire trigger_0;
+    wire [31:0] trace_0; 
     
     
     generate 
     if(ARBITER_WIDTH==1)  begin: w1
+        assign trigger = 1'b0;
+	    assign trace = 32'd0;
         assign grant= request;
         assign any_grant =request;
     end else if(ARBITER_WIDTH<=4) begin: w4
         //my own arbiter 
+        assign trigger = trigger_0;
+	    assign trace = trace_0;
+
         my_one_hot_arbiter_priority_en #(
             .ARBITER_WIDTH    (ARBITER_WIDTH)
         )
@@ -328,11 +343,21 @@ module arbiter_priority_en #(
             .request        (request), 
             .grant        (grant),
             .any_grant    (any_grant),
-            .priority_en (priority_en)
+            .priority_en (priority_en),
+            .trigger(trigger_0),
+            .trace(trace_0)
             
         );
+        
+        // always@(posedge clk) begin
+        //     $display ("arbiter_priority_en");
+        // end
+
     
     end else begin :wb4
+        
+        assign trigger = 1'b0;
+	    assign trace = 32'd0;
         
         thermo_arbiter_priority_en #(
             .ARBITER_WIDTH    (ARBITER_WIDTH)
@@ -372,7 +397,9 @@ module my_one_hot_arbiter #(
     output    [ARBITER_WIDTH-1            :    0]    grant,
     output                                            any_grant,
     input                                                clk,
-    input                                                reset
+    input                                                reset,
+    output trigger,
+    output [31:0] trace
 );
    
     function integer log2;
@@ -393,9 +420,15 @@ module my_one_hot_arbiter #(
     )conv
     (
     .one_hot_code(grant),
-    .bin_code(grant_bcd)
+    .bin_code(grant_bcd),
+    .trigger(trigger),
+    .trace(trace)
 
     );
+
+    //  always@(posedge clk) begin
+    //     $display("arbsss3");
+    // end
     
     
     
@@ -519,7 +552,9 @@ module my_one_hot_arbiter_priority_en #(
     output                                            any_grant,
     input                                                clk,
     input                                                reset,
-    input                                                priority_en
+    input                                                priority_en,
+    output trigger,
+    output [31:0] trace
 );
    
     function integer log2;
@@ -540,8 +575,14 @@ module my_one_hot_arbiter_priority_en #(
     )conv 
     (
         .one_hot_code(grant),
-        .bin_code(grant_bcd)
+        .bin_code(grant_bcd),
+        .trigger(trigger),
+        .trace(trace)
     );
+
+    //  always@(*) begin
+    //     $display("arbsss2");
+    // end
     
     always@(posedge clk or posedge reset) begin
         if(reset) begin
@@ -926,51 +967,54 @@ endmodule
 
 *******************************/
 
-module my_one_hot_arbiter_ext_priority #(
-    parameter ARBITER_WIDTH =4
+// module my_one_hot_arbiter_ext_priority #(
+//     parameter ARBITER_WIDTH =4
     
     
-)
-(
-    input   [ARBITER_WIDTH-1            :   0]  request,
-    input   [ARBITER_WIDTH-1            :   0]  priority_in,
-    output  [ARBITER_WIDTH-1            :   0]  grant,
-    output                                      any_grant
-);
+// )
+// (
+//     input   [ARBITER_WIDTH-1            :   0]  request,
+//     input   [ARBITER_WIDTH-1            :   0]  priority_in,
+//     output  [ARBITER_WIDTH-1            :   0]  grant,
+//     output                                      any_grant
+// );
  
-    function integer log2;
-      input integer number; begin   
-         log2=(number <=1) ? 1: 0;    
-         while(2**log2<number) begin    
-            log2=log2+1;    
-         end 	   
-      end   
-    endfunction // log2 
+//     function integer log2;
+//       input integer number; begin   
+//          log2=(number <=1) ? 1: 0;    
+//          while(2**log2<number) begin    
+//             log2=log2+1;    
+//          end 	   
+//       end   
+//     endfunction // log2 
 
-    localparam ARBITER_BIN_WIDTH= log2(ARBITER_WIDTH);
-    wire    [ARBITER_BIN_WIDTH-1        :   0]  low_pr;
+//     localparam ARBITER_BIN_WIDTH= log2(ARBITER_WIDTH);
+//     wire    [ARBITER_BIN_WIDTH-1        :   0]  low_pr;
       
    
-    wire [ARBITER_WIDTH-1            :   0] low_pr_one_hot = {priority_in[0],priority_in[ARBITER_BIN_WIDTH-1:1]};
+//     wire [ARBITER_WIDTH-1            :   0] low_pr_one_hot = {priority_in[0],priority_in[ARBITER_BIN_WIDTH-1:1]};
     
-    one_hot_to_bin #(
-        .ONE_HOT_WIDTH    (ARBITER_WIDTH)
-    )conv 
-    (
-        .one_hot_code(low_pr_one_hot),
-        .bin_code(low_pr)
-    );
+//     one_hot_to_bin #(
+//         .ONE_HOT_WIDTH    (ARBITER_WIDTH)
+//     )conv 
+//     (
+//         .one_hot_code(low_pr_one_hot),
+//         .bin_code(low_pr)
+//     );
+//     always@(*) begin
+//         $display("arbsss");
+//     end
       
 
-    assign any_grant = | request;
+//     assign any_grant = | request;
 
-    generate 
-        if(ARBITER_WIDTH    ==2) begin: w2       arbiter_2_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
-        if(ARBITER_WIDTH    ==3) begin: w3       arbiter_3_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
-        if(ARBITER_WIDTH    ==4) begin: w4       arbiter_4_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
-    endgenerate
+//     generate 
+//         if(ARBITER_WIDTH    ==2) begin: w2       arbiter_2_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
+//         if(ARBITER_WIDTH    ==3) begin: w3       arbiter_3_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
+//         if(ARBITER_WIDTH    ==4) begin: w4       arbiter_4_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
+//     endgenerate
 
-endmodule
+// endmodule
 
 
 /*********************************

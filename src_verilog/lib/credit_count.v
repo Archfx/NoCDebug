@@ -58,7 +58,8 @@ module credit_counter #(
     ssa_ovc_allocated_all, 
     ssa_decreased_credit_in_ss_ovc_all,
     granted_dst_is_from_a_single_flit_pck,
-    reset,clk
+    reset,clk,
+    trigger,trace
 );
 
    
@@ -107,6 +108,22 @@ module credit_counter #(
     input  [PV-1       :    0] ssa_ovc_allocated_all; 
     input  [PV-1       :    0] ssa_decreased_credit_in_ss_ovc_all;
     input [P-1:0] granted_dst_is_from_a_single_flit_pck;
+
+    // DfD
+    output trigger;
+    output [31:0] trace;
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1; 
+
+    assign trigger = (trigger_0|trigger_1);
+	assign trace = trigger_0? trace_0 : trace_1;
+
+    // always@(posedge clk) begin
+    //     $display("credit_counter_0 %d, trace %b",trigger_0,trace_0);
+	// 	$display("credit_counter_1 %d, trace %b",trigger_1,trace_1);
+    //     $display("credit_counter %d, trace %b",trigger,trace);
+    // end 
     
     reg    [PV-1    :    0]    ovc_status;
     reg    [Bw-1    :    0]    credit_counter            [PV-1    :    0];
@@ -229,9 +246,16 @@ module credit_counter #(
             .granted_dest_port               (nonspec_granted_dest_port_all                [(i+1)*P_1-1    :i*P_1]),
             .first_arbiter_granted_ivc       (nonspec_first_arbiter_granted_ivc_all    [(i+1)*V-1        :i*V]),
             .credit_decreased                (credit_decreased                        [i]),
-            .ovc_released                    (ovc_released                            [i])
+            .ovc_released                    (ovc_released                            [i]),
+            .trigger(trigger_0),
+            .trace(trace_0)
             
-        );    
+        );
+        // DfD debug
+        // always@(posedge clk) begin
+        //     $display ("credit_counter");
+        // end
+            
 
     end//for
     
@@ -289,7 +313,9 @@ module credit_counter #(
             .ivc_getting_sw_grant    (ivc_num_getting_sw_grant[i]),
             .assigned_ovc_is_full    (assigned_ovc_is_full_all[i]),
             .clk                            (clk),
-            .reset                        (reset)
+            .reset                        (reset),
+            .trigger(trigger_1),
+            .trace(trace_1)
         );
     end//for
     

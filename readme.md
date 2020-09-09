@@ -21,7 +21,8 @@ sw_alloc_sub2,
 spec_sw_alloc_sub2, 
 sw_alloc_sub,
 packet_gen,
-wrra
+wrra,
+my_one_hot_arbiter_ext_priority
 
 <!-- | prop. | Formalization  | Assert | Branch | Module |
 |---|---|---|---|---|

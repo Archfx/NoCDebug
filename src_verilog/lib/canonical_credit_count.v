@@ -56,7 +56,8 @@ module canonical_credit_counter #(
     ssa_ovc_released_all,
     ssa_ovc_allocated_all, 
     ssa_decreased_credit_in_ss_ovc_all,
-    reset,clk
+    reset,clk//,
+    // trigger,trace
 );
 
  
@@ -103,6 +104,9 @@ module canonical_credit_counter #(
     input   [CONG_ALw-1 :   0]  congestion_in_all;
 
     input                        reset,clk;
+    // DfD
+    // output trigger;
+    // output [31:0] trace;  
 //ssa
     input  [PV-1       :    0] ssa_ovc_released_all; 
     input  [PV-1       :    0] ssa_ovc_allocated_all; 
@@ -219,6 +223,7 @@ module canonical_credit_counter #(
     genvar i,j;
     generate
     for(i=0;i<P;i=i+1    ) begin :port_lp
+    // Not used
     
         inport_module_can #(
             .V    (V), // vc_num_per_port
@@ -235,7 +240,11 @@ module canonical_credit_counter #(
             .credit_decreased                            (credit_decreased                        [i]),
             .ovc_released                                (ovc_released                            [i])
         
-        );    
+        );
+        // DfD debug
+        // always@(posedge clk) begin
+        //     $display ("canonical_credit_counter");
+        // end    
 
     end//for
     
