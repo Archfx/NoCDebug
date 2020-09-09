@@ -452,7 +452,9 @@ module inport_module #(
     granted_dest_port,
     first_arbiter_granted_ivc,
     credit_decreased,
-    ovc_released
+    ovc_released,
+    trigger,
+    trace
     
 );    
     
@@ -482,7 +484,14 @@ module inport_module #(
         end
     endgenerate
     
-    
+    output trigger;
+    output [31:0] trace;
+    // Trace
+    wire trigger,trigger_0,trigger_1;
+    wire [31:0] trace,trace_0,trace_1;  
+
+	assign trigger = (trigger_0|trigger_1);
+	assign trace = trigger_0? trace_0 : trace_1 ;
     
     
     // assigned ovc mux 
@@ -493,7 +502,10 @@ module inport_module #(
     (
         .mux_in        (assigned_ovc_num_masked),
         .mux_out        (muxout1),
-        .sel            (first_arbiter_granted_ivc)
+        .sel            (first_arbiter_granted_ivc),
+        .trigger(trigger_0),
+        .trace(trace_0)
+
     );
     
     // tail mux 
@@ -504,7 +516,9 @@ module inport_module #(
     (
         .mux_in        (flit_is_tail),
         .mux_out        (muxout2),
-        .sel            (first_arbiter_granted_ivc)
+        .sel            (first_arbiter_granted_ivc),
+        .trigger(trigger_1),
+        .trace(trace_1)
     );
     
     
@@ -521,6 +535,14 @@ module inport_module #(
     
     assign ovc_released = (muxout2)? credit_decreased : {VP_1{1'b0}};
     
+    // always@(*) begin
+    //     $display("inport_mod %d, trace %b",trigger_0,trace_0);
+	// 	$display("inport_mod %d, trace %b",trigger_1,trace_1);
+    //     // $display("sw_mask_gen %d, trace %b",trigger_2,trace_2);
+    //     // $display("sw_mask_gen %d, trace %b",trigger_3,trace_3);
+	// 	// $display("NoC %d, trace %b",trigger_4,trace_4);
+    //     $display("inport_mod %d, trace %b",trigger,trace);
+    // end
     
 endmodule
 
@@ -543,7 +565,8 @@ module sw_mask_gen #(
     nearly_full,
     ivc_getting_sw_grant,
     assigned_ovc_is_full,
-    clk,reset
+    clk,reset,
+    trigger,trace
 );
     localparam      P_1   =    P-1    ,
                     VP_1    =    V        *     P_1;
@@ -556,6 +579,16 @@ module sw_mask_gen #(
     input                            ivc_getting_sw_grant;
     output                        assigned_ovc_is_full;
     input                         clk,reset;
+ 
+    output trigger;
+    output [31:0] trace;
+    // Trace
+    wire trigger_0,trigger_1,trigger_2,trigger_3;
+    wire [31:0] trace_0,trace_1,trace_2,trace_3;  
+
+	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 :(trigger_2? trace_2 : trace_3));
+
 
 
     wire        [VP_1-1        :    0]    full_muxin1,nearly_full_muxin1;
@@ -577,7 +610,9 @@ module sw_mask_gen #(
     (
         .mux_in        (full_muxin1),
         .mux_out        (full_muxout1),
-        .sel            (dest_port)
+        .sel            (dest_port),
+        .trigger(trigger_0),
+        .trace(trace_0)
     );
     
     one_hot_mux #(
@@ -587,7 +622,9 @@ module sw_mask_gen #(
     (
         .mux_in        (nearly_full_muxin1),
         .mux_out        (nearly_full_muxout1),
-        .sel            (dest_port)
+        .sel            (dest_port),
+        .trigger(trigger_1),
+        .trace(trace_1)
     );
     
     // assigned ovc mux 
@@ -598,7 +635,9 @@ module sw_mask_gen #(
     (
         .mux_in        (full_muxout1),
         .mux_out        (full_muxout2),
-        .sel            (assigned_ovc_num)
+        .sel            (assigned_ovc_num),
+        .trigger(trigger_2),
+        .trace(trace_2)
     );
     
     
@@ -609,7 +648,9 @@ module sw_mask_gen #(
     (
         .mux_in        (nearly_full_muxout1),
         .mux_out        (nearly_full_muxout2),
-        .sel            (assigned_ovc_num)
+        .sel            (assigned_ovc_num),
+        .trigger(trigger_3),
+        .trace(trace_3)
     );
     
     always @(*) begin 
@@ -628,6 +669,15 @@ module sw_mask_gen #(
     end//always
     
     assign assigned_ovc_is_full    = full_reg1 | full_reg2;
+
+    // always@(posedge clk) begin
+    //     $display("sw_mask_gen %d, trace %b",trigger_0,trace_0);
+	// 	$display("sw_mask_gen %d, trace %b",trigger_1,trace_1);
+    //     $display("sw_mask_gen %d, trace %b",trigger_2,trace_2);
+    //     $display("sw_mask_gen %d, trace %b",trigger_3,trace_3);
+	// 	// $display("NoC %d, trace %b",trigger_4,trace_4);
+    //     $display("sw_mask_gen %d, trace %b",trigger,trace);
+    // end
     
 endmodule
 

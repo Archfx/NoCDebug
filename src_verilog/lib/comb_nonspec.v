@@ -109,11 +109,11 @@ module comb_nonspec_allocator #(
     output trigger;
     output [31:0] trace;
 
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_0,trace_1;
+    wire trigger_0,trigger_1,trigger_2;
+    wire [31:0] trace_0,trace_1,trace_2;
 
-    assign trigger = (trigger_0|trigger_1);
-	assign trace = trigger_0? trace_0 : trace_1;
+    assign trigger = (trigger_0|trigger_1|trigger_2);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : trace_2);
 
 
 
@@ -174,11 +174,6 @@ module comb_nonspec_allocator #(
     
     assign assigned_ovc_request_all      =   ivc_request_all &   ovc_is_assigned_all;
 
-    // wire trigger_0,trigger_1;
-    // // wire [31:0] trace_0,trace_1;
-
-    // assign trigger = trigger_0;
-    // assign trace = trace_0;
     
  
 
@@ -268,7 +263,9 @@ module comb_nonspec_allocator #(
         (
             .mux_in            (masked_candidate_ovc_per_port    [i]),
             .mux_out            (candidate_ovc_local_num    [i]),
-            .sel                (first_arbiter_granted_ivc_per_port        [i])
+            .sel                (first_arbiter_granted_ivc_per_port        [i]),
+            .trigger(trigger_2),
+            .trace(trace_2)
 
         );
         
@@ -313,8 +310,10 @@ module comb_nonspec_allocator #(
     endgenerate  
 
     // always@(posedge clk) begin
-    //     // $display("comb_nonspec");//_0 %d, trace %b",trigger_0,trace_0);
-	// 	$display("comb_nonspec_1 %d, trace %b",trigger,trace);
+    //     $display("comb_nonspec_0 %d, trace %b",trigger_0,trace_0);
+    //     $display("comb_nonspec_1 %d, trace %b",trigger_1,trace_1);
+    //     $display("comb_nonspec_2 %d, trace %b",trigger_2,trace_2);
+	// 	$display("comb_nonspec %d, trace %b",trigger,trace);
     //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
     // end
     
@@ -627,8 +626,8 @@ module nonspec_sw_alloc #(
     output trigger;
     output [31:0] trace; 
 
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_0,trace_1; 
+    wire trigger_0,trigger_1, trigger_2,trigger_2_mux,trigger_3;
+    wire [31:0] trace_0,trace_1,trace_2, trace_2_mux,trace_3; 
     
     //separte input per port
     wire [V-1 : 0] ivc_granted        [P-1 : 0];
@@ -649,7 +648,11 @@ module nonspec_sw_alloc #(
     wire    [V-1 : 0] vc_weight_is_consumed [P-1 : 0]; 
     wire    [P-1    :0] winner_weight_consumed;   
     
-            
+    assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 :(trigger_2? trace_2 : trace_3));
+    // assign trigger = (trigger_0|trigger_1);
+	// assign trace = trigger_0? trace_0 : trace_1 ;
+    
      
     genvar i,j;
     generate
@@ -700,10 +703,14 @@ module nonspec_sw_alloc #(
         (
             .mux_in (dest_port_ivc  [i]),
             .mux_out (dest_port      [i]),
-            .sel(first_arbiter_grant[i])
+            .sel(first_arbiter_grant[i]),
+            .trigger(trigger_1),
+            .trace(trace_1)
     
         );
-        if(MIN_PCK_SIZE == 1) begin :single_flit_supported             
+        if(MIN_PCK_SIZE == 1) begin :single_flit_supported 
+            assign trigger_2 = trigger_2_mux;
+            assign trace_2 =   trace_2_mux;          
             //single_flit req multiplexer
             assign pck_is_single_flit[i] = pck_is_single_flit_all [(i+1)*V-1 : i*V];
             // always@(posedge clk) begin
@@ -717,7 +724,9 @@ module nonspec_sw_alloc #(
             (
                 .mux_in (pck_is_single_flit  [i]),
                 .mux_out (single_flit_pck_local_grant[i]),
-                .sel (first_arbiter_grant[i])
+                .sel (first_arbiter_grant[i]),
+                .trigger(trigger_2_mux),
+                .trace(trace_2_mux)
         
             );   
             
@@ -734,6 +743,9 @@ module nonspec_sw_alloc #(
             );
             
         end else begin : single_flit_notsupported 
+            assign trigger_2 = 1'b0;
+            assign trace_2 =   32'd0;
+
             assign single_flit_pck_local_grant[i] = 1'bx;
             assign single_flit_granted_dst[i] = {P_1{1'bx}};
             assign single_flit_granted_dst_all[(i+1)*P-1 : i*P]={P{1'b0}};
@@ -771,8 +783,8 @@ module nonspec_sw_alloc #(
            .request(second_arbiter_request [i]), 
            .grant(second_arbiter_grant [i]),
            .any_grant(any_ovc_granted_all [i]),
-           .trigger(trigger_1),
-           .trace(trace_1)  
+           .trigger(trigger_3),
+           .trace(trace_3)  
         );
             
         
@@ -991,7 +1003,11 @@ module swa_output_port_arbiter #(
     /* verilator lint_on WIDTH */
         // second level wrra priority is only changed if the granted request weight is consumed 
         wire pr_en;
+        // always@(posedge clk) begin
+        //     $display("19");
+        // end
 
+        // Not used
         assign trigger = 1'b0;
         assign trace = 32'd0;
         

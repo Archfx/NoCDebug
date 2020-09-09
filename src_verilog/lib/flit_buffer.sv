@@ -84,10 +84,12 @@ module flit_buffer #(
 
     reg [V-1                  :   0] trigger_1,trigger_2;
     reg [31:0] trace_1 [V-1                  :   0];
-     reg [31:0] trace_2 [V-1                  :   0];
+    reg [31:0] trace_2 [V-1                  :   0];
+    wire trigger_3,trigger_4;
+    wire [31:0] trace_3,trace_4;
 
-    assign trigger=(trigger_1[0] | trigger_1[1] | trigger_2[0] | trigger_2[1]);
-    assign trace = trigger_1[0]? trace_1[0] : (trigger_1[1]? trace_1[1] : (trigger_2[0]? trace_2[0] : trace_2[1]));
+    assign trigger=(trigger_1[0] | trigger_1[1] | trigger_2[0] | trigger_2[1] | trigger_3 | trigger_4);
+    assign trace = trigger_1[0]? trace_1[0] : (trigger_1[1]? trace_1[1] : (trigger_2[0]? trace_2[0] :(trigger_2[1]? trace_2[1] : (trigger_3? trace_3 : trace_4))));
     
     // Noc debug
     // always@(*) begin
@@ -204,7 +206,9 @@ generate
     (
         .mux_in         (wr_ptr_array),
         .mux_out            (vc_wr_addr),
-        .sel                (vc_num_wr)
+        .sel                (vc_num_wr),
+        .trigger(trigger_3),
+        .trace(trace_3)
     );
     
         
@@ -217,7 +221,9 @@ generate
     (
         .mux_in         (rd_ptr_array),
         .mux_out            (vc_rd_addr),
-        .sel                (vc_num_rd)
+        .sel                (vc_num_rd),
+        .trigger(trigger_4),
+        .trace(trace_4)
     );
     
     

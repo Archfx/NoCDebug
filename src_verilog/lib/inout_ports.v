@@ -888,7 +888,9 @@ module  vc_alloc_request_gen_determinstic #(
     ivc_request_all,
     ovc_is_assigned_all,
     dest_port_in_all,
-    masked_ovc_request_all
+    masked_ovc_request_all,
+    trigger,
+    trace
 );
 
     localparam  P_1     =   P-1,
@@ -903,6 +905,9 @@ module  vc_alloc_request_gen_determinstic #(
     input   [PVP_1-1    :   0]  dest_port_in_all;
     output  [PVV-1      :   0]  masked_ovc_request_all;
     input   [PVV-1      :   0]  candidate_ovc_all;
+    // DfD
+    output trigger;
+    output [31:0] trace;
     
     wire    [PV-1       :   0]  non_assigned_ovc_request_all; 
     wire    [VP_1-1     :   0]  ovc_avalable_perport        [P-1    :   0];
@@ -912,7 +917,13 @@ module  vc_alloc_request_gen_determinstic #(
     wire    [V-1        :   0]  ovc_request_ivc             [PV-1   :   0];
  
     assign non_assigned_ovc_request_all =   ivc_request_all & ~ovc_is_assigned_all;
-   
+    
+    // // Noc debug
+    // always@(*) begin
+    //     // $display("input_queue_per_port_0 %d, trace %b",trigger_0,trace_0);
+	// 	// $display("input_queue_per_port_1 %d, trace %b",trigger_1,trace_1);
+    //     $display("vc_alloc_request_gen_determinstic %d, trace %b",trigger,trace);
+    // end
     
   genvar i;
 
@@ -940,7 +951,9 @@ generate
         (
             .mux_in     (ovc_avalable_ivc   [i]),
             .mux_out    (ovc_avb_muxed      [i]),
-            .sel        (dest_port_ivc      [i])
+            .sel        (dest_port_ivc      [i]),
+            .trigger(trigger),
+            .trace(trace)
 
         );  
         

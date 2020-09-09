@@ -314,7 +314,7 @@ endgenerate
 
 
 
-	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3|trace_4);
+	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3|trigger_4);
 	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 :(trigger_2? trace_2 : (trigger_3? trace_3: trace_4)));
 
 	trace_buffer #(

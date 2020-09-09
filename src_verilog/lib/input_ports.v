@@ -712,6 +712,7 @@ generate
     /* verilator lint_off WIDTH */    
     if(SWA_ARBITER_TYPE != "RRA")begin  : wrra
     /* verilator lint_on WIDTH */
+    // - not used
         wire granted_flit_is_tail;
         
         one_hot_mux #(

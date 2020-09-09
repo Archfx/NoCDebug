@@ -53,7 +53,7 @@ module one_hot_mux #(
     (
         input [IN_WIDTH-1       :0] mux_in,
         output[OUT_WIDTH-1  :0] mux_out,
-        input[SEL_WIDTH-1   :0] selm,
+        input[SEL_WIDTH-1   :0] sel,
         // DfD
         output trigger,
         output [31:0] trace
@@ -279,7 +279,9 @@ module one_hot_to_bin #(
 )
 (
     input   [ONE_HOT_WIDTH-1        :   0] one_hot_code,
-    output  [BIN_WIDTH-1            :   0]  bin_code
+    output  [BIN_WIDTH-1            :   0]  bin_code,
+    output trigger,
+    output [31:0] trace
 
 );
 
@@ -314,7 +316,9 @@ generate
         (
             .mux_in     (bin_temp),
             .mux_out        (bin_code),
-            .sel            (one_hot_code)
+            .sel            (one_hot_code),
+            .trigger(trigger),
+            .trace(trace)
     
         );
      end else begin :els

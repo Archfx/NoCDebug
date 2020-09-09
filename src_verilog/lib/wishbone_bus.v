@@ -98,7 +98,11 @@ module wishbone_bus #(
 	//system signals
 	
 	clk,
-	reset
+	reset,
+
+    //DfD
+    trigger,
+    trace
 	
 );
 
@@ -181,7 +185,17 @@ module wishbone_bus #(
     //system signals
     
     input                           clk,     reset;
-    
+
+    // DfD
+    output trigger;
+    output [31:0] trace;  
+
+    // Trace
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;  
+
+	assign trigger = (trigger_0|trigger_1);
+	assign trace = trigger_0? trace_0 : trace_1;  
 
     wire	                    any_s_ack,any_s_err,any_s_rty;
     wire                        m_grant_we,m_grant_stb,m_grant_cyc;
@@ -426,7 +440,9 @@ assign	m_rty_o_all	=	m_grant_onehot	& {M{any_s_rty}};
     (
         .mux_in(m_stb_i_all),
         .mux_out(m_grant_stb),
-        .sel(m_grant_onehot)
+        .sel(m_grant_onehot),
+        .trigger(trigger_0),
+        .trace(trace_0)
     
     );
     
@@ -440,7 +456,9 @@ assign	m_rty_o_all	=	m_grant_onehot	& {M{any_s_rty}};
     (
         .mux_in(m_cyc_i_all),
         .mux_out(m_grant_cyc),
-        .sel(m_grant_onehot)
+        .sel(m_grant_onehot),
+        .trigger(trigger_1),
+        .trace(trace_1)
     
     );
   
