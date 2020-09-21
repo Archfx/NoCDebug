@@ -210,11 +210,11 @@ for( pos=0; pos<NRL; pos=pos+1) begin : root
    
 end   
 
-always@(*) begin
-        $display("fattree_noc %d, trace %b",trigger_0,trace_0);
-		$display("fattree_noc %d, trace %b",trigger_1,trace_1);
+// always@(*) begin
+//         $display("fattree_noc %d, trace %b",trigger_0,trace_0);
+// 		$display("fattree_noc %d, trace %b",trigger_1,trace_1);
 
-end
+// end
 
 //add leaves
 

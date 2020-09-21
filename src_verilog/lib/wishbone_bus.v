@@ -267,7 +267,9 @@ assign	m_err_o_all	=	m_grant_onehot	& {M{any_s_err}};
 assign	m_rty_o_all	=	m_grant_onehot	& {M{any_s_rty}};
 
 // always@(posedge clk) begin
-//     $display("8");
+//     // $display("8");
+//     if (!(trigger==1'b0) & !(trigger==1'b1)) $display("WB");
+
 // end  
 
     		
@@ -532,8 +534,8 @@ module bus_arbiter # (
     wire    [M-1	:	0]	one_hot_arb_req, one_hot_arb_grant;
     reg     [M-1	:	0]	grant_registered;
 
-    wire trigger;
-    wire [31:0] trace;
+    // wire trigger;
+    // wire [31:0] trace;
     
     
 
@@ -568,9 +570,9 @@ module bus_arbiter # (
 
     // Noc Dfd
     // always@(posedge clk) begin
-    //     // $display("bus_arbiter");// %d, trace %b",trigger_0,trace_0);
+    // //     // $display("bus_arbiter");// %d, trace %b",trigger_0,trace_0);
 	// 	$display("bus_arbiter %d, trace %b",trigger,trace);
-    //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
+    // //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
     // end
 
 

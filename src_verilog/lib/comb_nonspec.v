@@ -309,13 +309,15 @@ module comb_nonspec_allocator #(
     
     endgenerate  
 
-    // always@(posedge clk) begin
-    //     $display("comb_nonspec_0 %d, trace %b",trigger_0,trace_0);
-    //     $display("comb_nonspec_1 %d, trace %b",trigger_1,trace_1);
-    //     $display("comb_nonspec_2 %d, trace %b",trigger_2,trace_2);
-	// 	$display("comb_nonspec %d, trace %b",trigger,trace);
-    //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
-    // end
+    always@(posedge clk) begin
+        // $display("comb_nonspec_0 %d, trace %b",trigger_0,trace_0);
+        // $display("comb_nonspec_1 %d, trace %b",trigger_1,trace_1);
+        // $display("comb_nonspec_2 %d, trace %b",trigger_2,trace_2);
+		// $display("comb_nonspec %d, trace %b",trigger,trace);
+        // $display("input_queue_per_port %d, trace %b",trigger,trace);
+        if (!(trigger==1'b0) & !(trigger==1'b1)) $display("comb_nonspec");
+
+    end
     
 endmodule    
 
@@ -796,12 +798,13 @@ module nonspec_sw_alloc #(
     end//for
     endgenerate 
 
-    // DfD debug
+    // // DfD debug
     // always@(posedge clk) begin
     //     // $display("canonic_arb");
     //     // $display("canonic_vc_alloc %d, trace %b",trigger_0,trace_0);
 	// 	// $display("canonic_vc_alloc %d, trace %b",trigger_1,trace_1);
-    //     $display("Nonspec_sw_alloc############## %d, trace %b",trigger,trace);
+    //     // $display("Nonspec_sw_alloc############## %d, trace %b",trigger,trace);
+    //     if (!(trigger==1'b0) & !(trigger==1'b1)) $display("canonic_vc_alloc");
     // end
         
 

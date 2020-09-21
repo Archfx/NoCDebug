@@ -184,6 +184,18 @@ module mor1k_tile #(
     assign trigger = (trigger_0|trigger_1);
 	assign trace = trigger_0? trace_0 : trace_1;
 
+	always@(posedge source_clk_in) begin
+        // $display("tile_0 %d, trace %b",trigger_0,trace_0);
+		// $display("tile_1 %d, trace %b",trigger_1,trace_1);
+        // // $display("MpSoc_2 %d, trace %b",trigger_2,trace_2);
+        // // $display("MpSoc_3 %d, trace %b",trigger_3,trace_3);
+		// // $display("NoC %d, trace %b",trigger_4,trace_4);
+        // $display("tile %d, trace %b",trigger,trace);
+		 if (!(trigger==1'b0) & !(trigger==1'b1) ) $display("mk_1");
+
+
+    end
+
   	wire			 source_socket_clk_0_clk_o;
  	wire			 source_socket_reset_0_reset_o;
 

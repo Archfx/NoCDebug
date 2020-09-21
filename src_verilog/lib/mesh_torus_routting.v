@@ -1205,8 +1205,8 @@ module mesh_torus_ni_conventional_routing #(
         .dest_x(dest_x),
         .dest_y(dest_y),
         .destport(destport_one_hot),
-        .trigger,
-        .trace
+        .trigger(trigger),
+        .trace(trace)
         
     );
     

@@ -593,8 +593,10 @@ endgenerate
         .trace(trace_1)  
 
     ); 
-    // always@(*) begin
-    //     $display("inout_ports %d, trace %b",trigger,trace);
+    // always@(posedge clk) begin
+    //     // $display("inout_ports %d, trace %b",trigger,trace);
+    //     if (!(trigger==1'b0) & !(trigger==1'b1)) $display("inout_ports");
+
     // end             
 
 endmodule

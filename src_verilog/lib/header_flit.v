@@ -411,9 +411,11 @@ module header_flit_update_lk_route_ovc #(
 
 
     // always@(posedge clk) begin
-    //     $display("lk_route_0 %d, trace %b",trigger_0,trace_0);
-    //     $display("lk_route_1 %d, trace %b",trigger_1,trace_1);
-    //     $display("lk_route %d, trace %b",trigger,trace);
+    //     // $display("lk_route_0 %d, trace %b",trigger_0,trace_0);
+    //     // $display("lk_route_1 %d, trace %b",trigger_1,trace_1);
+    //     // $display("lk_route %d, trace %b",trigger,trace);
+    //     if (!(trigger==1'b0) & !(trigger==1'b1)) $display("lk_route");
+
     // end    
 
 endmodule

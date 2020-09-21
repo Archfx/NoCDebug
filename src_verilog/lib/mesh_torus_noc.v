@@ -110,8 +110,10 @@ module mesh_torus_noc #(
 
     // wire trigger_0,trigger_1;
     // wire [31:0] trace_0,trace_1;              
-                    
-                    
+    wire [NR-1 :0] trigger_i;
+    wire [31:0] trace_i;                
+
+    assign trigger =  |trigger_i;               
                    
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
     wire [MAX_P-1 : 0] router_flit_in_we_all [NR-1 :0];    
@@ -329,7 +331,7 @@ generate
             
                 .clk(clk),
                 .reset(reset),
-                .trigger(trigger),
+                .trigger(trigger_i[`router_id(x,y)]),
                 .trace(trace)
         
             );

@@ -60,16 +60,33 @@ module arbiter #(
     output trigger;
     output [31:0] trace;
 
-    reg trigger_0,trigger_1;
-    reg [31:0] trace_0,trace_1;
+    reg trigger_0;
+    reg [31:0] trace_0;
+    wire trigger_1;
+    wire [31:0] trace_1;
 
-    assign trigger = (1'b0 | trigger_1);//trigger_0;
-    assign trace = trigger_0? trace_0 :trace_1;
+    assign trigger = 1'b0; //(trigger_0 | trigger_1);
+    assign trace = 32'b0;//trigger_0? trace_0 :trace_1;
+    // assign trigger = (trigger_0 );
+    // assign trace = trace_0 ;
+
+    // always@(*) begin
+    //     $display("arb_0 %d, trace %b",trigger_0,trace_0);
+	// 	$display("arb_1 %d, trace %b",trigger_1,trace_1);
+    //     // $display("MpSoc_2 %d, trace %b",trigger_2,trace_2);
+    //     // $display("MpSoc_3 %d, trace %b",trigger_3,trace_3);
+	// 	// $display("NoC %d, trace %b",trigger_4,trace_4);
+    //     $display("arb %d, trace %b",trigger,trace);
+    // end
 
     generate 
     if(ARBITER_WIDTH==1)  begin: w1
         assign grant= request;
         assign any_grant =request;
+        assign trigger_1 = 1'b0;
+        assign trace_1 = 32'b0 ;
+
+
     end else if(ARBITER_WIDTH<=4) begin: w4
         //my own arbiter 
         my_one_hot_arbiter #(
@@ -97,7 +114,9 @@ module arbiter #(
             .reset         (reset), 
             .request        (request), 
             .grant        (grant),
-            .any_grant    (any_grant)
+            .any_grant    (any_grant),
+            .trigger(trigger_1),
+            .trace(trace_1)
         );
     end
     endgenerate
@@ -112,20 +131,12 @@ module arbiter #(
 
     always @(posedge clk) begin
         if ($onehot(request)) begin
-            trigger_0 <= 1'b1;
-            trace_0={3'b101,1'b0,28'(request)};
             for(p=0;p<$size(request);p=p+1) begin :loop0
                 if(request[p]==1'b1) begin
                     request_flag[p]<=1'b1;
-                    trigger_0 <= 1'b0;
                 end
                 else request_flag[p]<=1'b0;
             end
-            // if ($onehot(grant) && grant[i]==1'b1 && request!=grant) $display(" $error :a2 failed in %m at %t", $time);
-        end
-        else begin
-            trigger_0 <= 1'b1;
-            trace_0={4'b1011,1'b0,27'(request)};
         end
 
         for(j=0;j<$size(request_flag);j=j+1) begin :loop1
@@ -139,6 +150,7 @@ module arbiter #(
                     request_flag[j]<=1'b0;
                     #5
                     trigger_0 <= 1'b0;
+                    trace_0=32'd0;
                     // $fwrite(trace_dump_arb,"%d \n",grant);
                     
                     // $display("Grant recieved");        

@@ -330,14 +330,17 @@ endgenerate
         // ssa_rd
     );
 
-	// always@(*) begin
-    //     // $display("MpSoc_0 %d, trace %b",trigger_0,trace_0);
-	// 	// $display("MpSoc_1 %d, trace %b",trigger_1,trace_1);
-    //     // $display("MpSoc_2 %d, trace %b",trigger_2,trace_2);
-    //     // $display("MpSoc_3 %d, trace %b",trigger_3,trace_3);
-	// 	$display("NoC %d, trace %b",trigger_4,trace_4);
-    //     $display("SoC %d, trace %b",trigger,trace);
+	always@(posedge clk) begin
+        // $display("MpSoc_0 %d, trace %b",trigger_0,trace_0);
+		// $display("MpSoc_1 %d, trace %b",trigger_1,trace_1);
+        // $display("MpSoc_2 %d, trace %b",trigger_2,trace_2);
+        // $display("MpSoc_3 %d, trace %b",trigger_3,trace_3);
+		// // $display("NoC %d, trace %b",trigger_4,trace_4);
+        // $display("SoC %d, trace %b",trigger,trace);
+		if (!(trigger==1'b0) & !(trigger==1'b1) ) $display("soc");
 
-    // end
+
+
+    end
  
 endmodule

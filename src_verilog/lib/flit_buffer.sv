@@ -82,21 +82,52 @@ module flit_buffer #(
     output trigger;
     output [31:0] trace;
 
-    reg [V-1                  :   0] trigger_1,trigger_2;
-    reg [31:0] trace_1 [V-1                  :   0];
-    reg [31:0] trace_2 [V-1                  :   0];
-    wire trigger_3,trigger_4,trigger_5,trigger_6;
+    // reg [0:0] trigger_1 [V-1        :0] ;
+    // reg [0:0] trigger_2 [V-1        :0] ;
+
+    // wire trigger_1;
+    // reg trigger_2 [V-1        :0] ;
+
+    reg [31:0] trace_1 [V-1        :0];
+    reg [31:0] trace_2 [V-1        :0];
+    wire trigger_1,trigger_2,trigger_3,trigger_4,trigger_5,trigger_6;
     wire [31:0] trace_3,trace_4,trace_5,trace_6;
 
-    assign trigger=(trigger_1[0] | trigger_1[1] | trigger_2[0] | trigger_2[1] | trigger_3 | trigger_4 | trigger_5 | trigger_6);
-    assign trace = trigger_1[0]? trace_1[0] : (trigger_1[1]? trace_1[1] : (trigger_2[0]? trace_2[0] :(trigger_2[1]? trace_2[1] : (trigger_3? trace_3 : (trigger_4? trace_4 : (trigger_5? trace_5 : trace_6))))));
+    // assign trigger=(trigger_1  | trigger_2| trigger_3 | trigger_4 | trigger_5 | trigger_6);
+    // assign trace = trigger_1? trace_1 : (trigger_2? trace_2 :(trigger_3? trace_3 : (trigger_4? trace_4 : (trigger_5? trace_5 : trace_6))));
+
+    // if (V==2) begin
+    //     assign trigger= trigger_1 || trigger_3 || trigger_4 || trigger_5 || trigger_6;
+    //     // assign trace = trigger_1[0]? trace_1[0] : (trigger_1[1]? trace_1[1] : (trigger_2[0]? trace_2[0]:trace_2[1]));
+    // end
+    // else begin
+    //     assign trigger=trigger_1 || trigger_3 || trigger_4 || trigger_5 || trigger_6;
+    //     // assign trace = trigger_1[0]? trace_1[0] : trace_1[1];
+    // end
+  
+
+
+    reg [13:0] temp1,temp2;
+    // reg [3:0] clk_skipper ;
+    // reg enable_trigger;
+    // reg [2:0] clk_hold;
+
+    
     
     // Noc debug
-    // always@(*) begin
+    // always@(posedge clk) begin
     //     // $display("input_queue_per_port_0 %d, trace %b",trigger_0,trace_0);
-	// 	// $display("input_queue_per_port_1 %d, trace %b",trigger_1,trace_1);
-    //     $display("Flit_buffer %d, trace %b",trigger,trace);
-
+    //     if (trigger_1[0] | trigger_1[1] | trigger_2[0] | trigger_2[1]) begin
+    //         $display("Flit_buffer_1_0 %d, trace %b",trigger_1[0],trace_1[0]);
+    //         // $display("Flit_buffer_2_0 %d, trace %b",trigger_2[0],trace_2[0]);
+    //         $display("Flit_buffer_1_1 %d, trace %b",trigger_1[1],trace_1[1]);
+    //         // $display("Flit_buffer_2_1 %d, trace %b",trigger_2[1],trace_2[1]);
+    //         // $display("Flit_buffer_3 %d, trace %b",trigger_3,trace_3);
+    //         // $display("Flit_buffer_4 %d, trace %b",trigger_4,trace_4);
+    //         // $display("Flit_buffer_5 %d, trace %b",trigger_5,trace_5);
+    //         // $display("Flit_buffer_6 %d, trace %b",trigger_6,trace_6);
+    //         $display("Flit_buffer %d, trace %b",trigger,trace);
+    //     end
     // end
 
     localparam BVw              =   log2(BV),
@@ -122,6 +153,24 @@ module flit_buffer #(
     assign  rd  =   (rd_en)?  vc_num_rd : ssa_rd;
 
 
+    // assign trigger=trigger_1;
+    // assign trace = trace_1[0];
+    // assign trigger_1 = (wr[0] && (!rd[0] && !(depth[0] == B) || rd[0]));
+    // if (V==2) begin
+    
+    assign trigger= wr_en | rd_en | trigger_3 | trigger_4 | trigger_5 | trigger_6;
+    assign trace = (wr_en | rd_en)? trace_1[0] : (trigger_3? trace_3 : (trigger_4? trace_4 : (trigger_5? trace_5 : trace_6)));
+    // end
+    // else begin
+    //     assign trigger= ~(wr_en || rd_en || trigger_3 || trigger_4 || trigger_5 || trigger_6);
+    //     assign trace = trigger_1[0]? trace_1[0] : trace_1[1];
+    // end
+
+    // always @(posedge clk) begin
+    //     // clk_skipper<=clk_skipper+4'd1;
+    //     trigger_1<=(wr[0] && (!rd[0] && !(depth[0] == B) || rd[0]));
+    // end
+
     integer trace_dump_flit;     
     // Assertion variables
     // string instance_name = $sformatf("%m");
@@ -141,19 +190,24 @@ genvar i;
 
 initial begin
     trace_dump_flit = $fopen("trace_flit_dump.txt","w");
-    trigger_1[0]<=1'd0;
-    trace_1[0]<=32'd0;
-    trigger_2[0]<=1'd0;
-    trace_2[0]<=32'd0;
-    trigger_1[1]<=1'd0;
-    trace_1[1]<=32'd0;
-    trigger_2[1]<=1'd0;
-    trace_2[1]<=32'd0;
+    
+    // trigger_1=1'd0;
+    // trace_1[0]<=32'd0;
+    // trigger_2[0]<=1'd0;
+    // trace_2[0]<=32'd0;
+
+    // trigger_1[1]<=1'd0;
+    // trace_1[1]<=32'd0;
+    // trigger_2[1]<=1'd0;
+    // trace_2[1]<=32'd0;
 
     // dump_file_1 = $fopen("router_1_dump.txt","w");
     // dump_file_2 = $fopen("router_2_dump.txt","w");
     // dump_file_3 = $fopen("router_3_dump.txt","a");
     // dump_all = $fopen("router_all_dump.txt","a");
+
+    // clk_skipper <= 4'b0000;
+    // trigger_1<= 1'b0;
     for(x=0;x<10;x=x+1) begin :assertion_loop0
         b5_check_ptr[x] <= 1'b0;
         b6_buffer_counter[x] <= 1'b0;
@@ -164,6 +218,49 @@ initial begin
     packet_count_flag_in<=1'b0;
     packet_count_flag_out<=1'b0;
 end
+
+// always@(posedge clk) begin
+//     if (wr[0] | wr[1]) begin
+//         trigger_1<=1'b1;
+//         $display("triggered"); 
+//         clk_skipper<=4'b0000;
+//     end
+//     else  if (trigger_1 & clk_skipper>4'b110)trigger_1<=1'd0;
+//     if (trigger_1) clk_skipper<=clk_skipper+1'b0;
+//     // if (wr[1]) begin
+//     //     trigger_1[1]<=1'b1;
+//     //     // $display("triggered"); 
+//     // end
+//     // else  trigger_1[1]<=1'd0;
+    
+// end
+// always@ (posedge clk) begin
+//         if (wr[0] || wr[1]) begin
+//             trigger_1<=1'b1;
+//             // enable_trigger<=1'b1;
+//             $display("triggered"); 
+//             // clk_skipper<=4'b0000;
+//         end
+//         // if (enable_trigger) clk_skipper <=clk_skipper+4'd1;
+//         // if (clk_skipper<4'b1111 & clk_skipper>4'b1000 )  trigger_1 <= 1'b1;
+//         else begin
+//             trigger_1 <=1'b0;
+//         end
+//         // if (clk_skipper==4'b1111)  enable_trigger<=1'b0;
+//         // if (enable_trigger) begin
+//         //     clk_hold<=clk_hold+3'd1;
+//         // end
+//         // if (clk_hold>3'b000)begin
+//         //     trigger_1[0]<=1'd1;
+//         //     // $display("trigger2");
+//         //     // if (clk_hold==3'b111) enable_trigger<=1'd0;
+//         // end 
+//         // else begin
+//         //     enable_trigger<=1'd0;
+//         //     trigger_1[0]<=1'd0;
+//         //     // $display("not trigger");
+//         // end
+//     end
 
 
 generate 
@@ -283,10 +380,10 @@ generate
                 rd_ptr  [i] <= {Bw{1'b0}};
                 wr_ptr  [i] <= {Bw{1'b0}};
                 depth   [i] <= {DEPTHw{1'b0}};
-                trigger_1[i]<=1'd0;
-                trace_1[i]<=32'd0;
-                trigger_2[i]<=1'd0;
-                trace_2[i]<=32'd0;
+                // trigger_1<=1'b0;
+                // // trace_1[i]<=32'd0;
+                // trigger_2[i]<=1'd0;
+                // trace_2[i]<=32'd0;
             end
             else begin
                 if (wr[i] ) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
@@ -327,57 +424,107 @@ generate
         //synopsys  translate_on
         //synthesis translate_on
 
+
+
         always@(posedge clk) begin
                 //b1.1 //A1.1
                 if (wr[i] && (!rd[i] && !(depth[i] == B) || rd[i])) begin
-                    trigger_1[i]<=1'd1;
-                    trace_1[i]<={4'b0001,1'b0,27'(wr_ptr[i])};
-                    $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
-                    #1
-                    trace_1[i]<={4'b0001,1'b0,27'(wr_ptr[i])};
-                    #1
-                    trigger_1[i]<=1'd0;
-                    // if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                    
+                    // trace_1[i]<={4'b0001,1'b0,27'(wr_ptr[i])};
+                    // temp1<=14'(wr_ptr[i]);
+                    // // $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                    // #1
+                    temp2<=14'(wr_ptr[i]);
+                    // // trigger_1[i]<=1'd1;
+                    // enable_trigger<=1'b1;
+                    // clk_hold<=2'd0;
+                    // // trace_1[i]<={4'b0001,1'b0,27'(wr_ptr[i])};
+                    trace_1[i]<={4'b0001,temp1,temp2};
+                    // // trigger_1[i]<=1'd1;
+                    // $display("triggered");
 
+                    // #3
+                    // trigger_1[i]<=1'd1;
                 end
-                //b1.2 //A1.2
-                if (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) begin
-                    trigger_1[i]<=1'd1;
-                    trace_1[i]<={4'b0001,1'b0,27'(rd_ptr[i])};
-                    $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
-                    #1
-                    trace_1[i]<={4'b0001,1'b1,27'(rd_ptr[i])};
-                    #1
-                    trigger_1[i]<=1'd0;
-                    // if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                else temp1<=14'(wr_ptr[i]);
+                // if (enable_trigger) begin
+                //     clk_hold<=clk_hold+3'd1;
+                // end
+                // if (clk_hold>3'b000)begin
+                //     trigger_1[i]<=1'd1;
+                //     // $display("trigger2");
+                //     // if (clk_hold==3'b111) enable_trigger<=1'd0;
+                // end 
+                // else begin
+                //     enable_trigger<=1'd0;
+                //     trigger_1[i]<=1'd0;
+                //     // $display("not trigger");
+                // end
 
-                end
-                //b3.1 //A3.1 trying to write to full buffer
-                if (wr[i] && !rd[i] && (depth[i] == B) ) begin
-                    trigger_2[i]<=1'd1;
-                    trace_2[i]<={4'b0011,1'b0,27'(wr_ptr[i])};
-                    $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
-                    #1
-                    trace_2[i]<={4'b0011,1'b0,27'(wr_ptr[i])};
-                    #1
-                    trigger_2[i]<=1'd0;
-                    // if ( wr_ptr[i]== wr_ptr_check[i] ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                // if (wr[i]) begin
+                //     trigger_1[i]<=1'b1;
+                //     // $display("triggered"); 
+                // end
+                // else  trigger_1[i]<=1'd1;
+                // if (trigger_1[i]) begin
+                //     clk_skipper<=clk_skipper+1'b1;
+                // end
+                
+                // if (clk_skipper==4'b1111) begin
+                //     trigger_1[i]<=1'b0;
+                //     trace_1[i]<=32'b0;
+                //     // $display("untriggered");
+                // end
+                // //b1.2 //A1.2
+                // if (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) begin
+                //     trigger_1[i]<=1'd1;
+                //     trace_1[i]<={4'b0001,1'b0,27'(rd_ptr[i])};
+                //     $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
+                //     #1
+                //     trace_1[i]<={4'b0001,1'b1,27'(rd_ptr[i])};
+                //     #3
+                //     trigger_1[i]<=1'd0;
+                //     // if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
 
-                end
-                //b3.2 trying to read from empty buffer
-                if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
-                    trigger_2[i]<=1'd1;
-                    trace_2[i]<={4'b0011,1'b1,27'(rd_ptr[i])};
-                    $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
-                    #1
-                    trace_2[i]<={4'b0011,1'b1,27'(rd_ptr[i])};
-                    #1
-                    trigger_2[i]<=1'd0;
-                    // if ( rd_ptr[i]== rd_ptr_check[i] )  $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
+                // end
+                // // else begin
+                // //     trigger_1[i]<=1'b0;
+                // //     trace_1[i]<=32'b0;
+                // // end
+                // //b3.1 //A3.1 trying to write to full buffer
+                // if (wr[i] && !rd[i] && (depth[i] == B) ) begin
+                //     trigger_2[i]<=1'd1;
+                //     trace_2[i]<={4'b0011,1'b0,27'(wr_ptr[i])};
+                //     $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
+                //     #1
+                //     trace_2[i]<={4'b0011,1'b0,27'(wr_ptr[i])};
+                //     #3
+                //     trigger_2[i]<=1'd0;
+                //     // if ( wr_ptr[i]== wr_ptr_check[i] ) $fwrite(trace_dump_flit,"%d \n",wr_ptr[i]);
 
-                end
-                //b4 buffer cannot be empty and full at the same time
-                // if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
+                // end
+                // else begin
+                //     trigger_2[i]<=1'b0;
+                //     trace_2[i]<=32'b0;
+                // end
+                // //b3.2 trying to read from empty buffer
+                // if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
+                //     trigger_2[i]<=1'd1;
+                //     trace_2[i]<={4'b0011,1'b1,27'(rd_ptr[i])};
+                //     $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
+                //     #1
+                //     trace_2[i]<={4'b0011,1'b1,27'(rd_ptr[i])};
+                //     #3
+                //     trigger_2[i]<=1'd0;
+                //     // if ( rd_ptr[i]== rd_ptr_check[i] )  $fwrite(trace_dump_flit,"%d \n",rd_ptr[i]);
+
+                // end
+                // // else begin
+                // //     trigger_2[i]<=1'b0;
+                // //     trace_2[i]<=32'b0;
+                // // end
+                // //b4 buffer cannot be empty and full at the same time
+                // // if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
                 
 
             end
@@ -443,37 +590,37 @@ generate
 
     `ifdef DUMP_ENABLE
         // Dumping buffer input values to files
-        always @(posedge clk) begin
-            if (wr_en) begin      
-                //$display($time, " %h is written on fifo of instance %m",din);
-                // $display(instance_name.substr(29,29));
-                // $display(instance_name.substr(25,35));
-                // $display(instance_name);
-                // if (instance_name.substr(29,29)=="0")
-                //     $fwrite(dump_file_0,"%h \n",din);
-                // if (instance_name.substr(29,29)=="1")
-                //     $fwrite(dump_file_1,"%h \n",din);
-                // if (instance_name.substr(29,29)=="2")
-                //     $fwrite(dump_file_2,"%h \n",din);
-                // if (instance_name.substr(29,29)=="3")
-                //     $fwrite(dump_file_3,"%b \n",din);
+        // always @(posedge clk) begin
+        //     if (wr_en) begin      
+        //         //$display($time, " %h is written on fifo of instance %m",din);
+        //         // $display(instance_name.substr(29,29));
+        //         // $display(instance_name.substr(25,35));
+        //         // $display(instance_name);
+        //         // if (instance_name.substr(29,29)=="0")
+        //         //     $fwrite(dump_file_0,"%h \n",din);
+        //         // if (instance_name.substr(29,29)=="1")
+        //         //     $fwrite(dump_file_1,"%h \n",din);
+        //         // if (instance_name.substr(29,29)=="2")
+        //         //     $fwrite(dump_file_2,"%h \n",din);
+        //         // if (instance_name.substr(29,29)=="3")
+        //         //     $fwrite(dump_file_3,"%b \n",din);
                 
-                // $fwrite(dump_all, "%b | %m \n", din);
-            end
-            // if (rd_en) begin      
-            // //     $display(instance_name.substr(29,29));
-            // //     $display(instance_name.substr(25,35));
-            // //     $display(instance_name);
-            //     // if (instance_name.substr(29,29)=="0")
-            //     //      $fwrite(dump_file_0,"%b\n", "%d",dout);
-            //     // if (instance_name.substr(29,29)=="1")
-            //     //     $fwrite(dump_file_1,"%b\n", "%d",dout);
-            //     // if (instance_name.substr(29,29)=="2")
-            //     //     $fwrite(dump_file_2,"%b\n", "%d",dout);
-            //     // if (instance_name.substr(29,29)=="3")
-            //     //    $fwrite(dump_file_3,"%b\n", "%d",dout);
-            // end
-        end
+        //         // $fwrite(dump_all, "%b | %m \n", din);
+        //     end
+        //     // if (rd_en) begin      
+        //     // //     $display(instance_name.substr(29,29));
+        //     // //     $display(instance_name.substr(25,35));
+        //     // //     $display(instance_name);
+        //     //     // if (instance_name.substr(29,29)=="0")
+        //     //     //      $fwrite(dump_file_0,"%b\n", "%d",dout);
+        //     //     // if (instance_name.substr(29,29)=="1")
+        //     //     //     $fwrite(dump_file_1,"%b\n", "%d",dout);
+        //     //     // if (instance_name.substr(29,29)=="2")
+        //     //     //     $fwrite(dump_file_2,"%b\n", "%d",dout);
+        //     //     // if (instance_name.substr(29,29)=="3")
+        //     //     //    $fwrite(dump_file_3,"%b\n", "%d",dout);
+        //     // end
+        // end
     `endif 
     
     `ifdef ASSERTION_ENABLE

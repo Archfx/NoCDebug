@@ -102,7 +102,7 @@ vlog -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/dfd
 vsim -t 1ps  -L rtl_work -L work -voptargs="+acc"  testbench
 
 
-#add wave *
+ add wave *
 view structure
 view signals
 run -all

@@ -236,8 +236,10 @@ module crossbar #(
     
     
     // always@(posedge clk) begin
-    //     $display("crossbar_0 %d, trace %b",trigger_0,trace_0);
-    //     $display("crossbar %d, trace %b",trigger,trace);
+    //     // $display("crossbar_0 %d, trace %b",trigger_0,trace_0);
+    //     // $display("crossbar %d, trace %b",trigger,trace);
+    //     if (!(trigger==1'b0) & !(trigger==1'b1)) $display("crossbar");
+
     // end    
     
 endmodule

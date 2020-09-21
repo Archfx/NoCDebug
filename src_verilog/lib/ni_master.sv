@@ -131,6 +131,7 @@ module  ni_master #(
     input   [Fw-1   :   0]  flit_in; 
     input                   flit_in_wr;   
     output  [V-1    :   0]  credit_out;     
+
     
     
    //wishbone slave interface signals
@@ -172,11 +173,23 @@ module  ni_master #(
     output trigger;
     output [31:0] trace;
    
-    wire trigger_0,trigger_1,trigger_2,trigger_3;
-    wire [31:0] trace_0,trace_1,trace_2,trace_3;
+    wire trigger_0,trigger_1,trigger_2,trigger_3,trigger_4,trigger_5;
+    wire [31:0] trace_0,trace_1,trace_2,trace_3,trace_4,trace_5;
     
-    assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3);
-	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : (trigger_2? trace_2 : trace_3));
+    assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3|trigger_4|trigger_5);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : (trigger_2? trace_2 : (trigger_3? trace_3 : (trigger_4? trace_4 : trace_5))));
+
+    // always@(posedge clk) begin
+    //     // $display("NIM_0 %d, trace %b",trigger_0,trace_0);
+	// 	// $display("NIM_1 %d, trace %b",trigger_1,trace_1);
+    //     // $display("NIM_2 %d, trace %b",trigger_2,trace_2);
+    //     // $display("NIM_3 %d, trace %b",trigger_3,trace_3);
+	// 	// // $display("NoC %d, trace %b",trigger_4,trace_4);
+    //     // $display("NIM %d, trace %b",trigger,trace);
+    //     if (!(trigger==1'b0) & !(trigger==1'b1)) $display("NIM");
+
+
+    // end
   
     wire                            s_ack_o_next;    
     
@@ -717,6 +730,18 @@ module  ni_master #(
         assign send_vc_enable =  send_vc_is_active;
         assign send_enable_binary = 1'b0;
         assign receive_enable_binary = 1'b0;
+        
+        assign trigger_0 = 1'b0;
+        assign trigger_1 = 1'b0;
+        assign trigger_2 = 1'b0;
+        assign trigger_3 = 1'b0;
+        assign trace_0 = 32'd0;
+        assign trace_1 = 32'd0;
+        assign trace_2 = 32'd0;
+        assign trace_3 = 32'd0;
+
+
+        
     end
     endgenerate  
       
@@ -739,8 +764,8 @@ module  ni_master #(
         .current_r_addr(current_r_addr),
         .dest_e_addr(dest_e_addr),
         .destport(destport),
-        .trigger(trigger_0),
-        .trace(trace_0)
+        .trigger(trigger_5),
+        .trace(trace_5)
     );
   
         
@@ -836,10 +861,15 @@ module  ni_master #(
         .reset(reset),
         .clk(clk),
         .ssa_rd({V{1'b0}}) ,
-        .trigger(trigger_1),
-        .trace(trace_1)  
+        .trigger(trigger_4),
+        .trace(trace_4)  
     ); 
     
+    // always@ (posedge clk) begin
+    //     // $display("trigger_1 %b, trace_1 %b", trigger_1,trace_1);
+    //     if (!(trigger==1'b0) & !(trigger==1'b1)) $display("nim");
+
+    // end
    extract_header_flit_info #(
         .SWA_ARBITER_TYPE(SWA_ARBITER_TYPE),
         .WEIGHTw(WEIGHTw),

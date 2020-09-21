@@ -110,6 +110,9 @@ module combined_vc_sw_alloc #(
     generate
     /* verilator lint_off WIDTH */
     if(COMBINATION_TYPE    ==    "BASELINE") begin : canonical_comb_gen
+
+        assign trigger = 1'b0;
+        assign trace = 32'd0;
     /* verilator lint_on WIDTH */
         baseline_allocator #(
             .V(V),    
@@ -145,6 +148,9 @@ module combined_vc_sw_alloc #(
     /* verilator lint_off WIDTH */
     end else if(COMBINATION_TYPE    ==    "COMB_SPEC1") begin : spec1
     /* verilator lint_on WIDTH */
+        assign trigger = 1'b0;
+        assign trace = 32'd0;
+
         comb_spec1_allocator #(
             .V(V),    
             .P(P),
@@ -182,6 +188,8 @@ module combined_vc_sw_alloc #(
     /* verilator lint_off WIDTH */    
     end else if (COMBINATION_TYPE    == "COMB_SPEC2") begin :spec2
     /* verilator lint_on WIDTH */
+        assign trigger = 1'b0;
+        assign trace = 32'd0;
             comb_spec2_allocator #(
                 .V(V),    
                 .P(P),
@@ -220,6 +228,9 @@ module combined_vc_sw_alloc #(
     end else begin :   nonspec
         if(V>7)begin :cmb_v2
         
+            assign trigger = 1'b0;
+            assign trace = 32'd0;
+            
              comb_nonspec_v2_allocator #(
                 .V(V),    
                 .P(P),

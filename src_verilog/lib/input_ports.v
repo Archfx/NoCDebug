@@ -143,6 +143,8 @@ module input_ports
     output trigger;
     output [31:0] trace;  
     
+wire [P-1:0] trigger_i;
+assign trigger = |trigger_i;
 
 genvar i;
 generate 
@@ -210,7 +212,7 @@ generate
         .iport_weight_is_consumed(iport_weight_is_consumed_all[i]),
         .refresh_w_counter(refresh_w_counter),
         .granted_dest_port(granted_dest_port_all[(i+1)*P_1-1 : i*P_1]) ,
-        .trigger(trigger),
+        .trigger(trigger_i[i]),
         .trace(trace)         
     );
     
