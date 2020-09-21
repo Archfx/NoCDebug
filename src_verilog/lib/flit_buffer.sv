@@ -314,7 +314,7 @@ generate
 
  // Trace creation for the trigger
 
-// Trace format flit buffer (34bit) : [ TID (4bit)| XXXXxx (8bit) | WR | RD | DEPTH (4bit) | WR_PTR (3bit) | WR_PTR_NEXT (3bit)  | RD_PTR (3bit) | RD_PTR_NEXT (3bit) ] 
+// Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (8bit) | WR | RD | DEPTH (4bit) | WR_PTR (3bit) | WR_PTR_NEXT (3bit)  | RD_PTR (3bit) | RD_PTR_NEXT (3bit) ] 
 
         always@(posedge clk) begin
             // TS-1
@@ -334,7 +334,7 @@ generate
 
             // Ts-2
             if (rd[i]) begin
-                trace_2<={4'd1,8'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),3'd0,(rd_ptr[i]),3'd0}; // length.rd_ptr = 3
+                trace_2<={4'd2,8'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),3'd0,(rd_ptr[i]),3'd0}; // length.rd_ptr = 3
                 next_clk_2 <= 1'b1;
             end
             if (next_clk_2) begin

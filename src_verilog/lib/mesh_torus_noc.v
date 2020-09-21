@@ -111,9 +111,11 @@ module mesh_torus_noc #(
     // wire trigger_0,trigger_1;
     // wire [31:0] trace_0,trace_1;              
     wire [NR-1 :0] trigger_i;
-    wire [31:0] trace_i;                
+    wire [31:0] trace_i [NR-1 :0];                
 
-    assign trigger =  |trigger_i;               
+    assign trigger =  |trigger_i; 
+    assign trace = trigger_i[0]? trace_i[0] : (trigger_i[1]? trace_i[1] : (trigger_i[2]? trace_i[2] : trace_i[3] ));
+              
                    
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
     wire [MAX_P-1 : 0] router_flit_in_we_all [NR-1 :0];    
@@ -332,15 +334,15 @@ generate
                 .clk(clk),
                 .reset(reset),
                 .trigger(trigger_i[`router_id(x,y)]),
-                .trace(trace)
+                .trace(trace_i[`router_id(x,y)])
         
             );
 
             // DfD debug
-            // always@(*) begin
+            // always@(posedge clk) begin
             //     // $display("mesh_torus_noc_0 %d, trace %b",trigger_0,trace_0);
             //     // $display("mesh_torus_noc_1 %d, trace %b",trigger_1,trace_1);
-            //      $display("mesh_torus_noc_1 %d, trace %b",trigger,trace);
+            //      $display("NR %d ",NR);
 
             // end
 

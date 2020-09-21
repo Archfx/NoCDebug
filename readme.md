@@ -24,6 +24,11 @@ packet_gen,
 wrra,
 my_one_hot_arbiter_ext_priority
 
+## Trace format
+### Flit buffer related trace (wr/rd)
+Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (8bit) | WR | RD | DEPTH (4bit) | WR_PTR (3bit) | WR_PTR_NEXT (3bit)  | RD_PTR (3bit) | RD_PTR_NEXT (3bit) ] 
+
+
 <!-- | prop. | Formalization  | Assert | Branch | Module |
 |---|---|---|---|---|
 | A1  | Read and write pointers are incremented when r_en/w_en are set | [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/flit_buffer.sv#L295-L310)  | [✓](https://github.com/Archfx/assert_NoC/blob/f5228c866aec6c081659e0584900fe2e7e236e44/src_verilog/lib/flit_buffer.sv#L333-L336) | [flit_buffer.sv](src_verilog/lib/flit_buffer.sv) |
