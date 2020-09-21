@@ -144,7 +144,10 @@ module input_ports
     output [31:0] trace;  
     
 wire [P-1:0] trigger_i;
+wire [31:0] trace_i [P-1:0];
+
 assign trigger = |trigger_i;
+assign trace = trigger_i[0]? trace_i[0] : (trigger_i[1]? trace_i[1] : (trigger_i[2]? trace_i[2] : (trigger_i[3]? trace_i[3] : trace_i[4] )));
 
 genvar i;
 generate 
@@ -213,7 +216,7 @@ generate
         .refresh_w_counter(refresh_w_counter),
         .granted_dest_port(granted_dest_port_all[(i+1)*P_1-1 : i*P_1]) ,
         .trigger(trigger_i[i]),
-        .trace(trace)         
+        .trace(trace_i[i])         
     );
     
     end//for      

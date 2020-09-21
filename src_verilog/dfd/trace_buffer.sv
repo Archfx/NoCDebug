@@ -105,37 +105,15 @@ module trace_buffer #(
             
     end//always  
 
+`ifdef DUMP_ENABLE
+    // Dumping buffer input values to files
     always@(posedge clk ) begin
         if (trigger) begin 
-            // $display("trace_buff %d, trace %b",trigger,trace);
             $fwrite(trace_dump,"%h \n",trace);
             $display("trace_buff %d, trace %b",trigger,trace);
-
         end
-        if (!(trigger==1'b0)) $display("trace_buff %d, trace %b",trigger,trace);
-
     end
-
-    // always@( negedge  trigger) begin
-    //     // if (trigger) begin 
-    //         // $display("trace_buff %d, trace %b",trigger,trace);
-    //     $fwrite(trace_dump,"%h \n",trace);
-    //     $display("negedge trace_buff %d, trace %b",trigger,trace);
-
-    //     // end
-    //     // if (!(trigger==1'b0)) $display("trace_buff %d, trace %b",trigger,trace);
-
-    // end
-
-// // `ifdef DUMP_ENABLE
-//     // Dumping buffer input values to files
-//     always @(posedge trigger) begin
-//         // if (trigger) begin  
-//             $display("writing");    
-//             $fwrite(trace_dump,"%h \n",trace);
-//         // end
-//     end
-// // `endif
+`endif
 endmodule 
 
 

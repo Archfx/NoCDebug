@@ -233,7 +233,12 @@ module credit_counter #(
     
     
     wire [P-1 : 0] trigger_0_i;
+    wire [31 : 0] trace_0_i [P-1 : 0];
+
     assign trigger_0 = |trigger_0_i;
+    assign trace_0 = trigger_0_i[0]? trace_0_i[0] : (trigger_0_i[1]? trace_0_i[1] : (trigger_0_i[2]? trace_0_i[2] : (trigger_0_i[3]? trace_0_i[3] : trace_0_i[4] )));
+
+
     generate
     for(i=0;i<P;i=i+1    ) begin :port_lp
     
@@ -250,7 +255,7 @@ module credit_counter #(
             .credit_decreased                (credit_decreased                        [i]),
             .ovc_released                    (ovc_released                            [i]),
             .trigger(trigger_0_i[i]),
-            .trace(trace_0)
+            .trace(trace_0_i[i])
             
         );
         // DfD debug
@@ -300,9 +305,13 @@ module credit_counter #(
     
     
     wire [PV-1:0] trigger_1_i;
+    wire [31 : 0] trace_1_i [PV-1 : 0];
+
     assign trigger_1 = |trigger_1_i;
+    assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] :  (trigger_1_i[6]? trace_1_i[6] :  (trigger_1_i[7]? trace_1_i[7] :  (trigger_1_i[8]? trace_1_i[8] : trace_1_i[9] ) ) ) ) ) )));
 
     for(i=0;i< PV;i=i+1) begin :PV_loop2
+
          sw_mask_gen #(
             .V (V), // vc_num_per_port
             .P    (P) // router port num
@@ -319,7 +328,7 @@ module credit_counter #(
             .clk                            (clk),
             .reset                        (reset),
             .trigger(trigger_1_i[i]),
-            .trace(trace_1)
+            .trace(trace_1_i[i])
         );
     end//for
     
@@ -565,16 +574,16 @@ module inport_module #(
     
     assign ovc_released = (muxout2)? credit_decreased : {VP_1{1'b0}};
     
-    always@(*) begin
-        // $display("inport_mod %d, trace %b",trigger_0,trace_0);
-		// $display("inport_mod %d, trace %b",trigger_1,trace_1);
-        // // $display("sw_mask_gen %d, trace %b",trigger_2,trace_2);
-        // // $display("sw_mask_gen %d, trace %b",trigger_3,trace_3);
-		// // $display("NoC %d, trace %b",trigger_4,trace_4);
-        // $display("inport_mod %d, trace %b",trigger,trace);
-        if (!(trigger==1'b0) & !(trigger==1'b1)) $display("inport_mod");
+    // always@(*) begin
+    //     // $display("inport_mod %d, trace %b",trigger_0,trace_0);
+	// 	// $display("inport_mod %d, trace %b",trigger_1,trace_1);
+    //     // // $display("sw_mask_gen %d, trace %b",trigger_2,trace_2);
+    //     // // $display("sw_mask_gen %d, trace %b",trigger_3,trace_3);
+	// 	// // $display("NoC %d, trace %b",trigger_4,trace_4);
+    //     // $display("inport_mod %d, trace %b",trigger,trace);
+    //     if (!(trigger==1'b0) & !(trigger==1'b1)) $display("inport_mod");
 
-    end
+    // end
     
 endmodule
 
@@ -702,16 +711,16 @@ module sw_mask_gen #(
     
     assign assigned_ovc_is_full    = full_reg1 | full_reg2;
 
-    always@(posedge clk) begin
-        // $display("sw_mask_gen %d, trace %b",trigger_0,trace_0);
-		// $display("sw_mask_gen %d, trace %b",trigger_1,trace_1);
-        // $display("sw_mask_gen %d, trace %b",trigger_2,trace_2);
-        // $display("sw_mask_gen %d, trace %b",trigger_3,trace_3);
-		// // $display("NoC %d, trace %b",trigger_4,trace_4);
-        // $display("sw_mask_gen %d, trace %b",trigger,trace);
-        if (!(trigger==1'b0) & !(trigger==1'b1)) $display("sw_mask_gen");
+    // always@(posedge clk) begin
+    //     // $display("sw_mask_gen %d, trace %b",trigger_0,trace_0);
+	// 	// $display("sw_mask_gen %d, trace %b",trigger_1,trace_1);
+    //     // $display("sw_mask_gen %d, trace %b",trigger_2,trace_2);
+    //     // $display("sw_mask_gen %d, trace %b",trigger_3,trace_3);
+	// 	// // $display("NoC %d, trace %b",trigger_4,trace_4);
+    //     // $display("sw_mask_gen %d, trace %b",trigger,trace);
+    //     if (!(trigger==1'b0) & !(trigger==1'b1)) $display("sw_mask_gen");
 
-    end
+    // end
     
 endmodule
 
