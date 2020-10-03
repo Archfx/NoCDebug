@@ -186,7 +186,7 @@ endgenerate
  // Tile:0 (0)
    	mor1k_tile #(
  		.CORE_ID(0),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile0") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile0") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -221,7 +221,7 @@ endgenerate
  // Tile:1 (1)
    	mor1k_tile #(
  		.CORE_ID(1),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile1") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile1") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -256,7 +256,7 @@ endgenerate
  // Tile:2 (2)
    	mor1k_tile #(
  		.CORE_ID(2),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile2") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile2") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -291,7 +291,7 @@ endgenerate
  // Tile:3 (3)
    	mor1k_tile #(
  		.CORE_ID(3),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile3") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile3") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -326,7 +326,7 @@ endgenerate
  // Tile:4 (4)
    	mor1k_tile #(
  		.CORE_ID(4),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile4") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile4") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -361,7 +361,7 @@ endgenerate
  // Tile:5 (5)
    	mor1k_tile #(
  		.CORE_ID(5),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile5") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile5") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -396,7 +396,7 @@ endgenerate
  // Tile:6 (6)
    	mor1k_tile #(
  		.CORE_ID(6),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile6") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile6") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -431,7 +431,7 @@ endgenerate
  // Tile:7 (7)
    	mor1k_tile #(
  		.CORE_ID(7),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile7") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile7") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -466,7 +466,7 @@ endgenerate
  // Tile:8 (8)
    	mor1k_tile #(
  		.CORE_ID(8),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile8") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile8") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -501,7 +501,7 @@ endgenerate
  // Tile:9 (9)
    	mor1k_tile #(
  		.CORE_ID(9),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile9") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile9") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -536,7 +536,7 @@ endgenerate
  // Tile:10 (10)
    	mor1k_tile #(
  		.CORE_ID(10),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile10") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile10") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -571,7 +571,7 @@ endgenerate
  // Tile:11 (11)
    	mor1k_tile #(
  		.CORE_ID(11),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile11") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile11") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -606,7 +606,7 @@ endgenerate
  // Tile:12 (12)
    	mor1k_tile #(
  		.CORE_ID(12),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile12") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile12") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -641,7 +641,7 @@ endgenerate
  // Tile:13 (13)
    	mor1k_tile #(
  		.CORE_ID(13),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile13") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile13") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -676,7 +676,7 @@ endgenerate
  // Tile:14 (14)
    	mor1k_tile #(
  		.CORE_ID(14),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile14") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile14") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,
@@ -711,7 +711,7 @@ endgenerate
  // Tile:15 (15)
    	mor1k_tile #(
  		.CORE_ID(15),
-		.SW_LOC("/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile15") ,
+		.SW_LOC("/home/archfx/Documents/mor1k_16Soc/sw/tile15") ,
 		.ni_B(B) ,
 		.ni_C(C) ,
 		.ni_DEBUG_EN(DEBUG_EN) ,

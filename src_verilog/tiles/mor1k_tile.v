@@ -29,7 +29,7 @@
 `timescale 1ns / 1ps
 module mor1k_tile #(
  	parameter	CORE_ID=15,
-	parameter	SW_LOC="/home/archfx/Documents/NoCem-MPSoC/trunk/mpsoc_work/MPSOC/mor1k_16Soc/sw/tile15" ,
+	parameter	SW_LOC="/home/archfx/Documents/mor1k_16Soc/sw/tile15" ,
 	parameter	cpu_OPTION_OPERAND_WIDTH=32 ,
 	parameter	cpu_IRQ_NUM=32 ,
 	parameter	cpu_OPTION_DCACHE_SNOOP="ENABLED" ,
