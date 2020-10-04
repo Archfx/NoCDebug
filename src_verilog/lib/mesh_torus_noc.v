@@ -69,7 +69,9 @@ module mesh_torus_noc #(
     credit_in_all,
     flit_in_all,  
     flit_in_wr_all,  
-    credit_out_all    
+    credit_out_all,
+    trigger,
+    trace 
 );
 
     `define INCLUDE_TOPOLOGY_LOCALPARAM
@@ -102,7 +104,17 @@ module mesh_torus_noc #(
     input  [NE-1 : 0] flit_in_wr_all;  
     output [NEV-1 : 0] credit_out_all;                
                     
-                    
+    //DfD
+    output trigger;
+    output [31:0] trace;  
+
+    // wire trigger_0,trigger_1;
+    // wire [31:0] trace_0,trace_1;              
+    wire [NR-1 :0] trigger_i;
+    wire [31:0] trace_i [NR-1 :0];                
+
+    assign trigger =  |trigger_i; 
+    assign trace = trigger_i[0]? trace_i[0] : (trigger_i[1]? trace_i[1] : (trigger_i[2]? trace_i[2] : trace_i[3] ));                
                    
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
     wire [MAX_P-1 : 0] router_flit_in_we_all [NR-1 :0];    
@@ -192,7 +204,9 @@ generate
                 .congestion_out_all(router_congestion_out_all[x]),
             
                 .clk(clk),
-                .reset(reset)
+                .reset(reset),
+                .trigger(),
+                .trace()
         
             );
         
@@ -317,7 +331,9 @@ generate
                 .congestion_out_all(router_congestion_out_all[`router_id(x,y)]),
             
                 .clk(clk),
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger_i[`router_id(x,y)]),
+                .trace(trace_i[`router_id(x,y)])
         
             );
     /*

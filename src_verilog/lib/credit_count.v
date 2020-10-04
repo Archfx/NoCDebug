@@ -58,7 +58,8 @@ module credit_counter #(
     ssa_ovc_allocated_all, 
     ssa_decreased_credit_in_ss_ovc_all,
     granted_dst_is_from_a_single_flit_pck,
-    reset,clk
+    reset,clk,
+    trigger,trace
 );
 
    
@@ -108,6 +109,15 @@ module credit_counter #(
     input  [PV-1       :    0] ssa_decreased_credit_in_ss_ovc_all;
     input [P-1:0] granted_dst_is_from_a_single_flit_pck;
     
+    // DfD
+    output trigger;
+    output [31:0] trace;
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1; 
+
+    assign trigger = (trigger_0|trigger_1);
+	assign trace = trigger_0? trace_0 : trace_1;
     reg    [PV-1    :    0]    ovc_status;
     reg    [Bw-1    :    0]    credit_counter            [PV-1    :    0];
     reg    [Bw-1    :    0]    credit_counter_next    [PV-1    :    0];
@@ -213,7 +223,11 @@ module credit_counter #(
     assign credit_increased_all         = credit_in_all;
     assign assigned_ovc_not_full_all    =    ~ assigned_ovc_is_full_all;
     
-    
+    wire [P-1 : 0] trigger_0_i;
+    wire [31 : 0] trace_0_i [P-1 : 0];
+
+    assign trigger_0 = |trigger_0_i;
+    assign trace_0 = trigger_0_i[0]? trace_0_i[0] : (trigger_0_i[1]? trace_0_i[1] : (trigger_0_i[2]? trace_0_i[2] : (trigger_0_i[3]? trace_0_i[3] : trace_0_i[4] )));
     
     generate
     for(i=0;i<P;i=i+1    ) begin :port_lp
@@ -229,7 +243,9 @@ module credit_counter #(
             .granted_dest_port               (nonspec_granted_dest_port_all                [(i+1)*P_1-1    :i*P_1]),
             .first_arbiter_granted_ivc       (nonspec_first_arbiter_granted_ivc_all    [(i+1)*V-1        :i*V]),
             .credit_decreased                (credit_decreased                        [i]),
-            .ovc_released                    (ovc_released                            [i])
+            .ovc_released                    (ovc_released                            [i]),
+            .trigger(trigger_0_i[i]),
+            .trace(trace_0_i[i])
             
         );    
 
@@ -272,7 +288,11 @@ module credit_counter #(
         end
     end//for
     
-    
+    wire [PV-1:0] trigger_1_i;
+    wire [31 : 0] trace_1_i [PV-1 : 0];
+
+    assign trigger_1 = |trigger_1_i;
+    assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] :  (trigger_1_i[6]? trace_1_i[6] :  (trigger_1_i[7]? trace_1_i[7] :  (trigger_1_i[8]? trace_1_i[8] : trace_1_i[9] ) ) ) ) ) )));
     
     for(i=0;i< PV;i=i+1) begin :PV_loop2
          sw_mask_gen #(
@@ -289,7 +309,9 @@ module credit_counter #(
             .ivc_getting_sw_grant    (ivc_num_getting_sw_grant[i]),
             .assigned_ovc_is_full    (assigned_ovc_is_full_all[i]),
             .clk                            (clk),
-            .reset                        (reset)
+            .reset                        (reset),
+            .trigger(trigger_1_i[i]),
+            .trace(trace_1_i[i])
         );
     end//for
     
@@ -452,7 +474,9 @@ module inport_module #(
     granted_dest_port,
     first_arbiter_granted_ivc,
     credit_decreased,
-    ovc_released
+    ovc_released,
+    trigger,
+    trace
     
 );    
     
@@ -481,10 +505,17 @@ module inport_module #(
             assign    assigned_ovc_num_masked[(i+1)*V-1    :    i*V] = ovc_is_assigned[i]? assigned_ovc_num [(i+1)*V-1    :    i*V] : {V{1'b0}};
         end
     endgenerate
+
+    output trigger;
+    output [31:0] trace;
+    // Trace
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;  
+
+	assign trigger = (trigger_0|trigger_1);
+	assign trace = trigger_0? trace_0 : trace_1 ;
     
-    
-    
-    
+      
     // assigned ovc mux 
     one_hot_mux #(
         .IN_WIDTH    (VV),
@@ -493,7 +524,9 @@ module inport_module #(
     (
         .mux_in        (assigned_ovc_num_masked),
         .mux_out        (muxout1),
-        .sel            (first_arbiter_granted_ivc)
+        .sel            (first_arbiter_granted_ivc),
+        .trigger(trigger_0),
+        .trace(trace_0)
     );
     
     // tail mux 
@@ -504,7 +537,9 @@ module inport_module #(
     (
         .mux_in        (flit_is_tail),
         .mux_out        (muxout2),
-        .sel            (first_arbiter_granted_ivc)
+        .sel            (first_arbiter_granted_ivc),
+        .trigger(trigger_1),
+        .trace(trace_1)
     );
     
     
@@ -543,7 +578,8 @@ module sw_mask_gen #(
     nearly_full,
     ivc_getting_sw_grant,
     assigned_ovc_is_full,
-    clk,reset
+    clk,reset,
+    trigger,trace
 );
     localparam      P_1   =    P-1    ,
                     VP_1    =    V        *     P_1;
@@ -557,6 +593,14 @@ module sw_mask_gen #(
     output                        assigned_ovc_is_full;
     input                         clk,reset;
 
+    output trigger;
+    output [31:0] trace;
+    // Trace
+    wire trigger_0,trigger_1,trigger_2,trigger_3;
+    wire [31:0] trace_0,trace_1,trace_2,trace_3;  
+
+	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 :(trigger_2? trace_2 : trace_3));
 
     wire        [VP_1-1        :    0]    full_muxin1,nearly_full_muxin1;
     wire         [V-1            :    0]    full_muxout1,nearly_full_muxout1;
@@ -577,7 +621,9 @@ module sw_mask_gen #(
     (
         .mux_in        (full_muxin1),
         .mux_out        (full_muxout1),
-        .sel            (dest_port)
+        .sel            (dest_port),
+        .trigger(trigger_0),
+        .trace(trace_0)
     );
     
     one_hot_mux #(
@@ -587,7 +633,9 @@ module sw_mask_gen #(
     (
         .mux_in        (nearly_full_muxin1),
         .mux_out        (nearly_full_muxout1),
-        .sel            (dest_port)
+        .sel            (dest_port),
+        .trigger(trigger_1),
+        .trace(trace_1)
     );
     
     // assigned ovc mux 
@@ -598,7 +646,9 @@ module sw_mask_gen #(
     (
         .mux_in        (full_muxout1),
         .mux_out        (full_muxout2),
-        .sel            (assigned_ovc_num)
+        .sel            (assigned_ovc_num),
+        .trigger(trigger_2),
+        .trace(trace_2)
     );
     
     
@@ -609,7 +659,9 @@ module sw_mask_gen #(
     (
         .mux_in        (nearly_full_muxout1),
         .mux_out        (nearly_full_muxout2),
-        .sel            (assigned_ovc_num)
+        .sel            (assigned_ovc_num),
+        .trigger(trigger_3),
+        .trace(trace_3)
     );
     
     always @(*) begin 

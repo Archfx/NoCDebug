@@ -54,7 +54,10 @@ module  fattree_noc #(
     credit_in_all,
     flit_in_all,  
     flit_in_wr_all,  
-    credit_out_all    
+    credit_out_all,
+    trigger,
+    trace
+
 );        
   
    `define INCLUDE_TOPOLOGY_LOCALPARAM
@@ -108,7 +111,13 @@ module  fattree_noc #(
     input  [NE-1 : 0] flit_in_wr_all;  
     output [NEV-1 : 0] credit_out_all;                
                         
-                
+     //DfD
+    output trigger;
+    output [31:0] trace;    
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;    
+
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
     wire [MAX_P-1 : 0] router_flit_in_we_all [NR-1 :0];    
     wire [PV-1 : 0] router_credit_out_all [NR-1 :0];
@@ -139,7 +148,8 @@ module  fattree_noc #(
 
 genvar pos,level,port;
 
-
+assign trigger = (trigger_0|trigger_1);//|trigger_2|trigger_3);
+assign trace = trigger_0? trace_0 : trace_1;//(trigger_1? trace_1 :(trigger_2? trace_2 : trace_3));
 
 generate 
 for( pos=0; pos<NRL; pos=pos+1) begin : root 
@@ -188,7 +198,9 @@ for( pos=0; pos<NRL; pos=pos+1) begin : root
                 .congestion_out_all(router_congestion_out_all[pos][(K*CONGw)-1 : 0]),
             
                 .clk(clk),
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger_0),
+                .trace(trace_0)
         
             );  
    
@@ -246,7 +258,9 @@ for( level=1; level<L; level=level+1) begin :level_lp
                 .congestion_out_all(router_congestion_out_all[NRL*level+pos]),
             
                 .clk(clk),
-                .reset(reset)
+                .reset(reset),
+                .trigger(trigger_1),
+                .trace(trace_1)  
         
             );  
    
@@ -1128,72 +1142,72 @@ endmodule
     most probably it is only needed for simulation purposes
 ***************/  
 
-module  fattree_addr_encoder #(
-    parameter   K=2,
-    parameter   L=2
+// module  fattree_addr_encoder #(
+//     parameter   K=2,
+//     parameter   L=2
 
-)(
-    id,
-    code
-);
+// )(
+//     id,
+//     code
+// );
     
-    function integer log2;
-      input integer number; begin   
-         log2=(number <=1) ? 1: 0;    
-         while(2**log2<number) begin    
-            log2=log2+1;    
-         end        
-      end   
-    endfunction // log2 
+//     function integer log2;
+//       input integer number; begin   
+//          log2=(number <=1) ? 1: 0;    
+//          while(2**log2<number) begin    
+//             log2=log2+1;    
+//          end        
+//       end   
+//     endfunction // log2 
     
-    function integer powi;
-        input integer x,y;
-        integer i;begin //compute x to the y
-        powi=1;
-        for (i = 0; i <y; i=i+1 ) begin 
-            powi=powi * x;
-        end
-        end   
-    endfunction // log2 
+//     function integer powi;
+//         input integer x,y;
+//         integer i;begin //compute x to the y
+//         powi=1;
+//         for (i = 0; i <y; i=i+1 ) begin 
+//             powi=powi * x;
+//         end
+//         end   
+//     endfunction // log2 
         
-    function integer addrencode;
-        input integer pos,k,n,kw;
-        integer pow,i,tmp;begin
-        addrencode=0;
-        pow=1;
-        for (i = 0; i <n; i=i+1 ) begin 
-            tmp=(pos/pow);
-            tmp=tmp%k;
-            tmp=tmp<<i*kw;
-            addrencode=addrencode | tmp;
-            pow=pow * k;
-        end
-        end   
-    endfunction // log2 
+//     function integer addrencode;
+//         input integer pos,k,n,kw;
+//         integer pow,i,tmp;begin
+//         addrencode=0;
+//         pow=1;
+//         for (i = 0; i <n; i=i+1 ) begin 
+//             tmp=(pos/pow);
+//             tmp=tmp%k;
+//             tmp=tmp<<i*kw;
+//             addrencode=addrencode | tmp;
+//             pow=pow * k;
+//         end
+//         end   
+//     endfunction // log2 
         
       
-    localparam       
-        NE = powi( K,L ),  //total number of endpoints
-        NEw = log2(NE),
-        Kw=log2(K),
-        LKw=L*Kw;
+//     localparam       
+//         NE = powi( K,L ),  //total number of endpoints
+//         NEw = log2(NE),
+//         Kw=log2(K),
+//         LKw=L*Kw;
 
 
-     input [NEw-1 :0] id;
-     output [LKw-1 : 0] code;
+//      input [NEw-1 :0] id;
+//      output [LKw-1 : 0] code;
 
-    wire [LKw-1 : 0 ] codes [NE-1 : 0];
-    genvar i;
-    generate 
-    for(i=0; i< NE; i=i+1) begin : endpoints
-        //Endpoint decoded address
-        localparam [LKw-1 : 0] ENDPX= addrencode(i,K,L,Kw);
-        assign codes[i] = ENDPX;            
-    end
-    endgenerate
+//     wire [LKw-1 : 0 ] codes [NE-1 : 0];
+//     genvar i;
+//     generate 
+//     for(i=0; i< NE; i=i+1) begin : endpoints
+//         //Endpoint decoded address
+//         localparam [LKw-1 : 0] ENDPX= addrencode(i,K,L,Kw);
+//         assign codes[i] = ENDPX;            
+//     end
+//     endgenerate
 
-    assign code = codes[id];
-endmodule
+//     assign code = codes[id];
+// endmodule
 
 
 
@@ -1202,72 +1216,72 @@ endmodule
     most probably it is only needed for simulation purposes
 ***************/  
 
-module  fattree_addr_decoder #(
-    parameter   K=2,
-    parameter   L=2
+// module  fattree_addr_decoder #(
+//     parameter   K=2,
+//     parameter   L=2
 
-)(
-    id,
-    code
-);
+// )(
+//     id,
+//     code
+// );
     
-    function integer log2;
-      input integer number; begin   
-         log2=(number <=1) ? 1: 0;    
-         while(2**log2<number) begin    
-            log2=log2+1;    
-         end        
-      end   
-    endfunction // log2 
+//     function integer log2;
+//       input integer number; begin   
+//          log2=(number <=1) ? 1: 0;    
+//          while(2**log2<number) begin    
+//             log2=log2+1;    
+//          end        
+//       end   
+//     endfunction // log2 
     
-    function integer powi;
-        input integer x,y;
-        integer i;begin //compute x to the y
-        powi=1;
-        for (i = 0; i <y; i=i+1 ) begin 
-            powi=powi * x;
-        end
-        end   
-    endfunction // log2 
+//     function integer powi;
+//         input integer x,y;
+//         integer i;begin //compute x to the y
+//         powi=1;
+//         for (i = 0; i <y; i=i+1 ) begin 
+//             powi=powi * x;
+//         end
+//         end   
+//     endfunction // log2 
         
-    function integer addrencode;
-        input integer pos,k,n,kw;
-        integer pow,i,tmp;begin
-        addrencode=0;
-        pow=1;
-        for (i = 0; i <n; i=i+1 ) begin 
-            tmp=(pos/pow);
-            tmp=tmp%k;
-            tmp=tmp<<i*kw;
-            addrencode=addrencode | tmp;
-            pow=pow * k;
-        end
-        end   
-    endfunction // log2 
+//     function integer addrencode;
+//         input integer pos,k,n,kw;
+//         integer pow,i,tmp;begin
+//         addrencode=0;
+//         pow=1;
+//         for (i = 0; i <n; i=i+1 ) begin 
+//             tmp=(pos/pow);
+//             tmp=tmp%k;
+//             tmp=tmp<<i*kw;
+//             addrencode=addrencode | tmp;
+//             pow=pow * k;
+//         end
+//         end   
+//     endfunction // log2 
         
       
-    localparam       
-        NE = powi( K,L ),  //total number of endpoints
-        NEw = log2(NE),
-        Kw=log2(K),
-        LKw=L*Kw;
+//     localparam       
+//         NE = powi( K,L ),  //total number of endpoints
+//         NEw = log2(NE),
+//         Kw=log2(K),
+//         LKw=L*Kw;
 
 
-     output [NEw-1 :0] id;
-     input  [LKw-1 : 0] code;
+//      output [NEw-1 :0] id;
+//      input  [LKw-1 : 0] code;
 
-    wire  [NE-1 : 0] codes  [LKw-1 : 0 ];
-    genvar i;
-    generate 
-    for(i=0; i< NE; i=i+1) begin : endpoints
-        //Endpoint decoded address
-        localparam [LKw-1 : 0] ENDPX= addrencode(i,K,L,Kw);
-        assign codes[ENDPX] = i;            
-    end
-    endgenerate
+//     wire  [NE-1 : 0] codes  [LKw-1 : 0 ];
+//     genvar i;
+//     generate 
+//     for(i=0; i< NE; i=i+1) begin : endpoints
+//         //Endpoint decoded address
+//         localparam [LKw-1 : 0] ENDPX= addrencode(i,K,L,Kw);
+//         assign codes[ENDPX] = i;            
+//     end
+//     endgenerate
 
-    assign id = codes[code];
-endmodule
+//     assign id = codes[code];
+// endmodule
 
 /**************
  * mesh_torus_ssa_check_destport_conflict

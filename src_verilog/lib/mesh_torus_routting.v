@@ -21,7 +21,9 @@ module mesh_torus_look_ahead_routing #(
     destport_encoded,   // current router destination port number       
     lkdestport_encoded, // look ahead destination port number
     reset,
-    clk
+    clk,
+    trace,
+    trigger
 );
     
      /* verilator lint_off WIDTH */ 
@@ -48,7 +50,12 @@ module mesh_torus_look_ahead_routing #(
     input   [P_1-1  :   0]  destport_encoded;
     output  [P_1-1  :   0]  lkdestport_encoded;
     input                   reset,clk;
-    
+    output trigger;
+    output [31:0] trace;
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
+
     reg     [Xw-1   :   0]  destx_delayed;
     reg     [Yw-1   :   0]  desty_delayed;
     reg     [P_1-1  :   0]  destport_delayed;
@@ -58,7 +65,10 @@ module mesh_torus_look_ahead_routing #(
     generate 
     /* verilator lint_off WIDTH */ 
     if(ROUTE_TYPE=="DETERMINISTIC") begin :dtrmst
-    /* verilator lint_on WIDTH */ 
+    /* verilator lint_on WIDTH */
+        assign trigger = trigger_0;
+        assign trace = trace_0; 
+
          mesh_torus_deterministic_look_ahead_routing #(
              .P(P),
              .NX(NX),
@@ -73,10 +83,16 @@ module mesh_torus_look_ahead_routing #(
              .dest_x(destx_delayed),
              .dest_y(desty_delayed),
              .destport(destport_delayed),
-             .lkdestport(lkdestport_encoded)
+             .lkdestport(lkdestport_encoded),
+             .trigger(trigger_0),
+             .trace(trace_0)
          );
     
     end else begin :adapt
+
+        assign trigger = trigger_1;
+        assign trace = trace_1;
+
         mesh_torus_adaptive_look_ahead_routing #(
             .P(P),
             .NX(NX),
@@ -92,7 +108,9 @@ module mesh_torus_look_ahead_routing #(
             .dest_x(destx_delayed),
             .dest_y(desty_delayed),
             .destport_encoded(destport_delayed),
-            .lkdestport_encoded(lkdestport_encoded)
+            .lkdestport_encoded(lkdestport_encoded),
+            .trigger(trigger_1),
+            .trace(trace_1)
          );
     
     
@@ -139,7 +157,9 @@ module  mesh_torus_deterministic_look_ahead_routing #(
         dest_x,  // destination router x address          
         dest_y,  // destination router y address                  
         destport,   // current router destination port number       
-        lkdestport // look ahead destination port number
+        lkdestport, // look ahead destination port number
+        trigger,
+        trace
       
  );
     
@@ -166,7 +186,10 @@ module  mesh_torus_deterministic_look_ahead_routing #(
     input   [P_1-1  :   0]  destport;
     output  [P_1-1  :   0]  lkdestport;
    
- 
+    // DfD
+    output trigger;
+    output [31:0] trace;
+
     wire    [P-1    :   0]  destport_one_hot,receive_port,lkdestport_one_hot;
     wire    [Xw-1   :   0]  next_x;
     wire    [Yw-1   :   0]  next_y; 
@@ -222,7 +245,9 @@ module  mesh_torus_deterministic_look_ahead_routing #(
         .current_y(next_y),
         .dest_x(dest_x),
         .dest_y(dest_y),
-        .destport(lkdestport_one_hot)
+        .destport(lkdestport_one_hot),
+        .trigger(trigger),
+        .trace(trace)
         
     );
  
@@ -264,7 +289,9 @@ module  mesh_torus_adaptive_look_ahead_routing #(
         dest_x,  // destination router x address          
         dest_y,  // destination router y address                  
         destport_encoded,   // current router destination port      
-        lkdestport_encoded // look ahead destination port 
+        lkdestport_encoded, // look ahead destination port 
+        trigger,
+        trace
      
  );
     
@@ -290,6 +317,16 @@ module  mesh_torus_adaptive_look_ahead_routing #(
     input   [Yw-1   :   0]  dest_y;
     input   [P_1-1  :   0]  destport_encoded;
     output  [P_1-1  :   0]  lkdestport_encoded;
+   
+    // DfD
+    output trigger;
+    output [31:0] trace;
+   
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
+    
+    assign trigger = (trigger_0|trigger_1);
+	assign trace = trigger_0? trace_0 : trace_1;
    
  /*
  destination-port coded
@@ -367,7 +404,9 @@ module  mesh_torus_adaptive_look_ahead_routing #(
         .current_y(current_y),
         .dest_x(dest_x),
         .dest_y(dest_y),
-        .destport(lkdestport_x)
+        .destport(lkdestport_x),
+        .trigger(trigger_0),
+        .trace(trace_0)
     );
  
     mesh_torus_ni_conventional_routing #(
@@ -384,7 +423,9 @@ module  mesh_torus_adaptive_look_ahead_routing #(
         .current_y(next_y),
         .dest_x(dest_x),
         .dest_y(dest_y),
-        .destport(lkdestport_y)
+        .destport(lkdestport_y),
+        .trigger(trigger_1),
+        .trace(trace_1)
     );
  //take the value of a&b only.  x&y can be obtained from destport in the router
  assign lkdestport_encoded = {lkdestport_x[1:0],lkdestport_y[1:0]};
@@ -646,7 +687,9 @@ module remove_receive_port_one_hot #(
     )
     convert1(
         .one_hot_code(receiver_port),
-        .bin_code(receiver_port_bin)
+        .bin_code(receiver_port_bin),
+        .trigger(),
+        .trace()
     );
     
      one_hot_to_bin #(
@@ -655,7 +698,9 @@ module remove_receive_port_one_hot #(
     )
     convert2(
         .one_hot_code(destport_in),
-        .bin_code(destport_in_bin)
+        .bin_code(destport_in_bin),
+        .trigger(),
+        .trace()
     );
     
     
@@ -735,7 +780,9 @@ module mesh_torus_conventional_routing #(
     current_y,
     dest_x,
     dest_y,
-    destport
+    destport,
+    trigger,
+    trace
 
     );
     
@@ -761,14 +808,21 @@ module mesh_torus_conventional_routing #(
     input   [Yw-1         :0] dest_y;
     
     output  [DSTw-1       :0] destport;
-  
+
+    // DfD
+    output trigger;
+    output [31:0] trace;
+
+    wire trigger_0;
+    wire [31:0] trace_0;
   
     generate 
         /* verilator lint_off WIDTH */ 
         if (TOPOLOGY == "MESH")begin :mesh
             if(ROUTE_NAME ==  "XY") begin : xy_routing_blk
         /* verilator lint_on WIDTH */ 
-                
+                assign trigger = trigger_0;
+                assign trace = trace_0;
                 xy_mesh_routing #(
                     .NX(NX),
                     .NY(NY),
@@ -780,7 +834,9 @@ module mesh_torus_conventional_routing #(
                     .current_y(current_y),
                     .dest_x(dest_x),
                     .dest_y(dest_y),
-                    .destport(destport)
+                    .destport(destport),
+                    .trigger(trigger_0),
+                    .trace(trace_0)
                  );        
                 
                 
@@ -788,6 +844,9 @@ module mesh_torus_conventional_routing #(
             /* verilator lint_off WIDTH */ 
             else if(ROUTE_NAME    ==  "WEST_FIRST") begin : west_first_routing_blk
             /* verilator lint_on WIDTH */ 
+                assign trigger = 1'b0;
+                assign trace = 32'd0;
+
                 west_first_routing #(
                     .NX         (NX),
                     .NY         (NY)
@@ -805,6 +864,9 @@ module mesh_torus_conventional_routing #(
             /* verilator lint_off WIDTH */ 
             else if(ROUTE_NAME    ==  "NORTH_LAST") begin : north_last_routing_blk
             /* verilator lint_on WIDTH */ 
+                assign trigger = 1'b0;
+                assign trace = 32'd0;
+
                 north_last_routing #(
                     .NX         (NX),
                     .NY         (NY)
@@ -823,6 +885,8 @@ module mesh_torus_conventional_routing #(
             /* verilator lint_off WIDTH */ 
             else if(ROUTE_NAME    ==  "NEGETIVE_FIRST") begin : negetive_first_routing_blk
             /* verilator lint_on WIDTH */ 
+                assign trigger = 1'b0;
+                assign trace = 32'd0;
                 negetive_first_routing #(
                     .NX         (NX),
                     .NY         (NY)
@@ -841,6 +905,9 @@ module mesh_torus_conventional_routing #(
             /* verilator lint_off WIDTH */ 
             else if(ROUTE_NAME    ==  "ODD_EVEN") begin : odd_even_routing_blk
             /* verilator lint_on WIDTH */ 
+                assign trigger = 1'b0;
+                assign trace = 32'd0;
+
                 odd_even_routing #(
                     .NX         (NX),
                     .NY         (NY),
@@ -859,6 +926,9 @@ module mesh_torus_conventional_routing #(
             /* verilator lint_off WIDTH */ 
             else if(ROUTE_NAME    ==  "DUATO") begin : duato_routing_blk
             /* verilator lint_on WIDTH */ 
+                assign trigger = 1'b0;
+                assign trace = 32'd0;
+
                 duato_mesh_routing #(
                     .NX         (NX),
                     .NY         (NY)                    
@@ -1055,7 +1125,9 @@ module mesh_torus_ni_conventional_routing #(
     current_y,
     dest_x,
     dest_y,
-    destport  
+    destport,
+    trigger,
+    trace   
 
     );
     
@@ -1085,6 +1157,9 @@ module mesh_torus_ni_conventional_routing #(
     input   [Xw-1         :0] dest_x;
     input   [Yw-1         :0] dest_y;
     output  [P_1-1        :0] destport;
+    // DfD
+    output trigger;
+    output [31:0] trace;
     
     wire [DSTw-1          :0] destport_one_hot;
    
@@ -1103,7 +1178,9 @@ module mesh_torus_ni_conventional_routing #(
         .current_y(current_y),
         .dest_x(dest_x),
         .dest_y(dest_y),
-        .destport(destport_one_hot)
+        .destport(destport_one_hot),
+        .trigger(trigger),
+        .trace(trace)
         
     );
     

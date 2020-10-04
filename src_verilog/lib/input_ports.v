@@ -86,7 +86,9 @@ module input_ports
     granted_dest_port_all,
     refresh_w_counter,
     reset,
-    clk
+    clk,
+    trigger,
+    trace 
 );
     
          
@@ -137,6 +139,15 @@ module input_ports
    
     input refresh_w_counter;
     
+    //Dfd
+    output trigger;
+    output [31:0] trace;  
+    
+wire [P-1:0] trigger_i;
+wire [31:0] trace_i [P-1:0];
+
+assign trigger = |trigger_i;
+assign trace = trigger_i[0]? trace_i[0] : (trigger_i[1]? trace_i[1] : (trigger_i[2]? trace_i[2] : (trigger_i[3]? trace_i[3] : trace_i[4] )));
 
 genvar i;
 generate 
@@ -203,7 +214,9 @@ generate
         .vc_weight_is_consumed(vc_weight_is_consumed_all [(i+1)*V-1 : i*V]),
         .iport_weight_is_consumed(iport_weight_is_consumed_all[i]),
         .refresh_w_counter(refresh_w_counter),
-        .granted_dest_port(granted_dest_port_all[(i+1)*P_1-1 : i*P_1])        
+        .granted_dest_port(granted_dest_port_all[(i+1)*P_1-1 : i*P_1]) ,
+        .trigger(trigger_i[i]),
+        .trace(trace_i[i]) 
     );
     
     end//for      
@@ -277,7 +290,9 @@ module input_queue_per_port  #(
     vc_weight_is_consumed,
     iport_weight_is_consumed,
     refresh_w_counter,
-    granted_dest_port    
+    granted_dest_port,
+    trigger,
+    trace  
 );
 
  
@@ -342,7 +357,15 @@ module input_queue_per_port  #(
     input   [PPSw-1 : 0] port_pre_sel;
     input   [V-1  : 0]  swap_port_presel;
   
-            
+    // DfD
+    output trigger;
+    output [31:0] trace;
+   
+    wire trigger_0,trigger_1,trigger_2;
+    wire [31:0] trace_0,trace_1,trace_2;
+    
+    assign trigger = (trigger_0|trigger_1|trigger_2);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1: trace_2);
     
     wire [Cw-1 : 0] class_in;
     wire [DSTPw-1 : 0] destport_in,destport_in_encoded;
@@ -687,6 +710,7 @@ generate
     /* verilator lint_off WIDTH */    
     if(SWA_ARBITER_TYPE != "RRA")begin  : wrra
     /* verilator lint_on WIDTH */
+    // - not used
         wire granted_flit_is_tail;
         
         one_hot_mux #(
@@ -746,32 +770,36 @@ generate
             .vc_not_empty(ivc_not_empty),
             .reset(reset),
             .clk(clk),
-            .ssa_rd(ssa_ivc_num_getting_sw_grant)
+            .ssa_rd(ssa_ivc_num_getting_sw_grant),
+            .trigger(trigger_0),
+            .trace(trace_0)
         );
    
-    end else begin :spec//not nonspec comb
+    // end else begin :spec//not nonspec comb
  
 
-        flit_buffer #(
-            .V(V),
-            .B(B),   // buffer space :flit per VC 
-            .Fpay(Fpay),
-            .DEBUG_EN(DEBUG_EN),
-            .SSA_EN(SSA_EN)
-        )
-        the_flit_buffer
-        (
-            .din(flit_in),     // Data in
-            .vc_num_wr(vc_num_in),//write vertual channel   
-            .vc_num_rd(ivc_num_getting_sw_grant),//read vertual channel     
-            .wr_en(flit_in_we),   // Write enable
-            .rd_en(any_ivc_sw_request_granted),     // Read the next word
-            .dout(buffer_out),    // Data out
-            .vc_not_empty(ivc_not_empty),
-            .reset(reset),
-            .clk(clk),
-            .ssa_rd(ssa_ivc_num_getting_sw_grant)
-        );  
+    //     flit_buffer #(
+    //         .V(V),
+    //         .B(B),   // buffer space :flit per VC 
+    //         .Fpay(Fpay),
+    //         .DEBUG_EN(DEBUG_EN),
+    //         .SSA_EN(SSA_EN)
+    //     )
+    //     the_flit_buffer
+    //     (
+    //         .din(flit_in),     // Data in
+    //         .vc_num_wr(vc_num_in),//write vertual channel   
+    //         .vc_num_rd(ivc_num_getting_sw_grant),//read vertual channel     
+    //         .wr_en(flit_in_we),   // Write enable
+    //         .rd_en(any_ivc_sw_request_granted),     // Read the next word
+    //         .dout(buffer_out),    // Data out
+    //         .vc_not_empty(ivc_not_empty),
+    //         .reset(reset),
+    //         .clk(clk),
+//         .ssa_rd(ssa_ivc_num_getting_sw_grant),
+    //         .trigger(trigger_1),
+    //         .trace(trace_1)
+    //     );  
   
     end       
 endgenerate    
@@ -798,7 +826,9 @@ endgenerate
         .destport_encoded(destport_in_encoded),
         .lkdestport_encoded(lk_destination_in_encoded),
         .reset(reset),
-        .clk(clk)
+        .clk(clk),
+        .trigger(trigger_1),
+        .trace(trace_1)
      );
 
     header_flit_update_lk_route_ovc #(
@@ -823,7 +853,9 @@ endgenerate
         .lk_dest_not_registered(lk_destination_in_encoded),
         .sel (sel),
         .reset (reset),
-        .clk (clk)
+        .clk (clk),
+        .trigger(trigger_2),
+        .trace(trace_2)
     );
     
     assign flit_wr =(flit_in_we )? vc_num_in : {V{1'b0}};

@@ -275,7 +275,9 @@ module header_flit_update_lk_route_ovc #(
     lk_dest_not_registered,
     sel,
     reset,
-    clk
+    clk,
+    trigger,
+    trace
 );
 
 
@@ -300,7 +302,16 @@ module header_flit_update_lk_route_ovc #(
     input [V-1 : 0]  sel;
     input                    any_ivc_sw_request_granted;
     input [DSTPw-1 : 0]  lk_dest_not_registered;
+    output trigger;
+    output [31:0] trace;
+
     
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
+
+    assign trigger = (trigger_0|trigger_1);
+	assign trace = trigger_0? trace_0 : trace_1;
+
     wire hdr_flag;
     reg [V-1 : 0]  vc_num_delayed;
     wire [V-1 : 0]  ovc_num; 
@@ -328,7 +339,9 @@ module header_flit_update_lk_route_ovc #(
     (
         .mux_in(lk_dest_all_in),
         .mux_out(lk_mux_out),
-        .sel(vc_num_delayed)
+        .sel(vc_num_delayed),
+        .trigger(trigger_0),
+        .trace(trace_0)
     );
 
     generate 
@@ -359,7 +372,9 @@ module header_flit_update_lk_route_ovc #(
     (
         .mux_in(assigned_ovc_num),
         .mux_out(ovc_num),
-        .sel(vc_num_delayed)
+        .sel(vc_num_delayed),
+        .trigger(trigger_1),
+        .trace(trace_1)
     );
        
     generate 

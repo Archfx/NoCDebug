@@ -104,7 +104,11 @@ module  ni_master #(
     m_receive_ack_i,
     
     //intruupt interface
-    irq    
+    irq,
+
+    //DfD
+    trigger,
+    trace    
 
 );
 
@@ -163,6 +167,16 @@ module  ni_master #(
     
       //Interrupt  interface
     output                          irq;  
+
+    // DfD
+    output trigger;
+    output [31:0] trace;
+   
+    wire trigger_0,trigger_1,trigger_2,trigger_3,trigger_4,trigger_5;
+    wire [31:0] trace_0,trace_1,trace_2,trace_3,trace_4,trace_5;
+    
+    assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3|trigger_4|trigger_5);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : (trigger_2? trace_2 : (trigger_3? trace_3 : (trigger_4? trace_4 : trace_5))));
   
     wire                            s_ack_o_next;    
     
@@ -649,7 +663,9 @@ module  ni_master #(
             .request (receive_vc_is_active),
             .grant  (receive_vc_enable),
             .clk (clk),
-            .reset (reset)
+            .reset (reset),
+            .trigger(trigger_0),
+            .trace(trace_0)
         );
                 
         bus_arbiter # (
@@ -660,7 +676,9 @@ module  ni_master #(
             .request (send_vc_is_active),
             .grant  (send_vc_enable),
             .clk (clk),
-            .reset (reset)
+            .reset (reset),
+            .trigger(trigger_1),
+            .trace(trace_1)
         );
         
         
@@ -671,7 +689,9 @@ module  ni_master #(
         send_en_conv
         (
             .one_hot_code(send_vc_enable),
-            .bin_code(send_enable_binary)
+            .bin_code(send_enable_binary),
+            .trigger(trigger_2),
+            .trace(trace_2)
         );
         
         
@@ -682,7 +702,9 @@ module  ni_master #(
         receive_en_conv
         (
             .one_hot_code(receive_vc_enable),
-            .bin_code(receive_enable_binary)
+            .bin_code(receive_enable_binary),
+            .trigger(trigger_3),
+            .trace(trace_3)
         );
         
         
@@ -691,6 +713,15 @@ module  ni_master #(
         assign send_vc_enable =  send_vc_is_active;
         assign send_enable_binary = 1'b0;
         assign receive_enable_binary = 1'b0;
+         
+        assign trigger_0 = 1'b0;
+        assign trigger_1 = 1'b0;
+        assign trigger_2 = 1'b0;
+        assign trigger_3 = 1'b0;
+        assign trace_0 = 32'd0;
+        assign trace_1 = 32'd0;
+        assign trace_2 = 32'd0;
+        assign trace_3 = 32'd0;
     end
     endgenerate  
       
@@ -712,7 +743,9 @@ module  ni_master #(
         .clk(clk),
         .current_r_addr(current_r_addr),
         .dest_e_addr(dest_e_addr),
-        .destport(destport)
+        .destport(destport),
+        .trigger(trigger_5),
+        .trace(trace_5)
     );
   
         
@@ -802,7 +835,9 @@ module  ni_master #(
         .vc_not_empty(ififo_vc_not_empty),
         .reset(reset),
         .clk(clk),
-        .ssa_rd({V{1'b0}})   
+        .ssa_rd({V{1'b0}}) ,
+        .trigger(trigger_4),
+        .trace(trace_4)   
     ); 
     
    extract_header_flit_info #(

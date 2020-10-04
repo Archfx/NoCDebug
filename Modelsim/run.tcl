@@ -97,10 +97,11 @@ vlog -vlog01compat -work work +incdir+/home/archfx/Documents/mor1k_16Soc/src_ver
 vlog -vlog01compat -work work +incdir+/home/archfx/Documents/mor1k_16Soc/src_verilog/lib/jtag_wb/ {/home/archfx/Documents/mor1k_16Soc/src_verilog/lib/jtag_wb/jtag_source_probe.v}
 vlog -vlog01compat -work work +incdir+/home/archfx/Documents/mor1k_16Soc/src_verilog/lib/jtag_wb/ {/home/archfx/Documents/mor1k_16Soc/src_verilog/lib/jtag_wb/vjtag.v}
 vlog -vlog01compat -work work +incdir+/home/archfx/Documents/mor1k_16Soc/src_verilog/lib/jtag_wb/ {/home/archfx/Documents/mor1k_16Soc/src_verilog/lib/jtag_wb/vjtag_wb.v}
-	
+vlog -work work +incdir+/home/archfx/Documents/mor1k_16Soc/src_verilog/dfd/ {/home/archfx/Documents/mor1k_16Soc/src_verilog/dfd/trace_buffer.sv}
+
 vsim -t 1ps  -L rtl_work -L work -voptargs="+acc"  testbench
 
-add wave *
+#add wave *
 view structure
 view signals
 run -all

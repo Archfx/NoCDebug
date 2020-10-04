@@ -41,7 +41,9 @@ module crossbar #(
     flit_out_we_all,
     ssa_flit_wr_all,
     clk,
-    reset
+    reset,
+    trigger,
+    trace
 
 );    
     
@@ -77,7 +79,11 @@ module crossbar #(
     input [P-1 : 0] ssa_flit_wr_all;
     input reset,clk;
     
-    
+    output trigger;
+    output [31:0] trace;
+
+    wire trigger_0,trigger_1;
+    wire [31:0] trace_0,trace_1;
     
     wire [PFw-1 : 0]  flit_out_all_internal;
     wire [P-1 : 0]  flit_out_we_all_internal,flit_we_mux_out;
@@ -127,6 +133,8 @@ module crossbar #(
         /* verilator lint_off WIDTH */
         if    (MUX_TYPE    ==    "ONE_HOT") begin : one_hot_gen
         /* verilator lint_on WIDTH */
+            assign trigger = trigger_0;
+            assign trace = trace_0;
             one_hot_mux #(
                 .IN_WIDTH (P_1Fw),
                 .SEL_WIDTH (P_1)
@@ -135,11 +143,15 @@ module crossbar #(
             (
                 .mux_in (mux_in [i]),
                 .mux_out (flit_out_all_internal[(i+1)*Fw-1 : i*Fw]),
-                .sel (mux_sel[i])
+                 .sel (mux_sel[i]),
+                .trigger(trigger_0),
+                .trace(trace_0)
     
             );
         end else begin : binary
         
+            assign trigger = trigger_1;
+            assign trace = trace_1;
             one_hot_to_bin #(
                 .ONE_HOT_WIDTH(P_1),
                 .BIN_WIDTH(P_1w)
@@ -147,7 +159,9 @@ module crossbar #(
             conv
             (
                 .one_hot_code(mux_sel[i]),
-                .bin_code(mux_sel_bin[i])
+                .bin_code(mux_sel_bin[i]),
+                .trigger(trigger_1),
+                .trace(trace_1)
         
             );
             

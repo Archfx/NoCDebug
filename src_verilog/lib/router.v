@@ -78,7 +78,9 @@ module router # (
     credit_in_all,
     congestion_out_all,
     
-    clk,reset
+    clk,reset,
+    trigger,
+    trace 
 
 );
 
@@ -124,6 +126,16 @@ module router # (
     
     input clk,reset;
 
+    // DfD
+    output trigger;
+    output [31:0] trace;
+
+    // Trace
+    wire trigger_0,trigger_1,trigger_2;
+    wire [31:0] trace_0,trace_1,trace_2;
+
+    assign trigger = (trigger_0|trigger_1|trigger_2);
+	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : trace_2) ;
     
     //internal wires
     wire  [PV-1 : 0] ovc_allocated_all;
@@ -233,7 +245,9 @@ module router # (
         .iport_weight_is_consumed_all(iport_weight_is_consumed_all), 
         .refresh_w_counter(refresh_w_counter), 
         .clk(clk), 
-        .reset(reset)
+        .reset(reset),
+        .trigger(trigger_0),
+        .trace(trace_0)
     );
 
 
@@ -271,7 +285,9 @@ module router # (
         .vc_weight_is_consumed_all(vc_weight_is_consumed_all),  
         .iport_weight_is_consumed_all(iport_weight_is_consumed_all),  
         .clk(clk), 
-        .reset(reset)
+        .reset(reset),
+        .trigger(trigger_1),
+        .trace(trace_1)
         );
         
    
@@ -300,7 +316,9 @@ module router # (
         .flit_out_we_all (flit_out_we_all),
         .ssa_flit_wr_all (ssa_flit_wr_all),
         .clk (clk),
-        .reset (reset)
+        .reset (reset),
+        .trigger(trigger_2),
+        .trace(trace_2)
         
     );    
      
