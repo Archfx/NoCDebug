@@ -278,7 +278,7 @@ generate
 
         always@(posedge clk) begin
             // TS-1
-            if (wr[i]) begin
+            if (wr_en) begin
                 // trace_1<={4'b0001,14'b11111111111,14'd0};
                 trace_1<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1 <= 1'b1;
@@ -293,7 +293,7 @@ generate
             else trigger_1 <= 1'b0;
 
             // Ts-2
-            if (rd[i]) begin
+            if (rd_en) begin
                 trace_2<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
                 next_clk_2 <= 1'b1;
             end

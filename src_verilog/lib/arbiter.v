@@ -64,8 +64,8 @@ module arbiter #(
     wire trigger_1;
     wire [31:0] trace_1;
 
-    assign trigger = 1'b0; //(trigger_0 | trigger_1);
-    assign trace = 32'b0;//trigger_0? trace_0 :trace_1;
+    assign trigger = trigger_1;//1'b0; //(trigger_0 | trigger_1);
+    assign trace = trace_1;//32'b0;//trigger_0? trace_0 :trace_1;
     // assign trigger = (trigger_0 );
     // assign trace = trace_0 ;
 
