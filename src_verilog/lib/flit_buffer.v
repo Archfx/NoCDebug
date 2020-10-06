@@ -110,7 +110,7 @@ module flit_buffer #(
     assign  rd  =   (rd_en)?  vc_num_rd : ssa_rd;
     
     assign trigger= trigger_1 | trigger_3 | trigger_4 | trigger_5 | trigger_6;
-    assign trace = (trigger_1)? trace_1 : (trigger_2? trace_2 : (trigger_3? trace_3 : (trigger_4? trace_4 : (trigger_5? trace_5 : trace_6))));
+    assign trace = (trigger_2)? trace_2 : (trigger_1? trace_1 : (trigger_3? trace_3 : (trigger_4? trace_4 : (trigger_5? trace_5 : trace_6))));
 genvar i;
 
 generate 
@@ -274,19 +274,19 @@ generate
 //synthesis translate_on
         // Trace creation for the trigger
 
-        // Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (8bit) | WR | RD | DEPTH (4bit) | WR_PTR (3bit) | WR_PTR_NEXT (3bit)  | RD_PTR (3bit) | RD_PTR_NEXT (3bit) ] 
+        // Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (15bit) | WR | RD | DEPTH (3bit) | WR_PTR (2bit) | WR_PTR_NEXT (2bit)  | RD_PTR (2bit) | RD_PTR_NEXT (2bit) ] 
 
         always@(posedge clk) begin
             // TS-1
             if (wr[i]) begin
                 // trace_1<={4'b0001,14'b11111111111,14'd0};
-                trace_1<={4'd1,8'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),3'd0,(rd_ptr[i]),3'd0}; // length.wr_ptr = 3 and length.depth = 4
+                trace_1<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1 <= 1'b1;
             end
             if (next_clk_1) begin
                 // trace_1[13:0]<=14'b10101010101;
-                trace_1[2:0]<= rd_ptr[i];
-                trace_1[5:3]<= wr_ptr[i];
+                trace_1[1:0]<= rd_ptr[i];
+                trace_1[5:4]<= wr_ptr[i];
                 next_clk_1 <= 1'b0;
                 trigger_1 <= 1'b1;
             end
@@ -294,12 +294,12 @@ generate
 
             // Ts-2
             if (rd[i]) begin
-                trace_2<={4'd2,8'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),3'd0,(rd_ptr[i]),3'd0}; // length.rd_ptr = 3
+                trace_2<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
                 next_clk_2 <= 1'b1;
             end
             if (next_clk_2) begin
-                trace_2[2:0]<= rd_ptr[i];
-                trace_2[5:3]<= wr_ptr[i];
+                trace_2[1:0]<= rd_ptr[i];
+                trace_2[5:4]<= wr_ptr[i];
                 next_clk_2 <= 1'b0;
                 trigger_2 <= 1'b1;
             end
