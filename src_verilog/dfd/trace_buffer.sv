@@ -55,7 +55,7 @@ module trace_buffer #(
 
     initial begin
         trace_dump = $fopen("trace_dump.txt","a");
-        $fwrite(trace_dump,"%s  %d \n", "Simulation started : " , $realtime);
+        $fwrite(trace_dump,"%s  %d \n", "// Simulation started : " , $realtime);
     end
 
     reg [TB_Depth-1      :   0] rd_ptr;
@@ -86,20 +86,8 @@ module trace_buffer #(
         else begin
             if (trigger) wr_ptr <= wr_ptr + 1'h1;
             if (rd) rd_ptr <= rd_ptr + 1'h1;
-            if (trigger & ~rd) depth <=
-            //synthesis translate_off
-            //synopsys  translate_off
-                #1
-            //synopsys  translate_on
-            //synthesis translate_on
-                depth + 1'h1;
-            else if (~trigger & rd) depth <=
-            //synthesis translate_off
-            //synopsys  translate_off
-                #1
-            //synopsys  translate_on
-            //synthesis translate_on
-                depth - 1'h1;
+            if (trigger & ~rd) depth <= depth + 1'h1;
+            else if (~trigger & rd) depth <= depth - 1'h1;
         end//else
 
             

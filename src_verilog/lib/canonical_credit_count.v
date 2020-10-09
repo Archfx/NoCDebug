@@ -363,53 +363,7 @@ module canonical_credit_counter #(
     
     
     
-    //synthesis translate_off 
-    //synopsys  translate_off
-generate 
-if(DEBUG_EN) begin :dbg
-    always @(posedge clk) begin
-       if(!reset)begin 
-        for(k=0;    k<PV; k=k+1'b1) begin 
-            if(credit_counter[k]== Bint && credit_increased_all[k])
-                $display("%t: ERROR: unexpected credit is received for an empty ovc: %m",$time);
-            if(credit_counter[k]== {Bw{1'b0}} && credit_decreased_all[k])
-                $display("%t: ERROR: Attempt to send flit to a full ovc: %m",$time);
-            if(ovc_released_all[k] && ovc_allocated_all[k])        
-                $display("%t: ERROR: simultaneous allocation and release for an OVC: %m",$time);
-            if(ovc_released_all[k] && ovc_status[k]==1'b0)
-                $display("%t: ERROR: Attempt to release an unallocated OVC: %m",$time);
-            if(ovc_allocated_all[k] && ovc_status[k]==1'b1)
-                $display("%t: ERROR: Attempt to allocate an allocated OVC: %m",$time);
-        end//for
-       end
-    end
-    /*
-    localparam NUM_WIDTH = log2(PV+1);
-    wire [NUM_WIDTH-1        :    0] num1,num2;
-    set_bits_counter #(
-        .IN_WIDTH(PV)
-    )cnt1
-    (
-        .in        (ovc_status),
-        .out        (num1)
-    );
-
-    set_bits_counter #(
-        .IN_WIDTH(PV)
-    )cnt2
-    (
-        .in        (ovc_is_assigned_all),
-        .out        (num2)
-    );
-    
-    always @(posedge clk) begin
-        if(num1    != num2 ) $display("%t: ERROR: number of assigned IVC mismatch the number of occupied OVC: %m",$time);
-    end
-    */
-end
-endgenerate    
-    //synopsys  translate_on
-    //synthesis translate_on
+ 
     
     
     

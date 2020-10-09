@@ -29,9 +29,7 @@
 *******************************************************************/
 
 
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
+
 
 module  ni_master #(    
     parameter MAX_TRANSACTION_WIDTH=10, // Maximum transaction size will be 2 power of MAX_DMA_TRANSACTION_WIDTH words 
@@ -474,11 +472,7 @@ module  ni_master #(
         )
         wb_slave_registers
         (
-//synthesis translate_off
-//synopsys  translate_off    
-            .current_e_addr(current_e_addr),
-//synthesis translate_on
-//synopsys  translate_on   
+  
             .clk(clk),
             .reset(reset),
             .state_reg_enable(vc_state_reg_enable[i]),

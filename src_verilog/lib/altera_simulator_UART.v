@@ -8,9 +8,7 @@
 *              The buffer  perevents the conflict between multiple simulation UART messages 
 *              Wait counter reset by each individual write on buffer
 ***************************************/
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
+
 
 
 
@@ -73,135 +71,7 @@ module  altera_simulator_UART #(
     end
      
      
-//synthesis translate_off
-//synopsys  translate_off
 
-
-
-    reg RxD_rd_en;
-    wire [7:0] RxD_dout;
-    wire RxD_full, RxD_nearly_full,RxD_empty,RxD_wr_en;
-    
-    assign   RxD_ready=~RxD_nearly_full;
-    assign   RxD_wr_en= RxD_wr & ~RxD_nearly_full;
-   
-   function integer log2;
-      input integer number; begin   
-         log2=(number <=1) ? 1: 0;    
-         while(2**log2<number) begin    
-            log2=log2+1;    
-         end       
-      end   
-    endfunction // log2 
-   
-    localparam CNTw= log2(WAIT_COUNT+1);
-    localparam Bw = log2(BUFFER_SIZE+1);
-    
-    reg [CNTw-1 :   0]counter,counter_next;
-    reg [7  : 0 ] buffer [ BUFFER_SIZE-1    :   0];
-    wire [BUFFER_SIZE*8-1:0] string_wire;
-    
-    genvar k;
-    generate 
-    for(k=0;k<BUFFER_SIZE;k=k+1)begin 
-        assign string_wire[(BUFFER_SIZE-k)*8-1   : (BUFFER_SIZE-k-1)*8] = buffer[k];
-    end
-    endgenerate
-
-
-    reg [Bw-1   :   0] ptr,ptr_next;
-   
-    always @(posedge clk)begin 
-        if( reset   )s_ack_o<=1'b0;
-       else s_ack_o<=s_ack_o_next;
-    end
-            
-  
-  reg print_en,buff_en;
-  
-   always @(*)begin 
-        counter_next = counter;
-        ptr_next = ptr;
-        print_en =0;
-        buff_en=0;
-        RxD_rd_en=1'b0;
-        s_dat_o = 32'hFFFF0000;
-
-        if (ptr > 0 ) counter_next = counter + 1'b1;
-        if (counter == WAIT_COUNT || ptr == BUFFER_SIZE) begin
-           counter_next = 0;  
-           ptr_next =0;
-           print_en =1;
-        end  
-	//write      
-        if( s_stb_i &  s_cyc_i &  s_we_i & s_ack_o  )begin 
-           counter_next=0;
-           buff_en=1;
-           if( ptr < BUFFER_SIZE)begin 
-                ptr_next  =  ptr+1;
-           end              
-        end  
-	//read
-	if( s_stb_i &  s_cyc_i &  ~s_we_i & s_ack_o  )begin 
-	   RxD_rd_en=(RxD_empty)? 1'b0 : 1'b1;  
-	   s_dat_o={16'hFFFF,~RxD_empty,7'b0,RxD_dout};
-
-	end
-
-    end
-  
- 
-  
- RxD_fifo #(
-  	.Dw(8),
-  	.B(BUFFER_SIZE)
-  ) 
-  the_RxD_fifo
-  (
-  	.din(RxD_din),
-  	.wr_en(RxD_wr_en),  	
-  	.rd_en(RxD_rd_en),
-  	.dout(RxD_dout),
-  	.full(RxD_full),
-  	.nearly_full(RxD_nearly_full),
-  	.empty(RxD_empty),
-  	.reset(reset),
-  	.clk(clk)
-  );
-  
-  
-  
-  integer i;
-  always @(posedge clk)begin 
-    if(reset) begin 
-        counter<=0;
-        ptr<=0;
-        for(i=0;i<BUFFER_SIZE;i=i+1) buffer[i]=0; 
-    end else begin
-       counter<=counter_next;
-       ptr <= ptr_next;
-       if( buff_en )begin 
-	  buffer[ptr]=s_dat_i[7:0];
-          if(ptr<BUFFER_SIZE-1) buffer[ptr+1]=0;
-         
-	end
-     if (print_en)  for(i=0;i<  ptr;i=i+1) $write("%c",buffer[i]); 
- /*    
-  if (print_en)begin 
-	$write("%s",string_wire);  
-        for(i=0;i< BUFFER_SIZE ;i=i+1) buffer[i]=0; 
-      end    
-*/
-    end
-
-  end
-
-
-
-
-  
- //synopsys  translate_on
-//synthesis translate_on 
 
 endmodule
 
@@ -269,13 +139,7 @@ begin
    if (wr_en)
       queue[wr_ptr] <= din;
    if (rd_en)
-      dout <=
-//synthesis translate_off
-//synopsys  translate_off
-          #1
-//synopsys  translate_on
-//synthesis translate_on  
-          queue[rd_ptr];
+      dout <=queue[rd_ptr];
 end
 
 always @(posedge clk)
@@ -288,20 +152,8 @@ begin
    else begin
       if (wr_en) wr_ptr <= (wr_ptr==Bint)? {Bw{1'b0}} : wr_ptr + 1'b1;
       if (rd_en) rd_ptr <= (rd_ptr==Bint)? {Bw{1'b0}} : rd_ptr + 1'b1;
-      if (wr_en & ~rd_en) depth <=
-//synthesis translate_off
-//synopsys  translate_off
-                   #1
-//synopsys  translate_on
-//synthesis translate_on  
-                   depth + 1'b1;
-      else if (~wr_en & rd_en) depth <=
-//synthesis translate_off
-//synopsys  translate_off
-                   #1
-//synopsys  translate_on
-//synthesis translate_on  
-                   depth - 1'b1;
+      if (wr_en & ~rd_en) depth <= depth + 1'b1;
+      else if (~wr_en & rd_en) depth <= depth - 1'b1;
    end
 end
 
@@ -310,19 +162,7 @@ assign full = depth == B;
 assign nearly_full = depth >= B-1;
 assign empty = depth == {DEPTHw{1'b0}};
 
-//synthesis translate_off
-//synopsys  translate_off
-always @(posedge clk)
-begin
-    if(~reset)begin
-       if (wr_en && depth == B && !rd_en)
-          $display(" %t: ERROR: Attempt to write to full FIFO: %m",$time);
-       if (rd_en && depth == {DEPTHw{1'b0}})
-          $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
-    end//~reset
-end
-//synopsys  translate_on
-//synthesis translate_on
+
 
 endmodule // fifo
 

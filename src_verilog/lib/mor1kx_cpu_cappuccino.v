@@ -1067,40 +1067,6 @@ module mor1kx_cpu_cappuccino
       .pipeline_flush_i			(pipeline_flush_o));	 // Templated
 
 
-`ifndef SYNTHESIS
-// synthesis translate_off
-   /* Debug signals required for the debug monitor */
-   function [OPTION_OPERAND_WIDTH-1:0] get_gpr;
-      // verilator public
-      input [4:0] 		   gpr_num;
-      begin
-	 // TODO: handle load ops
-	 if ((mor1kx_rf_cappuccino.execute_rfd_adr_i == gpr_num) &
-	     mor1kx_rf_cappuccino.execute_rf_wb_i)
-	   get_gpr = alu_result_o;
-	 else if ((mor1kx_rf_cappuccino.ctrl_rfd_adr_i == gpr_num) &
-		  mor1kx_rf_cappuccino.ctrl_rf_wb_i)
-	   get_gpr = ctrl_alu_result_o;
-	 else if ((mor1kx_rf_cappuccino.wb_rfd_adr_i == gpr_num) &
-		  mor1kx_rf_cappuccino.wb_rf_wb_i)
-	   get_gpr = mor1kx_rf_cappuccino.result_i;
-	 else
-	   get_gpr = mor1kx_rf_cappuccino.rfa.mem[gpr_num];
-      end
-   endfunction //
-
-
-   task set_gpr;
-      // verilator public
-      input [4:0] gpr_num;
-      input [OPTION_OPERAND_WIDTH-1:0] gpr_value;
-      begin
-	 mor1kx_rf_cappuccino.rfa.mem[gpr_num] = gpr_value;
-	 mor1kx_rf_cappuccino.rfb.mem[gpr_num] = gpr_value;
-      end
-   endtask
-// synthesis translate_on
-`endif
 
 
    /* mor1kx_execute_ctrl_cappuccino AUTO_TEMPLATE (

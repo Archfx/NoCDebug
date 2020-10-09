@@ -287,23 +287,7 @@ end
 
     
 
-//synthesis translate_off
-//synopsys  translate_off
-generate
-    if(DEBUG_EN)begin :dbg2   // The SSA must not have conflict with the main VC/Sw allocator
-        localparam VV = V*V;
-        genvar g;
-        for(g=0; g< P; g=g+1 ) begin: p_loop
-            always @ (posedge clk) begin
-                if( (|granted_ovc_num_all[(g+1)*VV-1 : g*VV]) &  (|ssa_granted_ovc_num_all[(g+1)*VV-1 : g*VV])) $display("%t: ERROR: VSA/SSA conflict: granted_ovc_num %m",$time);
-                if( (|ivc_num_getting_sw_grant [(g+1)*V-1 : g*V]) & (|ssa_ivc_num_getting_sw_grant_all[(g+1)*V-1 : g*V]) ) $display("%t: ERROR: VSA/SSA conflict: ivc_num_getting_sw_grant %m",$time);     
-                 if((|(flit_is_tail_all[(g+1)*V-1 : g*V] & ivc_num_getting_sw_grant[(g+1)*V-1 : g*V])) & (|ssa_ivc_reset_all[(g+1)*V-1 : g*V])) $display("%t: ERROR: VSA/SSA conflict: reset_ivc_all %m",$time);   
-            end//always
-        end
-    end //dbg
-endgenerate
-//synopsys  translate_on
-//synthesis translate_on
+
 
 
 //assign port_pre_sel_ld_all= ~ovc_is_assigned_all_next;
@@ -329,20 +313,7 @@ generate
 	    if((ivc_num_getting_ovc_grant[k] | ssa_ivc_num_getting_ovc_grant_all[k]) ) begin 
 		assigned_ovc_num_all_next[(k+1)*V-1 : k*V] = granted_ovc_num_all_or_ssa[(k+1)*V-1 : k*V];
 	    end
-        end//always
-        //synthesis translate_off
-        //synopsys  translate_off
-        if(DEBUG_EN)begin :dbg
-          always @ (posedge clk) begin
-            if((ivc_num_getting_ovc_grant[k] | ssa_ivc_num_getting_ovc_grant_all[k]) && granted_ovc_num_all_or_ssa[(k+1)*V-1 : k*V]== {V{1'b0}}) begin 
-                    $display("%t: ERROR: granted OVC num is NULL: %m",$time);
-                    
-            end
-          end//always
-        end
-        //synopsys  translate_on
-        //synthesis translate_on
-        
+        end//always      
         
     end//for
 endgenerate
@@ -364,16 +335,6 @@ end
  	
 
 generate 
-    //synthesis translate_off 
-    //synopsys  translate_off
-    if(DEBUG_EN && MIN_PCK_SIZE >1 )begin :dbg
-        integer kk;
-        always @(posedge clk ) begin
-            for(kk=0; kk< PV; kk=kk+1'b1 ) if(reset_ivc_all[kk] & (ivc_num_getting_ovc_grant[kk] | ssa_ivc_num_getting_ovc_grant_all[kk]))   $display("%t: ERROR: the ovc %d released and allocat signal is asserted in the same clock cycle : %m",$time,kk);
-        end
-    end
-    //synopsys  translate_on
-    //synthesis translate_on
             
     if( COMBINATION_TYPE==  "BASELINE") begin : canonical
         

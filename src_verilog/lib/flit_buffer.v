@@ -104,6 +104,7 @@ module flit_buffer #(
     reg   [DEPTHw-1             :   0] depth    [V-1            :0];
     
     
+    // assign din[31:13] = (din[35])? 19'd0 : din[31:13];
     assign fifo_ram_din = {din[Fw-1 :   Fw-2],din[Fpay-1        :   0]};
     assign dout = {fifo_ram_dout[Fpay+1:Fpay],{V{1'bX}},fifo_ram_dout[Fpay-1        :   0]};    
     assign  wr  =   (wr_en)?  vc_num_wr : {V{1'b0}};
@@ -236,42 +237,11 @@ generate
             else begin
                 if (wr[i] ) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
                 if (rd[i] ) rd_ptr [i]<= rd_ptr [i]+ 1'h1;
-                if (wr[i] & ~rd[i]) depth [i]<=
-//synthesis translate_off
-//synopsys  translate_off
-                   #1
-//synopsys  translate_on
-//synthesis translate_on
-                   depth[i] + 1'h1;
-                else if (~wr[i] & rd[i]) depth [i]<=
-//synthesis translate_off
-//synopsys  translate_off
-                   #1
-//synopsys  translate_on
-//synthesis translate_on
-                   depth[i] - 1'h1;
+                if (wr[i] & ~rd[i]) depth [i]<= depth[i] + 1'h1;
+                else if (~wr[i] & rd[i]) depth [i]<= depth[i] - 1'h1;
             end//else
         end//always
 
-
-//synthesis translate_off
-//synopsys  translate_off
-    
-        always @(posedge clk) begin
-            if(~reset)begin
-                if (wr[i] && (depth[i] == B) && !rd[i])
-                    $display("%t: ERROR: Attempt to write to full FIFO:FIFO size is %d. %m",$time,B);
-                /* verilator lint_off WIDTH */
-                if (rd[i] && (depth[i] == {DEPTHw{1'b0}} &&  SSA_EN !="YES"  ))
-                    $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
-                if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}} &&  SSA_EN =="YES" ))
-                    $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
-                /* verilator lint_on WIDTH */
-          end//~reset      
-        //if (wr_en)       $display($time, " %h is written on fifo ",din);
-        end//always
-//synopsys  translate_on
-//synthesis translate_on
         // Trace creation for the trigger
 
         // Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (15bit) | WR | RD | DEPTH (3bit) | WR_PTR (2bit) | WR_PTR_NEXT (2bit)  | RD_PTR (2bit) | RD_PTR_NEXT (2bit) ] 
@@ -310,163 +280,9 @@ generate
     
     
     end 
-//  else begin :no_pow2    //pow2
 
-
-
-
-
-//     /*****************      
-//         Buffer width is not power of 2
-//      ******************/
-
-
-
-
-    
-//     //pointers
-//     reg [BVw- 1     :   0] rd_ptr [V-1          :0];
-//     reg [BVw- 1     :   0] wr_ptr [V-1          :0];
-    
-//     // memory address
-//     wire [BVw- 1    :   0]  wr_addr;
-//     wire [BVw- 1    :   0]  rd_addr;
-    
-//     //pointer array      
-//     wire [BVwV- 1   :   0]  wr_addr_all;
-//     wire [BVwV- 1   :   0]  rd_addr_all;
-    
-//     for(i=0;i<V;i=i+1) begin :loop0
-        
-//         assign  wr_addr_all[(i+1)*BVw- 1        :   i*BVw]   =       wr_ptr[i];
-//         assign  rd_addr_all[(i+1)*BVw- 1        :   i*BVw]   =       rd_ptr[i];       
-//         assign  vc_not_empty    [i] =   (depth[i] > 0);
-    
-//      /* verilator lint_off WIDTH */ 
-//         always @(posedge clk or posedge reset)
-//         begin
-//             if (reset) begin
-               
-//                 rd_ptr  [i] <= (B*i);
-//                 wr_ptr  [i] <= (B*i);
-//                 depth   [i] <= {DEPTHw{1'b0}};
-//             end
-//             else begin
-//                 if (wr[i] ) wr_ptr[i] <=(wr_ptr[i]==(B*(i+1))-1)? (B*i) : wr_ptr [i]+ 1'h1;
-//                 if (rd[i] ) rd_ptr[i] <=(rd_ptr[i]==(B*(i+1))-1)? (B*i) : rd_ptr [i]+ 1'h1;
-//                 if (wr[i] & ~rd[i]) depth [i]<=
-// //synthesis translate_off
-// //synopsys  translate_off
-//                    #1
-// //synopsys  translate_on
-// //synthesis translate_on
-//                    depth[i] + 1'h1;
-//                 else if (~wr[i] & rd[i]) depth [i]<=
-// //synthesis translate_off
-// //synopsys  translate_off
-//                    #1          
-// //synopsys  translate_on
-// //synthesis translate_on
-//                    depth[i] - 1'h1;
-//             end//else
-//         end//always  
-//          /* verilator lint_on WIDTH */ 
-        
-// //synthesis translate_off
-// //synopsys  translate_off
-    
-//         always @(posedge clk) begin
-//             if(~reset)begin
-//                 if (wr[i] && (depth[i] == B) && !rd[i])
-//                    $display("%t: ERROR: Attempt to write to full FIFO:FIFO size is %d. %m",$time,B);
-//                 /* verilator lint_off WIDTH */
-//                 if (rd[i] && (depth[i] == {DEPTHw{1'b0}}  &&  SSA_EN !="YES"  ))
-//                     $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
-//                 if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}} &&  SSA_EN =="YES" ))
-//                     $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
-//                 /* verilator lint_on WIDTH */
-                
-//         //if (wr_en)       $display($time, " %h is written on fifo ",din);
-//             end//~reset
-//         end//always
-    
-// //synopsys  translate_on
-// //synthesis translate_on
-        
-              
-    
-//     end//FOR
-    
-    
-//     one_hot_mux #(
-//         .IN_WIDTH(BVwV),
-//         .SEL_WIDTH(V),
-//         .OUT_WIDTH(BVw)
-//     )
-//     wr_mux
-//     (
-//         .mux_in(wr_addr_all),
-//         .mux_out(wr_addr),
-//         .sel(vc_num_wr)
-//     );
-    
-//     one_hot_mux #(
-//         .IN_WIDTH(BVwV),
-//         .SEL_WIDTH(V),
-//         .OUT_WIDTH(BVw)
-//     )
-//     rd_mux
-//     (
-//         .mux_in(rd_addr_all),
-//         .mux_out(rd_addr),
-//         .sel(vc_num_rd)
-//     );
-    
-//     fifo_ram_mem_size #(
-//        .DATA_WIDTH (RAM_DATA_WIDTH),
-//        .MEM_SIZE (BV ),
-//        .SSA_EN(SSA_EN)       
-//     )
-//     the_queue
-//     (
-//         .wr_data        (fifo_ram_din), 
-//         .wr_addr        (wr_addr),
-//         .rd_addr        (rd_addr),
-//         .wr_en          (wr_en),
-//         .rd_en          (rd_en),
-//         .clk            (clk),
-//         .rd_data        (fifo_ram_dout)
-//     );  
-    
-    
-    
-    
-    
-    
-//     end
     endgenerate
-    
-    
-    
-    
-  
-
-//synthesis translate_off
-//synopsys  translate_off
-generate
-if(DEBUG_EN) begin :dbg 
-    always @(posedge clk) begin
-        if(~reset)begin
-            if(wr_en && vc_num_wr == {V{1'b0}})
-                    $display("%t: ERROR: Attempt to write when no wr VC is asserted: %m",$time);
-            if(rd_en && vc_num_rd == {V{1'b0}})
-                    $display("%t: ERROR: Attempt to read when no rd VC is asserted: %m",$time);
-        end
-    end
-end 
-endgenerate 
-//synopsys  translate_on
-//synthesis translate_on    
+       
 
 endmodule 
 
@@ -502,13 +318,7 @@ module fifo_ram     #(
 			if (wr_en)
 				 queue[wr_addr] <= wr_data;
 			if (rd_en)
-				 memory_rd_data <=
-//synthesis translate_off
-//synopsys  translate_off
-					  #1
-//synopsys  translate_on
-//synthesis translate_on   
-					  queue[rd_addr];
+				 memory_rd_data <= queue[rd_addr];
 	end
 	
  
@@ -538,103 +348,6 @@ module fifo_ram     #(
     end
     endgenerate
 endmodule
-
-
-
-/*********************
-*
-*   fifo_ram_mem_size
-*
-**********************/
-
-
-// module fifo_ram_mem_size     #(
-//     parameter DATA_WIDTH  = 32,
-//     parameter MEM_SIZE    = 200,
-//     parameter SSA_EN  = "YES" // "YES" , "NO"       
-//     )
-//     (
-//        wr_data,        
-//        wr_addr,
-//        rd_addr,
-//        wr_en,
-//        rd_en,
-//        clk,
-//        rd_data
-//     ); 
-     
-    
-//     function integer log2;
-//       input integer number; begin   
-//          log2=(number <=1) ? 1: 0;    
-//          while(2**log2<number) begin    
-//             log2=log2+1;    
-//          end 	   
-//       end   
-//     endfunction // log2 
-
-//     localparam ADDR_WIDTH=log2(MEM_SIZE);
-    
-//     input [DATA_WIDTH-1         :       0]  wr_data;       
-//     input [ADDR_WIDTH-1         :       0]  wr_addr;
-//     input [ADDR_WIDTH-1         :       0]  rd_addr;
-//     input                                   wr_en;
-//     input                                   rd_en;
-//     input                                   clk;
-//     output reg  [DATA_WIDTH-1   :       0]  rd_data;
-    
-    
-     
-//     generate 
-//     /* verilator lint_off WIDTH */
-//     if(SSA_EN =="YES") begin :predict
-//     /* verilator lint_on WIDTH */
-//         reg [DATA_WIDTH-1:0] queue [MEM_SIZE-1:0] /* synthesis ramstyle = "no_rw_check , M9K" */;
-                
-//         always @(posedge clk ) begin
-//             if (wr_en)
-//                 queue[wr_addr] <= wr_data;
-//             if (rd_en) begin 
-//                 rd_data <=
-// //synthesis translate_off
-// //synopsys  translate_off
-//                     #1
-// //synopsys  translate_on
-// //synthesis translate_on  
-//                     queue[rd_addr];
-//             end else begin // id rd is not asserted by pass the input to the output in next clock cycle
-//                 rd_data <=
-// //synthesis translate_off
-// //synopsys  translate_off
-//                     #1
-// //synopsys  translate_on
-// //synthesis translate_on  
-//                     wr_data;            
-//             end           
-//         end
-    
-//     end else begin : no_predict
-    
-//         reg [DATA_WIDTH-1:0] queue [MEM_SIZE-1:0] /* synthesis ramstyle = "no_rw_check , M9K" */;
-        
-//         always @(posedge clk ) begin
-//             if (wr_en)
-//                 queue[wr_addr] <= wr_data;
-//             if (rd_en) 
-//                 rd_data <=
-// //synthesis translate_off
-// //synopsys  translate_off
-//                     #1
-// //synopsys  translate_on
-// //synthesis translate_on   
-//                     queue[rd_addr];
-              
-//         end
-//     end
-//     endgenerate
-    
-// endmodule
-
 
 /**********************************
 
@@ -776,21 +489,8 @@ always @(posedge clk or posedge reset) begin
             if (reset) begin
                  depth  <= {DEPTH_DATA_WIDTH{1'b0}};
             end else begin
-                 if (wr_en & ~rd_en) depth <=
-//synthesis translate_off
-//synopsys  translate_off
-                            #1
-//synopsys  translate_on
-//synthesis translate_on   
-                            depth + 1'h1;
-                else if (~wr_en & rd_en) depth <=
-
-//synthesis translate_off
-//synopsys  translate_off  
-                            #1
-//synopsys  translate_on
-//synthesis translate_on   
-                            depth - 1'h1;
+                 if (wr_en & ~rd_en) depth <=  depth + 1'h1;
+                else if (~wr_en & rd_en) depth <=  depth - 1'h1;
                 
             end
         end//always
@@ -804,31 +504,6 @@ always @(posedge clk or posedge reset) begin
             end
         end//always
         
-//synthesis translate_off
-//synopsys  translate_off
-        always @(posedge clk)
-        begin
-            if(~reset)begin
-                if (wr_en && ~rd_en && full) begin
-                    $display("%t: ERROR: Attempt to write to full FIFO:FIFO size is %d. %m",$time,MAX_DEPTH);
-                end
-                /* verilator lint_off WIDTH */
-                if (rd_en && !recieve_more_than_0 && IGNORE_SAME_LOC_RD_WR_WARNING == "NO") begin
-                    $display("%t ERROR: Attempt to read an empty FIFO: %m", $time);
-                end
-                if (rd_en && ~wr_en && !recieve_more_than_0 && IGNORE_SAME_LOC_RD_WR_WARNING == "YES") begin
-                    $display("%t ERROR: Attempt to read an empty FIFO: %m", $time);
-                end
-                /* verilator lint_on WIDTH */
-            end //~reset
-        end // always @ (posedge clk)
-    
-//synopsys  translate_on
-//synthesis translate_on  
-
-
-
-
 endmodule   
 
 
@@ -980,20 +655,8 @@ endgenerate
             if (reset) begin
                  depth  <= {DEPTH_DATA_WIDTH{1'b0}};
             end else begin
-                 if (wr_en & ~rd_en) depth <=
-//synthesis translate_off
-//synopsys  translate_off
-                            #1
-//synopsys  translate_on
-//synthesis translate_on  
-                            depth + 1'h1;
-                else if (~wr_en & rd_en) depth <=
-//synthesis translate_off
-//synopsys  translate_off
-                            #1
-//synopsys  translate_on
-//synthesis translate_on  
-                            depth - 1'h1;
+                 if (wr_en & ~rd_en) depth <=  depth + 1'h1;
+                else if (~wr_en & rd_en) depth <= depth - 1'h1;
                 
             end
         end//always
@@ -1012,148 +675,8 @@ endgenerate
     end
     endgenerate
        
-//synthesis translate_off
-//synopsys  translate_off
-        always @(posedge clk)
 
-        begin
-            if(~reset)begin
-                if (wr_en && ~rd_en && full) begin
-                    $display("%t: ERROR: Attempt to write to full FIFO:FIFO size is %d. %m",$time,MAX_DEPTH);
-                end
-                /* verilator lint_off WIDTH */
-                if (rd_en && !recieve_more_than_0 && IGNORE_SAME_LOC_RD_WR_WARNING == "NO") begin
-                    $display("%t ERROR: Attempt to read an empty FIFO: %m", $time);
-                end
-                if (rd_en && ~wr_en && !recieve_more_than_0 && IGNORE_SAME_LOC_RD_WR_WARNING == "YES") begin
-                    $display("%t ERROR: Attempt to read an empty FIFO: %m", $time);
-                end
-                /* verilator lint_on WIDTH */
-            end// ~reset
-        end // always @ (posedge clk)
-   
-//synopsys  translate_on
-//synthesis translate_on  
 endmodule   
 
-
-/**********************************
-
-            fifo
-
-*********************************/
-
-
-// module fifo  #(
-//     parameter Dw = 72,//data_width
-//     parameter B  = 10// buffer num
-// )(
-//     din,   
-//     wr_en, 
-//     rd_en, 
-//     dout,  
-//     full,
-//     nearly_full,
-//     empty,
-//     reset,
-//     clk
-// );
-
- 
-//     function integer log2;
-//       input integer number; begin   
-//          log2=(number <=1) ? 1: 0;    
-//          while(2**log2<number) begin    
-//             log2=log2+1;    
-//          end 	   
-//       end   
-//     endfunction // log2 
-
-//     localparam  B_1 = B-1,
-//                 Bw = log2(B),
-//                 DEPTHw=log2(B+1);
-//     localparam  [Bw-1   :   0] Bint =   B_1[Bw-1    :   0];
-
-//     input [Dw-1:0] din;     // Data in
-//     input          wr_en;   // Write enable
-//     input          rd_en;   // Read the next word
-
-//     output reg [Dw-1:0]  dout;    // Data out
-//     output         full;
-//     output         nearly_full;
-//     output         empty;
-
-//     input          reset;
-//     input          clk;
-
-
-
-// reg [Dw-1       :   0] queue [B-1 : 0] /* synthesis ramstyle = "no_rw_check" */;
-// reg [Bw- 1      :   0] rd_ptr;
-// reg [Bw- 1      :   0] wr_ptr;
-// reg [DEPTHw-1   :   0] depth;
-
-// // Sample the data
-// always @(posedge clk)
-// begin
-//    if (wr_en)
-//       queue[wr_ptr] <= din;
-//    if (rd_en)
-//       dout <=
-// //synthesis translate_off
-// //synopsys  translate_off
-//           #1
-// //synopsys  translate_on
-// //synthesis translate_on  
-//           queue[rd_ptr];
-// end
-
-// always @(posedge clk)
-// begin
-//    if (reset) begin
-//       rd_ptr <= {Bw{1'b0}};
-//       wr_ptr <= {Bw{1'b0}};
-//       depth  <= {DEPTHw{1'b0}};
-//    end
-//    else begin
-//       if (wr_en) wr_ptr <= (wr_ptr==Bint)? {Bw{1'b0}} : wr_ptr + 1'b1;
-//       if (rd_en) rd_ptr <= (rd_ptr==Bint)? {Bw{1'b0}} : rd_ptr + 1'b1;
-//       if (wr_en & ~rd_en) depth <=
-// //synthesis translate_off
-// //synopsys  translate_off
-//                    #1
-// //synopsys  translate_on
-// //synthesis translate_on  
-//                    depth + 1'b1;
-//       else if (~wr_en & rd_en) depth <=
-// //synthesis translate_off
-// //synopsys  translate_off
-//                    #1
-// //synopsys  translate_on
-// //synthesis translate_on  
-//                    depth - 1'b1;
-//    end
-// end
-
-// //assign dout = queue[rd_ptr];
-// assign full = depth == B;
-// assign nearly_full = depth >= B-1;
-// assign empty = depth == {DEPTHw{1'b0}};
-
-// //synthesis translate_off
-// //synopsys  translate_off
-// always @(posedge clk)
-// begin
-//     if(~reset)begin
-//        if (wr_en && depth == B && !rd_en)
-//           $display(" %t: ERROR: Attempt to write to full FIFO: %m",$time);
-//        if (rd_en && depth == {DEPTHw{1'b0}})
-//           $display("%t: ERROR: Attempt to read an empty FIFO: %m",$time);
-//     end//~reset
-// end
-// //synopsys  translate_on
-// //synthesis translate_on
-
-// endmodule // fifo
 
 

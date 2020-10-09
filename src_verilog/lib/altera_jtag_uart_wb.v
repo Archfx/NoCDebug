@@ -10,9 +10,7 @@
 //or its authorized distributors.  Please refer to the applicable
 //agreement for further details.
 
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
+
 
 // turn off superfluous verilog processor warnings 
 // altera message_level Level1 
@@ -45,30 +43,11 @@ module qsys_jtag_uart_0_sim_scfifo_w (
   wire             wfifo_empty;
   wire    [  5: 0] wfifo_used;
 
-//synthesis translate_off
-//////////////// SIMULATION-ONLY CONTENTS
-  always @(posedge clk)
-    begin
-      if (fifo_wr)
-          $write("%c", fifo_wdata);
-    end
 
-
-  assign wfifo_used = {6{1'b0}};
-  assign r_dat = {8{1'b0}};
-  assign fifo_FF = 1'b0;
-  assign wfifo_empty = 1'b1;
-
-//////////////// END SIMULATION-ONLY CONTENTS
-
-//synthesis translate_on
 
 endmodule
 
 
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
 
 // turn off superfluous verilog processor warnings 
 // altera message_level Level1 
@@ -105,23 +84,7 @@ module qsys_jtag_uart_0_scfifo_w (
   wire             wfifo_empty;
   wire    [  5: 0] wfifo_used;
 
-//synthesis translate_off
-//////////////// SIMULATION-ONLY CONTENTS
-  qsys_jtag_uart_0_sim_scfifo_w the_qsys_jtag_uart_0_sim_scfifo_w
-    (
-      .clk         (clk),
-      .fifo_FF     (fifo_FF),
-      .fifo_wdata  (fifo_wdata),
-      .fifo_wr     (fifo_wr),
-      .r_dat       (r_dat),
-      .wfifo_empty (wfifo_empty),
-      .wfifo_used  (wfifo_used)
-    );
 
-
-//////////////// END SIMULATION-ONLY CONTENTS
-
-//synthesis translate_on
 //synthesis read_comments_as_HDL on
 //  scfifo wfifo
 //    (
@@ -150,10 +113,6 @@ module qsys_jtag_uart_0_scfifo_w (
 
 endmodule
 
-
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
 
 // turn off superfluous verilog processor warnings 
 // altera message_level Level1 
@@ -191,47 +150,12 @@ module qsys_jtag_uart_0_sim_scfifo_r (
   wire             rfifo_full;
   wire    [  5: 0] rfifo_used;
 
-//synthesis translate_off
-//////////////// SIMULATION-ONLY CONTENTS
-  // Generate rfifo_entries for simulation
-  always @(posedge clk or negedge rst_n)
-    begin
-      if (rst_n == 0)
-        begin
-          bytes_left <= 32'h0;
-          fifo_rd_d <= 1'b0;
-        end
-      else 
-        begin
-          fifo_rd_d <= fifo_rd;
-          // decrement on read
-          if (fifo_rd_d)
-              bytes_left <= bytes_left - 1'b1;
-          // catch new contents
-          if (new_rom)
-              bytes_left <= num_bytes;
-        end
-    end
 
-
-  assign fifo_EF = bytes_left == 32'b0;
-  assign rfifo_full = bytes_left > 7'h40;
-  assign rfifo_entries = (rfifo_full) ? 7'h40 : bytes_left;
-  assign rfifo_used = rfifo_entries[5 : 0];
-  assign new_rom = 1'b0;
-  assign num_bytes = 32'b0;
-  assign fifo_rdata = 8'b0;
-
-//////////////// END SIMULATION-ONLY CONTENTS
-
-//synthesis translate_on
 
 endmodule
 
 
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
+
 
 // turn off superfluous verilog processor warnings 
 // altera message_level Level1 
@@ -270,23 +194,7 @@ module qsys_jtag_uart_0_scfifo_r (
   wire             rfifo_full;
   wire    [  5: 0] rfifo_used;
 
-//synthesis translate_off
-//////////////// SIMULATION-ONLY CONTENTS
-  qsys_jtag_uart_0_sim_scfifo_r the_qsys_jtag_uart_0_sim_scfifo_r
-    (
-      .clk        (clk),
-      .fifo_EF    (fifo_EF),
-      .fifo_rd    (fifo_rd),
-      .fifo_rdata (fifo_rdata),
-      .rfifo_full (rfifo_full),
-      .rfifo_used (rfifo_used),
-      .rst_n      (rst_n)
-    );
 
-
-//////////////// END SIMULATION-ONLY CONTENTS
-
-//synthesis translate_on
 //synthesis read_comments_as_HDL on
 //  scfifo rfifo
 //    (
@@ -316,9 +224,6 @@ module qsys_jtag_uart_0_scfifo_r (
 endmodule
 
 
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
 
 // turn off superfluous verilog processor warnings 
 // altera message_level Level1 
@@ -523,32 +428,7 @@ module qsys_jtag_uart_0 (
 
 
 
-//synthesis translate_off
-//////////////// SIMULATION-ONLY CONTENTS
-  // Tie off Atlantic Interface signals not used for simulation
-  always @(posedge clk)
-    begin
-      sim_t_pause <= 1'b0;
-      sim_t_ena <= 1'b0;
-      sim_t_dat <= t_dav ? r_dat : {8{r_val}};
-      sim_r_ena <= 1'b0;
-    end
 
-
-  assign r_ena = sim_r_ena;
-  assign t_ena = sim_t_ena;
-  assign t_dat = sim_t_dat;
-  assign t_pause = sim_t_pause;
-  always @(fifo_EF)
-    begin
-      dataavailable = ~fifo_EF;
-    end
-
-
-
-//////////////// END SIMULATION-ONLY CONTENTS
-
-//synthesis translate_on
 //synthesis read_comments_as_HDL on
 //  alt_jtag_atlantic qsys_jtag_uart_0_alt_jtag_atlantic
 //    (

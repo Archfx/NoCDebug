@@ -478,19 +478,7 @@ module spec_sw_alloc_can #(
         assign any_spec_request_accepted [i] = |spec_request_accepted  [i];
         assign spec_ivc_granted_all_accepted[(i+1)*V-1:  i*V] = (any_spec_request_accepted [i] & valid_speculation[i])? spec_ivc_granted_all[(i+1)*V-1:  i*V]: {V{1'b0}};
         assign spec_granted_dest_port_all_accepted[(i+1)*P_1-1:  i*P_1]=valid_speculation[i]? (spec_request_acceptable[(i+1)*P_1-1:  i*P_1] & spec_granted_dest_port_all_pre[(i+1)*P_1-1:  i*P_1]): {P_1{1'b0}};
-        
-    //synthesis translate_off
-    //synopsys  translate_off
-
-        if(DEBUG_EN)begin :dbg
-            always @(posedge clk) begin 
-                if(nonspec_granted_dest_port_all[(i+1)*P_1-1:  i*P_1] >0 && spec_granted_dest_port_all_accepted[(i+1)*P_1-1:  i*P_1]>0 ) $display("%t: Error: Both speculative and nonspeculative is granted for one port",$time);
-                if(nonspec_ivc_granted_all [(i+1)*V-1:  i*V] >0 && spec_ivc_granted_all_accepted[(i+1)*V-1:  i*V]>0 ) $display("%t: Error: Both speculative and nonspeculative is granted for one port",$time);
-            end
-        end
-    //synopsys  translate_on
-    //synthesis translate_on
-    
+          
     
     end//i
     endgenerate

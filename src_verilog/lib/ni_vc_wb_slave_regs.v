@@ -26,9 +26,7 @@
 **
 *******************************************************************/
 
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
+
  
 module ni_vc_wb_slave_regs #(
     parameter MAX_TRANSACTION_WIDTH =10,      
@@ -62,12 +60,7 @@ module ni_vc_wb_slave_regs #(
     s_addr_i,  
     s_stb_i,
     s_cyc_i,
-    s_we_i,
-//synthesis translate_off
-//synopsys  translate_off    
-    current_e_addr,
-//synthesis translate_on
-//synopsys  translate_on      
+    s_we_i,    
     reset,
     clk  
  ); 
@@ -121,12 +114,7 @@ module ni_vc_wb_slave_regs #(
     output  reg [Cw-1   :   0]  pck_class;
     output  reg [WEIGHTw-1 :0]  weight; 
     output  reg send_start, receive_start;
-
-//synthesis translate_off
-//synopsys  translate_off    
-    input   [EAw-1   :   0]  current_e_addr;
-//synthesis translate_on
-//synopsys  translate_on   
+ 
    
  //wishbone slave interface signals
     input   [Dw-1       :   0]      s_dat_i;
@@ -186,15 +174,7 @@ module ni_vc_wb_slave_regs #(
                         if (send_fsm_is_ideal) begin 
                             dest_e_addr_next = s_dat_i [EAw+ DST_X_LSB-1    :    DST_X_LSB];   
                            
-//synthesis translate_off
-//synopsys  translate_off
-			if(DEBUG_EN)begin
-				if(s_dat_i [EAw+ DST_X_LSB-1    :    DST_X_LSB] == current_e_addr )begin
-					$display("%t: ERROR: source destination address are identical in: %m",$time);
-				end
-			end
-//synthesis translate_on
-//synopsys  translate_on                                        
+                                       
                             pck_class_next= s_dat_i[CLASS_LSB+Cw-1      :  CLASS_LSB];
                             weight_next = s_dat_i[ WEIGHT_LSB+WEIGHTw-1 :  WEIGHT_LSB]; 
                             send_start_next = 1'b1;

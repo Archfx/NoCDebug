@@ -417,29 +417,7 @@ module input_queue_per_port  #(
             
      
      
-    // synopsys  translate_off
-    // synthesis translate_off                                      
-     `ifdef MONITORE_PATH
-     
-    genvar j;
-    reg[V-1 :0] t1;
-    generate
-    for (j=0;j<V;j=j+1)begin : lp        
-    always @(posedge clk) begin
-        if(reset)begin 
-             t1[j]<=1'b0;               
-        end else begin 
-            if(flit_in_we >0 && vc_num_in[j] && t1[j]==0)begin 
-                $display("%t : Parser: class_in=%x, destport_in=%x, dest_e_addr_in=%x, src_e_addr_in=%x, vc_num_in=%x,hdr_flit_wr=%x, hdr_flg_in=%x,tail_flg_in=%x ",$time,class_in, destport_in, dest_e_addr_in, src_e_addr_in, vc_num_in,hdr_flit_wr, hdr_flg_in,tail_flg_in);
-                t1[j]<=1;
-            end           
-        end
-    end
-    end
-    endgenerate
-    `endif
-    // synthesis translate_on
-    // synopsys  translate_on       
+          
      
      
 always @ (posedge clk or posedge reset) begin 
@@ -873,65 +851,7 @@ endgenerate
     assign    class_rd_fifo = (C>1)? reset_ivc : {V{1'bx}};
     assign    ivc_request = ivc_not_empty;    
 
-//synthesis translate_off
-//synopsys  translate_off
-generate 
-if(DEBUG_EN) begin :dbg
 
-    debug_IVC_flit_type_order_check #(
-    	.V(V)
-    )
-    IVC_flit_type_check
-    (
-    	.clk(clk),
-    	.reset(reset),
-    	.hdr_flg_in(hdr_flg_in),
-    	.tail_flg_in(tail_flg_in),
-    	.flit_in_we(flit_in_we),
-    	.vc_num_in(vc_num_in),
-    	.reset_all_errors(1'b0),
-    	.active_IVC_hdr_flit_received_err( ),
-    	.inactive_IVC_tail_flit_received_err( ),
-    	.inactive_IVC_body_flit_received_err( )
-    );
-
-     /* verilator lint_off WIDTH */  
-     if (( TOPOLOGY == "RING" || TOPOLOGY == "LINE" || TOPOLOGY == "MESH" || TOPOLOGY == "TORUS")) begin : mesh_based
-     /* verilator lint_on WIDTH */  
-
-        debug_mesh_tori_route_ckeck #(
-            .T1(T1),
-            .T2(T2),
-            .T3(T3),
-            .ROUTE_TYPE(ROUTE_TYPE),
-            .V(V),
-            .AVC_ATOMIC_EN(AVC_ATOMIC_EN),
-            .SW_LOC(SW_LOC),
-            .ESCAP_VC_MASK(ESCAP_VC_MASK),
-            .TOPOLOGY(TOPOLOGY),
-            .DSTPw(DSTPw),
-            .RAw(RAw),
-            .EAw(EAw)
-        )
-        route_ckeck
-        (
-            .reset(reset),
-            .clk(clk),
-            .hdr_flg_in(hdr_flg_in),
-            .flit_in_we(flit_in_we),
-            .vc_num_in(vc_num_in),
-            .flit_is_tail(flit_is_tail),
-            .ivc_num_getting_sw_grant(ivc_num_getting_sw_grant),
-            .current_r_addr(current_r_addr),
-            .dest_e_addr_in(dest_e_addr_in),
-            .src_e_addr_in(src_e_addr_in),
-            .destport_in(destport_in)      
-        );   
-    end//mesh  
-end//DEBUG_EN 
-endgenerate 
-//synopsys  translate_on  
-//synthesis translate_on
 
 
 endmodule

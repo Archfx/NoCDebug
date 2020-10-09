@@ -29,14 +29,6 @@
 
 
 
-
-
-
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
-
-
 module wishbone_bus #(
 		
 	parameter M        =   4,		//number of master port

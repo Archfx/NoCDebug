@@ -1,12 +1,12 @@
 #!/usr/bin/tclsh
 
 
-transcript on
-if {[file exists rtl_work]} {
-	vdel -lib rtl_work -all
-}
-vlib rtl_work
-vmap work rtl_work
+#transcript on
+#if {[file exists rtl_work]} {
+#	vdel -lib rtl_work -all
+#}
+#vlib rtl_work
+#vmap work rtl_work
 vlog -vlog01compat -work work +incdir+/home/archfx/Documents/mor1k_16Soc/src_verilog/ {/home/archfx/Documents/mor1k_16Soc/src_verilog/mor1k_16Soc_top.v}
 vlog -vlog01compat -work work +incdir+/home/archfx/Documents/mor1k_16Soc/src_verilog/ {/home/archfx/Documents/mor1k_16Soc/src_verilog/mor1k_16Soc.v}
 vlog -vlog01compat -work work +incdir+/home/archfx/Documents/mor1k_16Soc/src_verilog/ {/home/archfx/Documents/mor1k_16Soc/src_verilog/testbench.v}

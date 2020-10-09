@@ -232,25 +232,7 @@
         
 //         assign ovc_allocated_all [i] = |ovc_allocated_all_gen[i];
         
-//     //synthesis translate_off
-//     //synopsys  translate_off
-//     if(DEBUG_EN)begin :dbg
-//         check_single_bit_assertation #(
-//             .IN_WIDTH(P_1)
-    
-//         )check_ovc_allocated
-//         (
-//             .in        (ovc_allocated_all_gen[i]),
-//             .result    (result[i])
-    
-//         );
-    
-//         always @(posedge clk ) begin 
-//           if(~result[i]) $display("%t,Error: An OVC is assigned to more than one IVC %m",$time);
-//         end
-//      end //DEBUG
-//     //synopsys  translate_on
-//     //synthesis translate_on
+
     
 //     end//i
     
@@ -425,18 +407,7 @@ module spec_sw_alloc2 #(
         assign spec_ivc_granted_all_accepted[(i+1)*V-1 :  i*V] = (any_spec_request_accepted [i] )? spec_ivc_granted_all[(i+1)*V-1 :  i*V]: {V{1'b0}};
         assign spec_granted_dest_port_all_accepted[(i+1)*P_1-1 :  i*P_1]= spec_request_accepted  [i];
     
-        //synthesis translate_off
-    //synopsys  translate_off
-        if(DEBUG_EN)begin :dbg
-            assign nonspec_check[i] = nonspec_granted_dest_port_all[(i+1)*P_1-1 :  i*P_1];
-            assign spec_check[i]= spec_granted_dest_port_all_accepted[(i+1)*P_1-1 :  i*P_1];
-            always @(posedge clk) begin 
-                if(nonspec_granted_dest_port_all[(i+1)*P_1-1 :  i*P_1] >0 && spec_granted_dest_port_all_accepted[(i+1)*P_1-1 :  i*P_1]>0 ) $display("%t: Error: Both speculative and nonspeculative is granted for one port",$time);
-                if(nonspec_ivc_granted_all [(i+1)*V-1 :  i*V] >0 && spec_ivc_granted_all_accepted[(i+1)*V-1 :  i*V]>0 ) $display("%t: Error: Both speculative and nonspeculative is granted for one port",$time);
-            end//always
-        end // DEBUG
-    //synopsys  translate_on
-        //synthesis translate_on
+ 
     
     
     end//i

@@ -885,24 +885,12 @@ module mesh_torus_ssa_check_destport #(
     destport_encoded, //exsited packet dest port
     destport_in_encoded, // incomming packet dest port
     ss_port_hdr_flit,
-    ss_port_nonhdr_flit 
-//synthesis translate_off 
-//synopsys  translate_off
-    ,clk,
-    ivc_num_getting_sw_grant
-//synopsys  translate_on
-//synthesis translate_on    
+    ss_port_nonhdr_flit
     
 );
 
     input [DSTPw-1 : 0] destport_encoded, destport_in_encoded; 
-    output ss_port_hdr_flit, ss_port_nonhdr_flit;
-//synthesis translate_off 
-//synopsys  translate_off
-    input clk,   ivc_num_getting_sw_grant;
-//synopsys  translate_on
-//synthesis translate_on    
-
+    output ss_port_hdr_flit, ss_port_nonhdr_flit; 
 //MESH, TORUS Topology p=5           
     localparam   LOCAL   =   0,  
                  EAST    =   1,
@@ -972,19 +960,7 @@ assign {aa,bb} = destport_encoded[1:0];
         assign ss_port_nonhdr_flit =   bb;
     end
 
-//synthesis translate_off 
-//synopsys  translate_off
 
-if(DEBUG_EN) begin :dbg
-    always @(posedge clk) begin
-       //if(!reset)begin 
-            if(ivc_num_getting_sw_grant & aa & bb) $display("%t: SSA ERROR: There are two output ports that a non-header flit can be sent to. %m",$time);
-       //end
-    end 
-end //dbg
-
-//synopsys  translate_on
-//synthesis translate_on
 
 end   //adaptive
 endgenerate

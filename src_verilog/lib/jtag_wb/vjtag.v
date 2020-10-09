@@ -33,9 +33,7 @@
 //applicable agreement for further details.
 
 
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
+
 
 
 module vjtag #(
@@ -109,26 +107,6 @@ module vjtag #(
 				.virtual_state_cdr (sub_wire8),
 				.virtual_state_e2dr (sub_wire9),
 				.virtual_state_sdr (sub_wire10)
-				// synopsys translate_off
-				,
-				.jtag_state_cdr (),
-				.jtag_state_cir (),
-				.jtag_state_e1dr (),
-				.jtag_state_e1ir (),
-				.jtag_state_e2dr (),
-				.jtag_state_e2ir (),
-				.jtag_state_pdr (),
-				.jtag_state_pir (),
-				.jtag_state_rti (),
-				.jtag_state_sdr (),
-				.jtag_state_sdrs (),
-				.jtag_state_sir (),
-				.jtag_state_sirs (),
-				.jtag_state_tlr (),
-				.jtag_state_udr (),
-				.jtag_state_uir (),
-				.tms ()
-				// synopsys translate_on
 				);
 
 

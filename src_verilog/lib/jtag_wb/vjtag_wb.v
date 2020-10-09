@@ -1,7 +1,4 @@
 
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
 
 
 module vjtag_wb #(

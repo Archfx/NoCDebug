@@ -534,11 +534,7 @@ module mesh_torus_next_router_addr_predictor #(
     
         
     end
-    //synthesis translate_off
-    //synopsys  translate_off
-    else begin : wrong_topology initial $display("Error: next router inport is not predicted for %s   topology",TOPOLOGY); end
-    //synopsys  translate_on
-    //synthesis translate_on
+    
         
         
         
@@ -588,11 +584,7 @@ module mesh_torus_next_router_inport_predictor #(
         assign  receive_port[1] = destport[2];
         assign  receive_port[2] = destport[1];
     end
-    //synthesis translate_off
-    //synopsys  translate_off
-            else begin : wrong_topology initial $display("Error: next router inport is not predicted for %s   topology",TOPOLOGY); end
-    //synopsys  translate_on
-    //synthesis translate_on
+    
 
 
      
@@ -944,11 +936,7 @@ module mesh_torus_conventional_routing #(
                     
                 );
             end //DUATO
-        //synthesis translate_off
-        //synopsys  translate_off
-            else begin : not_supported initial $display ("Error: %s is an unsupported routing algorithm for %s topology \n",ROUTE_NAME,TOPOLOGY); end
-        //synopsys  translate_on
-        //synthesis translate_on
+        
         /* verilator lint_off WIDTH */ 
         end else if (TOPOLOGY == "TORUS" ) begin :torus
             if(ROUTE_NAME ==  "TRANC_XY") begin : tranc_routing_blk
@@ -1037,11 +1025,7 @@ module mesh_torus_conventional_routing #(
                    
                 );
             end //TRANC_DUATO
-        //synthesis translate_off
-        //synopsys  translate_off
-            else begin : not_supported2 initial $display("Error: %s is an unsupported routing algorithm for %s topology",ROUTE_NAME,TOPOLOGY); end
-        //synopsys  translate_on
-        //synthesis translate_on
+        
         end //TORUS
         
         /* verilator lint_off WIDTH */ 
@@ -1060,11 +1044,7 @@ module mesh_torus_conventional_routing #(
                     .destport(destport)    
                 );
             end // "TRANC"
-    //synthesis translate_off
-        //synopsys  translate_off
-        else begin : not_supported2 initial $display("Error: %s is an unsupported routing algorithm for %s topology",ROUTE_NAME,TOPOLOGY); end  
-    //synopsys  translate_on
-        //synthesis translate_on     
+       
         end //"RING" 
         
         /* verilator lint_off WIDTH */ 
@@ -1082,21 +1062,9 @@ module mesh_torus_conventional_routing #(
                     .destport(destport)
                  );       
             end // "XY"
-    //synthesis translate_off
-        //synopsys  translate_off
-        else begin : not_supported2 initial $display("Error: %s is an unsupported routing algorithm for %s topology",ROUTE_NAME,TOPOLOGY); end
-    //synopsys  translate_on
-        //synthesis translate_on           
+             
         end //"LINE" 
-        
-        
-       
-    //synthesis translate_off
-    //synopsys  translate_off
-            else begin : wrong_topology initial $display("Error: %s is an unsupported topology",TOPOLOGY); end
-    //synopsys  translate_on
-    //synthesis translate_on
-            
+                   
     endgenerate
 
     //force modelsim to add route_mesh & turos files

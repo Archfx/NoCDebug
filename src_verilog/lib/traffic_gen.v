@@ -155,33 +155,6 @@
 //     reg    [EAw-1                    :0] dest_e_addr_reg;
    
    
-//       // synopsys  translate_off
-//     // synthesis translate_off
-                                      
-//      `ifdef MONITORE_PATH
-     
-   
-//     reg tt;
-//     always @(posedge clk) begin
-//         if(reset)begin 
-//              tt<=1'b0;               
-//         end else begin 
-//             if(flit_out_wr && tt==1'b0 )begin
-//                 $display( "%t: Injector: current_r_addr=%x,current_e_addr=%x,dest_e_addr=%x\n",$time, current_r_addr, current_e_addr, dest_e_addr);
-//                 tt<=1'b1;
-//             end
-//         end
-//     end
-//     `endif
-    
-//     // synthesis translate_on
-//     // synopsys  translate_on  
-   
-   
-   
-   
-   
-   
 //     localparam
 //         HDR_DATA_w =  (MIN_PCK_SIZE==1)? CLK_CNTw : 0,
 //         HDR_Dw =  (MIN_PCK_SIZE==1)? CLK_CNTw : 1;
@@ -597,23 +570,10 @@
 //                         rsv_counter                 <= rsv_counter+1'b1;
                                             
 //                         // distance        <= {{(32-8){1'b0}},flit_in[7:0]};
-//                         `ifdef RSV_NOTIFICATION
-//                             // synopsys  translate_off
-//                             // synthesis translate_off
-//                             // last_pck_time<=$time;
-//                              $display ("total of %d pcks have been recived in core (%d)", rsv_counter,current_e_addr);
-//                             // synthesis translate_on
-//                             // synopsys  translate_on
-//                         `endif
+
 //                     end
 //             end
-//         // synopsys  translate_off
-//         // synthesis translate_off
-//             if(report) begin 
-//                  $display ("%t,\t total of %d pcks have been recived in core (%d)",$time ,rsv_counter,current_e_addr);
-//             end
-//         // synthesis translate_on
-//         // synopsys  translate_on
+
         
          
         
@@ -621,69 +581,9 @@
         
 //         end
 //     end//always
-//     // synopsys  translate_off
-//     // synthesis translate_off
-//     always @(posedge clk) begin     
-//         if(flit_out_wr && hdr_flit && dest_e_addr_reg  == current_e_addr) $display("%t: Error: The source and destination address of injected packet is the same in endpoint (%h): %m",$time, dest_e_addr );                                                             
-//         if(flit_in_wr && rd_hdr_flg && (rd_des_e_addr    != current_e_addr )) $display("%t: Error: packet with des(%h) which is sent by source (%h) has been recieved in wrong router (%h).  %m",$time,rd_des_e_addr, rd_src_e_addr, current_e_addr);        
-//     end
-//     // synthesis translate_on
-//     // synopsys  translate_on
+
     
-    
-//     `ifdef CHECK_PCKS_CONTENT
-//     // synopsys  translate_off
-//     // synthesis translate_off
-    
-//     wire     [PCK_SIZw-1             :   0] rsv_flit_counter; 
-//     reg      [PCK_SIZw-1             :   0] old_flit_counter    [V-1   :   0];
-//     wire     [PCK_CNTw-1             :   0] rsv_pck_number;
-//     reg      [PCK_CNTw-1             :   0] old_pck_number  [V-1   :   0];
-    
-//     wire [PCK_CNTw+PCK_SIZw-1 : 0] statistics;
-//     generate 
-//         if(PCK_CNTw+PCK_SIZw > Fw) assign statistics = {{(PCK_CNTw+PCK_SIZw-Fw){1'b0}},flit_in};
-//         else  assign statistics = flit_in[PCK_CNTw+PCK_SIZw-1   :   0];
-//         assign {rsv_pck_number,rsv_flit_counter}=statistics;
-               
-//     endgenerate   
-    
-    
-    
-//     integer ii;
-//     always @(posedge clk or posedge reset )begin 
-//         if(reset) begin
-//             for(ii=0;ii<V;ii=ii+1'b1)begin
-//                 old_flit_counter[ii]<=0;            
-//             end        
-//         end else begin
-//             if(flit_in_wr)begin
-//                 if      ( flit_in[Fw-1:Fw-2]==2'b10)  begin
-//                     old_pck_number[rd_vc_bin]<=0;
-//                     old_flit_counter[rd_vc_bin]<=0;
-//                 end else if ( flit_in[Fw-1:Fw-2]==2'b00)begin 
-//                     old_pck_number[rd_vc_bin]<=rsv_pck_number;
-//                     old_flit_counter[rd_vc_bin]<=rsv_flit_counter;
-//                 end                    
-                
-//             end       
-        
-//         end    
-//     end
-    
-    
-//     always @(posedge clk) begin     
-//         if(flit_in_wr && (flit_in[Fw-1:Fw-2]==2'b00) && (~reset))begin 
-//             if( old_flit_counter[rd_vc_bin]!=rsv_flit_counter-1) $display("%t: Error: missmatch flit counter in %m. Expected %d but recieved %d",$time,old_flit_counter[rd_vc_bin]+1,rsv_flit_counter);
-//             if( old_pck_number[rd_vc_bin]!=rsv_pck_number && old_pck_number[rd_vc_bin]!=0)   $display("%t: Error: missmatch pck number in %m. expected %d but recieved %d",$time,old_pck_number[rd_vc_bin],rsv_pck_number);
-                       
-//         end
-   
-//     end
-//     // synthesis translate_on
-//     // synopsys  translate_on
-    
-//     `endif
+
     
     
     

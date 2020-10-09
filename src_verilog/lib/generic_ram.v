@@ -26,12 +26,6 @@
 **
 *******************************************************************/
 
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
-
-
-
 /********************
 *	generic_dual_port_ram
 ********************/
