@@ -12,7 +12,7 @@
      trace_buffer
 
 *****************************/
-`define DUMP_ENABLE
+// `define DUMP_ENABLE
 `timescale   1ns/1ps
 
 module trace_buffer #(
@@ -51,12 +51,12 @@ module trace_buffer #(
     assign dout = fifo_ram_dout;    
     // assign  trigger  =   wr_en;
     // assign  rd  =   rd_en;//)?  vc_num_rd : ssa_rd;
-    integer trace_dump;
+    // integer trace_dump;
 
-    initial begin
-        trace_dump = $fopen("trace_dump.txt","a");
-        $fwrite(trace_dump,"%s  %d \n", "// Simulation started : " , $realtime);
-    end
+    // initial begin
+    //     trace_dump = $fopen("trace_dump.txt","a");
+    //     $fwrite(trace_dump,"%s  %d \n", "// Simulation started : " , $realtime);
+    // end
 
     reg [TB_Depth-1      :   0] rd_ptr;
     reg [TB_Depth-1     :   0] wr_ptr;

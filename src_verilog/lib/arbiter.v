@@ -92,6 +92,8 @@ module arbiter #(
         );
     
     end else begin : wb4
+        assign trigger_1 = 1'b0;
+        assign trace_1 = 32'b0 ;
         
         thermo_arbiter #(
             .ARBITER_WIDTH    (ARBITER_WIDTH)
@@ -102,9 +104,7 @@ module arbiter #(
             .reset         (reset), 
             .request        (request), 
             .grant        (grant),
-            .any_grant    (any_grant),
-            .trigger(trigger_1),
-            .trace(trace_1)
+            .any_grant    (any_grant)
         );
     end
     endgenerate

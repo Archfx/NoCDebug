@@ -108,74 +108,74 @@ module combined_vc_sw_alloc #(
         assign trigger = 1'b0;
         assign trace = 32'd0;
     /* verilator lint_on WIDTH */
-        baseline_allocator #(
-            .V(V),    
-            .P(P),                        
-            .TREE_ARBITER_EN(1),
-            .DEBUG_EN(DEBUG_EN),
-            .SWA_ARBITER_TYPE (SWA_ARBITER_TYPE)
-        )
-        the_base_line
-        (
-            .dest_port_all(dest_port_all), 
-            .masked_ovc_request_all(masked_ovc_request_all),
-            .ovc_is_assigned_all(ovc_is_assigned_all), 
-            .ivc_request_all(ivc_request_all), 
-            .assigned_ovc_not_full_all(assigned_ovc_not_full_all), 
-            .ovc_allocated_all(ovc_allocated_all), 
-            .granted_ovc_num_all(granted_ovc_num_all), 
-            .ivc_num_getting_ovc_grant(ivc_num_getting_ovc_grant), 
-            .ivc_num_getting_sw_grant(ivc_num_getting_sw_grant), 
-            .spec_first_arbiter_granted_ivc_all(spec_first_arbiter_granted_ivc_all), 
-            .nonspec_first_arbiter_granted_ivc_all(nonspec_first_arbiter_granted_ivc_all), 
-            .granted_dest_port_all(granted_dest_port_all),
-            .nonspec_granted_dest_port_all(nonspec_granted_dest_port_all), 
-            .spec_granted_dest_port_all(spec_granted_dest_port_all), 
-            .any_ivc_sw_request_granted_all(any_ivc_sw_request_granted_all),
-            .spec_ovc_num_all(spec_ovc_num_all),
-            .vc_weight_is_consumed_all(vc_weight_is_consumed_all),
-            .iport_weight_is_consumed_all(iport_weight_is_consumed_all),
-            .clk(clk), 
-            .reset(reset)
+        // baseline_allocator #(
+        //     .V(V),    
+        //     .P(P),                        
+        //     .TREE_ARBITER_EN(1),
+        //     .DEBUG_EN(DEBUG_EN),
+        //     .SWA_ARBITER_TYPE (SWA_ARBITER_TYPE)
+        // )
+        // the_base_line
+        // (
+        //     .dest_port_all(dest_port_all), 
+        //     .masked_ovc_request_all(masked_ovc_request_all),
+        //     .ovc_is_assigned_all(ovc_is_assigned_all), 
+        //     .ivc_request_all(ivc_request_all), 
+        //     .assigned_ovc_not_full_all(assigned_ovc_not_full_all), 
+        //     .ovc_allocated_all(ovc_allocated_all), 
+        //     .granted_ovc_num_all(granted_ovc_num_all), 
+        //     .ivc_num_getting_ovc_grant(ivc_num_getting_ovc_grant), 
+        //     .ivc_num_getting_sw_grant(ivc_num_getting_sw_grant), 
+        //     .spec_first_arbiter_granted_ivc_all(spec_first_arbiter_granted_ivc_all), 
+        //     .nonspec_first_arbiter_granted_ivc_all(nonspec_first_arbiter_granted_ivc_all), 
+        //     .granted_dest_port_all(granted_dest_port_all),
+        //     .nonspec_granted_dest_port_all(nonspec_granted_dest_port_all), 
+        //     .spec_granted_dest_port_all(spec_granted_dest_port_all), 
+        //     .any_ivc_sw_request_granted_all(any_ivc_sw_request_granted_all),
+        //     .spec_ovc_num_all(spec_ovc_num_all),
+        //     .vc_weight_is_consumed_all(vc_weight_is_consumed_all),
+        //     .iport_weight_is_consumed_all(iport_weight_is_consumed_all),
+        //     .clk(clk), 
+        //     .reset(reset)
         
-        );
+        // );
     /* verilator lint_off WIDTH */
     end else if(COMBINATION_TYPE    ==    "COMB_SPEC1") begin : spec1
     /* verilator lint_on WIDTH */
         assign trigger = 1'b0;
         assign trace = 32'd0;
 
-        comb_spec1_allocator #(
-            .V(V),    
-            .P(P),
-            .DEBUG_EN(DEBUG_EN),
-            .SWA_ARBITER_TYPE (SWA_ARBITER_TYPE),
-            .MIN_PCK_SIZE(MIN_PCK_SIZE)
+        // comb_spec1_allocator #(
+        //     .V(V),    
+        //     .P(P),
+        //     .DEBUG_EN(DEBUG_EN),
+        //     .SWA_ARBITER_TYPE (SWA_ARBITER_TYPE),
+        //     .MIN_PCK_SIZE(MIN_PCK_SIZE)
             
-        )
-        the_comb_spec1
-        (
-            .dest_port_all(dest_port_all), 
-            .masked_ovc_request_all(masked_ovc_request_all),
-            .ovc_is_assigned_all(ovc_is_assigned_all), 
-            .ivc_request_all(ivc_request_all), 
-            .assigned_ovc_not_full_all(assigned_ovc_not_full_all), 
-            .ovc_allocated_all(ovc_allocated_all), 
-            .granted_ovc_num_all(granted_ovc_num_all), 
-            .ivc_num_getting_ovc_grant(ivc_num_getting_ovc_grant), 
-            .ivc_num_getting_sw_grant(ivc_num_getting_sw_grant), 
-            .spec_first_arbiter_granted_ivc_all(spec_first_arbiter_granted_ivc_all), 
-            .nonspec_first_arbiter_granted_ivc_all(nonspec_first_arbiter_granted_ivc_all), 
-            .granted_dest_port_all(granted_dest_port_all), 
-            .nonspec_granted_dest_port_all(nonspec_granted_dest_port_all), 
-            .any_ivc_sw_request_granted_all(any_ivc_sw_request_granted_all),
-            .vc_weight_is_consumed_all(vc_weight_is_consumed_all),
-            .iport_weight_is_consumed_all(iport_weight_is_consumed_all),
-            .pck_is_single_flit_all(pck_is_single_flit_all),
-            .granted_dst_is_from_a_single_flit_pck(granted_dst_is_from_a_single_flit_pck),  
-            .clk(clk), 
-            .reset(reset)
-        );        
+        // )
+        // the_comb_spec1
+        // (
+        //     .dest_port_all(dest_port_all), 
+        //     .masked_ovc_request_all(masked_ovc_request_all),
+        //     .ovc_is_assigned_all(ovc_is_assigned_all), 
+        //     .ivc_request_all(ivc_request_all), 
+        //     .assigned_ovc_not_full_all(assigned_ovc_not_full_all), 
+        //     .ovc_allocated_all(ovc_allocated_all), 
+        //     .granted_ovc_num_all(granted_ovc_num_all), 
+        //     .ivc_num_getting_ovc_grant(ivc_num_getting_ovc_grant), 
+        //     .ivc_num_getting_sw_grant(ivc_num_getting_sw_grant), 
+        //     .spec_first_arbiter_granted_ivc_all(spec_first_arbiter_granted_ivc_all), 
+        //     .nonspec_first_arbiter_granted_ivc_all(nonspec_first_arbiter_granted_ivc_all), 
+        //     .granted_dest_port_all(granted_dest_port_all), 
+        //     .nonspec_granted_dest_port_all(nonspec_granted_dest_port_all), 
+        //     .any_ivc_sw_request_granted_all(any_ivc_sw_request_granted_all),
+        //     .vc_weight_is_consumed_all(vc_weight_is_consumed_all),
+        //     .iport_weight_is_consumed_all(iport_weight_is_consumed_all),
+        //     .pck_is_single_flit_all(pck_is_single_flit_all),
+        //     .granted_dst_is_from_a_single_flit_pck(granted_dst_is_from_a_single_flit_pck),  
+        //     .clk(clk), 
+        //     .reset(reset)
+        // );        
         
         assign spec_granted_dest_port_all = {PP_1{1'bx}};
         assign spec_ovc_num_all = {PVV{1'bx}};

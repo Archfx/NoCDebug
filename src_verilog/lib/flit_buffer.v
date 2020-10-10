@@ -33,7 +33,7 @@ module flit_buffer #(
     parameter B        =   4,   // buffer space :flit per VC 
     parameter Fpay     =   32,
     parameter DEBUG_EN =   1,
-    parameter SSA_EN="YES" // "YES" , "NO"       
+    parameter SSA_EN="NO" // "YES" , "NO"       
     )   
     (
         din,     // Data in
@@ -250,7 +250,8 @@ generate
             // TS-1
             if (wr_en) begin
                 // trace_1<={4'b0001,14'b11111111111,14'd0};
-                trace_1<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                // trace_1<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1 <= 1'b1;
             end
             if (next_clk_1) begin
@@ -264,7 +265,8 @@ generate
 
             // Ts-2
             if (rd_en) begin
-                trace_2<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                // trace_2<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
                 next_clk_2 <= 1'b1;
             end
             if (next_clk_2) begin
@@ -298,8 +300,8 @@ endmodule
 
 module fifo_ram     #(
     parameter DATA_WIDTH    = 32,
-    parameter ADDR_WIDTH    = 8,
-    parameter SSA_EN="YES" // "YES" , "NO"       
+    parameter ADDR_WIDTH    = 4,
+    parameter SSA_EN="NO" // "YES" , "NO"       
     )
     (
         input [DATA_WIDTH-1         :       0]  wr_data,        
@@ -313,12 +315,19 @@ module fifo_ram     #(
 
 	reg [DATA_WIDTH-1:0] memory_rd_data; 
    // memory
-	reg [DATA_WIDTH-1:0] queue [2**ADDR_WIDTH-1:0] /* synthesis ramstyle = "no_rw_check , M9K" */;
+	reg [DATA_WIDTH-1:0] queue [2**ADDR_WIDTH-1:0] ;
+
+    // integer j;
+
 	always @(posedge clk ) begin
-			if (wr_en)
-				 queue[wr_addr] <= wr_data;
-			if (rd_en)
-				 memory_rd_data <= queue[rd_addr];
+			// if (wr_en)
+			// 	 queue[wr_addr] <= wr_data;
+			// if (rd_en)
+			// 	 memory_rd_data <= queue[rd_addr];
+            // for(j=0; j<ADDR_WIDTH; j=j+1) begin
+            //     if (wr_en & wr_addr==j) queue[j] <= wr_data;
+            //     if (rd_en & rd_addr==j) memory_rd_data <= queue[j];
+            // end   
 	end
 	
  
@@ -329,23 +338,23 @@ module fifo_ram     #(
 	 
     generate 
     /* verilator lint_off WIDTH */
-    if(SSA_EN =="YES") begin :predict
-    /* verilator lint_on WIDTH */
-		//add bypass
-        reg [DATA_WIDTH-1:0]  bypass_reg;
-        reg rd_en_delayed;
-        always @(posedge clk ) begin
-			 bypass_reg 	<=wr_data;
-			 rd_en_delayed	<=rd_en;
-        end
+    // if(SSA_EN =="YES") begin :predict
+    // /* verilator lint_on WIDTH */
+	// 	//add bypass
+    //     reg [DATA_WIDTH-1:0]  bypass_reg;
+    //     reg rd_en_delayed;
+    //     always @(posedge clk ) begin
+	// 		 bypass_reg 	<=wr_data;
+	// 		 rd_en_delayed	<=rd_en;
+    //     end
 		  
-        assign rd_data = (rd_en_delayed)? memory_rd_data  : bypass_reg;
+    //     assign rd_data = (rd_en_delayed)? memory_rd_data  : bypass_reg;
 		  
 		  
     
-    end else begin : no_predict
+    // end else begin : no_predict
         assign rd_data =  memory_rd_data;
-    end
+    // end
     endgenerate
 endmodule
 

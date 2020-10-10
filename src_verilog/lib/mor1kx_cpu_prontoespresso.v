@@ -699,7 +699,7 @@ module mor1kx_cpu_prontoespresso
    endfunction //
 
 
-`
+
 
    /* mor1kx_ctrl_prontoespresso AUTO_TEMPLATE (
     .ctrl_alu_result_i		(alu_result_o),

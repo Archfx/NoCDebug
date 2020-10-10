@@ -1,4 +1,4 @@
-`timescale     1ns/1ps
+
 /**********************************************************************
 **	File:  credit_count.v
 **    
@@ -150,9 +150,9 @@ module credit_counter #(
     integer k;
     genvar i,j;
     generate
-        /* verilator lint_off WIDTH */
+
         if(VC_REALLOCATION_TYPE=="ATOMIC") begin :atomic
-        /* verilator lint_on WIDTH */
+
             reg    [PV-1        :    0]    empty_all,empty_all_next;
             
             always @(posedge clk or posedge reset) begin
@@ -174,9 +174,7 @@ module credit_counter #(
             assign ovc_avalable_all                 = ~ovc_status & empty_all;
             
         end else begin :nonatomic //NONATOMIC
-            /* verilator lint_off WIDTH */
             if(ROUTE_TYPE  == "FULL_ADAPTIVE") begin :full_adpt
-            /* verilator lint_on WIDTH */
                 
                 reg [PV-1       :   0] full_adaptive_ovc_mask,full_adaptive_ovc_mask_next; 
                  
@@ -365,7 +363,7 @@ module credit_counter #(
 
     
     always @(*) begin
-        for(k=0;    k<PV; k=k+1'b1) begin 
+        for(k=0;    k<PV; k=k+1) begin 
             credit_counter_next[k]    =    credit_counter[k];
             if(credit_increased_all[k]    & ~credit_decreased_all[k]) begin 
                 credit_counter_next[k]    = credit_counter[k]+1'b1;
@@ -376,7 +374,7 @@ module credit_counter #(
     end
     
     always @(*) begin
-        for(k=0;    k<PV; k=k+1'b1) begin 
+        for(k=0;    k<PV; k=k+1) begin 
             full_all_next[k]            =     credit_counter_next[k]         == {Bw{1'b0}};
             nearly_full_all_next[k]        =    credit_counter_next[k]         <= 1;
         end    

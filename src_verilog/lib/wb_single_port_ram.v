@@ -260,204 +260,204 @@ wire            [Dw-1   :   0]  q_b;
 
 
     
-generate 
-if(FPGA_VENDOR=="ALTERA")begin:altera_fpga
- localparam  RAM_TAG_STRING=i2s(JTAG_INDEX);  
-localparam  RAM_ID =(JTAG_CONNECT== "ALTERA_IMCE") ?  {"ENABLE_RUNTIME_MOD=YES,INSTANCE_NAME=",RAM_TAG_STRING}
-                                    : {"ENABLE_RUNTIME_MOD=NO"};
+// generate 
+// if(FPGA_VENDOR=="ALTERA")begin:altera_fpga
+//  localparam  RAM_TAG_STRING=i2s(JTAG_INDEX);  
+// localparam  RAM_ID =(JTAG_CONNECT== "ALTERA_IMCE") ?  {"ENABLE_RUNTIME_MOD=YES,INSTANCE_NAME=",RAM_TAG_STRING}
+//                                     : {"ENABLE_RUNTIME_MOD=NO"};
 
-    if(JTAG_CONNECT== "JTAG_WB")begin:dual_ram
-// aletra dual port ram 
-        altsyncram #(
-            .operation_mode("BIDIR_DUAL_PORT"),
-            .address_reg_b("CLOCK0"),
-            .wrcontrol_wraddress_reg_b("CLOCK0"),
-            .indata_reg_b("CLOCK0"),
-            .outdata_reg_a("UNREGISTERED"),
-            .outdata_reg_b("UNREGISTERED"),
-            .width_a(Dw),
-            .width_b(Dw),
-            .lpm_hint(RAM_ID),
-            .read_during_write_mode_mixed_ports("DONT_CARE"),
-            .widthad_a(Aw),
-            .widthad_b(Aw),
-            .width_byteena_a(BYTE_ENw),
-            .init_file(INIT_FILE)
+//     if(JTAG_CONNECT== "JTAG_WB")begin:dual_ram
+// // aletra dual port ram 
+//         altsyncram #(
+//             .operation_mode("BIDIR_DUAL_PORT"),
+//             .address_reg_b("CLOCK0"),
+//             .wrcontrol_wraddress_reg_b("CLOCK0"),
+//             .indata_reg_b("CLOCK0"),
+//             .outdata_reg_a("UNREGISTERED"),
+//             .outdata_reg_b("UNREGISTERED"),
+//             .width_a(Dw),
+//             .width_b(Dw),
+//             .lpm_hint(RAM_ID),
+//             .read_during_write_mode_mixed_ports("DONT_CARE"),
+//             .widthad_a(Aw),
+//             .widthad_b(Aw),
+//             .width_byteena_a(BYTE_ENw),
+//             .init_file(INIT_FILE)
     
-        ) ram_inst(
-            .clock0         (clk),
+//         ) ram_inst(
+//             .clock0         (clk),
         
-            .address_a      (addr_a),
-            .wren_a         (we_a),
-            .data_a         (data_a),
-            .q_a            (q_a),
-            .byteena_a      (byteena_a),      
+//             .address_a      (addr_a),
+//             .wren_a         (we_a),
+//             .data_a         (data_a),
+//             .q_a            (q_a),
+//             .byteena_a      (byteena_a),      
         
         
-            .address_b      (addr_b),
-            .wren_b         (we_b),
-            .data_b         (data_b),
-            .q_b            (q_b),
-            .byteena_b      (1'b1), 
+//             .address_b      (addr_b),
+//             .wren_b         (we_b),
+//             .data_b         (data_b),
+//             .q_b            (q_b),
+//             .byteena_b      (1'b1), 
         
 
-            .rden_a         (1'b1),
-            .rden_b         (1'b1),
-            .clock1         (1'b1),
-            .clocken0       (1'b1),
-            .clocken1       (1'b1),
-            .clocken2       (1'b1),
-            .clocken3       (1'b1),
-            .aclr0          (1'b0),
-            .aclr1          (1'b0),     
-            .addressstall_a     (1'b0),
-            .addressstall_b     (1'b0),
-            .eccstatus      (    )
+//             .rden_a         (1'b1),
+//             .rden_b         (1'b1),
+//             .clock1         (1'b1),
+//             .clocken0       (1'b1),
+//             .clocken1       (1'b1),
+//             .clocken2       (1'b1),
+//             .clocken3       (1'b1),
+//             .aclr0          (1'b0),
+//             .aclr1          (1'b0),     
+//             .addressstall_a     (1'b0),
+//             .addressstall_b     (1'b0),
+//             .eccstatus      (    )
 
-        );
+//         );
 
-    // jtag_wb
-    end else begin:  single_ram //JTAG_CONNECT= "DISABLED", "ALTERA_IMCE"
+//     // jtag_wb
+//     end else begin:  single_ram //JTAG_CONNECT= "DISABLED", "ALTERA_IMCE"
     
     
 
-        altsyncram #(
-            .operation_mode("SINGLE_PORT"),
-            .width_a(Dw),
-            .lpm_hint(RAM_ID),
-            .read_during_write_mode_mixed_ports("DONT_CARE"),
-            .widthad_a(Aw),
-            .width_byteena_a(BYTE_ENw),
-	    .init_file(INIT_FILE)   
-        )
-        ram_inst
-        (
-            .clock0         (clk),
-            .address_a      (addr_a),
-            .wren_a         (we_a),
-            .data_a         (data_a),
-            .q_a            (q_a),
-            .byteena_a      (byteena_a),
+//         altsyncram #(
+//             .operation_mode("SINGLE_PORT"),
+//             .width_a(Dw),
+//             .lpm_hint(RAM_ID),
+//             .read_during_write_mode_mixed_ports("DONT_CARE"),
+//             .widthad_a(Aw),
+//             .width_byteena_a(BYTE_ENw),
+// 	    .init_file(INIT_FILE)   
+//         )
+//         ram_inst
+//         (
+//             .clock0         (clk),
+//             .address_a      (addr_a),
+//             .wren_a         (we_a),
+//             .data_a         (data_a),
+//             .q_a            (q_a),
+//             .byteena_a      (byteena_a),
              
-            .wren_b         (    ),
-            .rden_a         (    ),
-            .rden_b         (    ),
-            .data_b         (    ),
-            .address_b      (    ),
-            .clock1         (    ),
-            .clocken0       (    ),
-            .clocken1       (    ),
-            .clocken2       (    ),
-            .clocken3       (    ),
-            .aclr0          (    ),
-            .aclr1          (    ),     
-            .byteena_b      (    ),
-            .addressstall_a     (    ),
-            .addressstall_b     (    ),
-            .q_b            (    ),
-            .eccstatus      (    )
-        );
+//             .wren_b         (    ),
+//             .rden_a         (    ),
+//             .rden_b         (    ),
+//             .data_b         (    ),
+//             .address_b      (    ),
+//             .clock1         (    ),
+//             .clocken0       (    ),
+//             .clocken1       (    ),
+//             .clocken2       (    ),
+//             .clocken3       (    ),
+//             .aclr0          (    ),
+//             .aclr1          (    ),     
+//             .byteena_b      (    ),
+//             .addressstall_a     (    ),
+//             .addressstall_b     (    ),
+//             .q_b            (    ),
+//             .eccstatus      (    )
+//         );
 
-    end
-end
+//     end
+// end
 
-else if(FPGA_VENDOR=="GENERIC")begin:generic_ram
-    if(JTAG_CONNECT== "JTAG_WB")begin:dual_ram
+// else if(FPGA_VENDOR=="GENERIC")begin:generic_ram
+//     if(JTAG_CONNECT== "JTAG_WB")begin:dual_ram
         
 
-        generic_dual_port_ram #(
-            .Dw(Dw),
-            .Aw(Aw),
-            .BYTE_WR_EN(BYTE_WR_EN),
-	    .INITIAL_EN(INITIAL_EN),
-	    .INIT_FILE(INIT_FILE) 
-        )
-        ram_inst
-        (
-            .data_a     (data_a), 
-            .data_b     (data_b),
-            .addr_a     (addr_a),
-            .addr_b     (addr_b),
-            .byteena_a  (byteena_a ),
-            .byteena_b  ({BYTE_ENw{1'b1}}),
-            .we_a       (we_a),
-            .we_b       (we_b),
-            .clk        (clk),
-            .q_a        (q_a),
-            .q_b        (q_b)
+//         generic_dual_port_ram #(
+//             .Dw(Dw),
+//             .Aw(Aw),
+//             .BYTE_WR_EN(BYTE_WR_EN),
+// 	    .INITIAL_EN(INITIAL_EN),
+// 	    .INIT_FILE(INIT_FILE) 
+//         )
+//         ram_inst
+//         (
+//             .data_a     (data_a), 
+//             .data_b     (data_b),
+//             .addr_a     (addr_a),
+//             .addr_b     (addr_b),
+//             .byteena_a  (byteena_a ),
+//             .byteena_b  ({BYTE_ENw{1'b1}}),
+//             .we_a       (we_a),
+//             .we_b       (we_b),
+//             .clk        (clk),
+//             .q_a        (q_a),
+//             .q_b        (q_b)
             
-        );
+//         );
 
 
-    end else begin
+//     end else begin
 
         
 
-        generic_single_port_ram #(
-            .Dw(Dw),
-            .Aw(Aw),
-            .BYTE_WR_EN(BYTE_WR_EN),
-	    .INITIAL_EN(INITIAL_EN),
-	    .INIT_FILE(INIT_FILE) 
-        )
-        ram_inst
-        (
-            .data     (data_a), 
-            .addr     (addr_a),
-            .byteen   (byteena_a ),
-            .we       (we_a),
-            .clk      (clk),
-            .q        (q_a)
+//         generic_single_port_ram #(
+//             .Dw(Dw),
+//             .Aw(Aw),
+//             .BYTE_WR_EN(BYTE_WR_EN),
+// 	    .INITIAL_EN(INITIAL_EN),
+// 	    .INIT_FILE(INIT_FILE) 
+//         )
+//         ram_inst
+//         (
+//             .data     (data_a), 
+//             .addr     (addr_a),
+//             .byteen   (byteena_a ),
+//             .we       (we_a),
+//             .clk      (clk),
+//             .q        (q_a)
             
-        );
+//         );
 
-    end//jtag_wb
-end //Generic
+//     end//jtag_wb
+// end //Generic
 
 
-if(JTAG_CONNECT == "JTAG_WB")begin:jtag_wb
+// if(JTAG_CONNECT == "JTAG_WB")begin:jtag_wb
 
-    reg jtag_ack;
-    wire    jtag_we_o, jtag_stb_o;
+//     reg jtag_ack;
+//     wire    jtag_we_o, jtag_stb_o;
 
-    localparam Sw= log2(Aw+1);
-    localparam [Sw-1    :   0] ST = Aw;
-    vjtag_wb #(
-        .VJTAG_INDEX(JTAG_INDEX),
-        .DW(Dw),
-        .AW(Aw),
-        .SW(Sw),
+//     localparam Sw= log2(Aw+1);
+//     localparam [Sw-1    :   0] ST = Aw;
+//     vjtag_wb #(
+//         .VJTAG_INDEX(JTAG_INDEX),
+//         .DW(Dw),
+//         .AW(Aw),
+//         .SW(Sw),
     
-        //wishbone port parameters
-            .M_Aw(Aw),
-            .TAGw(3)
-    )
-    vjtag_inst
-    (
-        .clk(clk),
-        .reset(reset),  
-        .status_i(ST), // Jtag can read memory size as status
-         //wishbone master interface signals
-        .m_sel_o(),
-        .m_dat_o(data_b),
-        .m_addr_o(addr_b),
-        .m_cti_o(),
-        .m_stb_o(jtag_stb_o),
-        .m_cyc_o(),
-        .m_we_o(jtag_we_o),
-        .m_dat_i(q_b),
-        .m_ack_i(jtag_ack)     
+//         //wishbone port parameters
+//             .M_Aw(Aw),
+//             .TAGw(3)
+//     )
+//     vjtag_inst
+//     (
+//         .clk(clk),
+//         .reset(reset),  
+//         .status_i(ST), // Jtag can read memory size as status
+//          //wishbone master interface signals
+//         .m_sel_o(),
+//         .m_dat_o(data_b),
+//         .m_addr_o(addr_b),
+//         .m_cti_o(),
+//         .m_stb_o(jtag_stb_o),
+//         .m_cyc_o(),
+//         .m_we_o(jtag_we_o),
+//         .m_dat_i(q_b),
+//         .m_ack_i(jtag_ack)     
     
-    );
+//     );
 
-    assign we_b = jtag_stb_o & jtag_we_o;
+//     assign we_b = jtag_stb_o & jtag_we_o;
 
-    always @(posedge clk )begin 
-        jtag_ack<=jtag_stb_o;   
-    end
-end//jtag_wb
+//     always @(posedge clk )begin 
+//         jtag_ack<=jtag_stb_o;   
+//     end
+// end//jtag_wb
 
-endgenerate
+// endgenerate
 
 
 

@@ -91,34 +91,34 @@ module vjtag #(
 	wire  virtual_state_e2dr = sub_wire9;
 	wire  virtual_state_sdr = sub_wire10;
 
-`ifndef VERILATOR
-`ifndef MODEL_TECH
-	sld_virtual_jtag	sld_virtual_jtag_component (
-				.ir_out (ir_out),
-				.tdo (tdo),
-				.virtual_state_cir (sub_wire0),
-				.virtual_state_pdr (sub_wire1),
-				.ir_in (sub_wire2),
-				.tdi (sub_wire3),
-				.virtual_state_udr (sub_wire4),
-				.tck (sub_wire5),
-				.virtual_state_e1dr (sub_wire6),
-				.virtual_state_uir (sub_wire7),
-				.virtual_state_cdr (sub_wire8),
-				.virtual_state_e2dr (sub_wire9),
-				.virtual_state_sdr (sub_wire10)
-				);
+// `ifndef VERILATOR
+// `ifndef MODEL_TECH
+// 	// sld_virtual_jtag	sld_virtual_jtag_component (
+// 	// 			.ir_out (ir_out),
+// 	// 			.tdo (tdo),
+// 	// 			.virtual_state_cir (sub_wire0),
+// 	// 			.virtual_state_pdr (sub_wire1),
+// 	// 			.ir_in (sub_wire2),
+// 	// 			.tdi (sub_wire3),
+// 	// 			.virtual_state_udr (sub_wire4),
+// 	// 			.tck (sub_wire5),
+// 	// 			.virtual_state_e1dr (sub_wire6),
+// 	// 			.virtual_state_uir (sub_wire7),
+// 	// 			.virtual_state_cdr (sub_wire8),
+// 	// 			.virtual_state_e2dr (sub_wire9),
+// 	// 			.virtual_state_sdr (sub_wire10)
+// 	// 			);
 
 
-	defparam
-		sld_virtual_jtag_component.sld_auto_instance_index = "NO",
-		sld_virtual_jtag_component.sld_instance_index = VJTAG_INDEX,
-		sld_virtual_jtag_component.sld_ir_width = 3,
-		sld_virtual_jtag_component.sld_sim_action = "((0,1,7,3),(0,2,ff,20),(0,1,6,3),(0,2,ffffffff,20),(0,2,1,20),(0,2,2,20),(0,2,3,20),(0,2,4,20))",
-		sld_virtual_jtag_component.sld_sim_n_scan = 8,
-		sld_virtual_jtag_component.sld_sim_total_length = 198;
-`endif //MODEL_TECH
-`endif //VERILATOR
+// 	defparam
+// 		sld_virtual_jtag_component.sld_auto_instance_index = "NO",
+// 		sld_virtual_jtag_component.sld_instance_index = VJTAG_INDEX,
+// 		sld_virtual_jtag_component.sld_ir_width = 3,
+// 		sld_virtual_jtag_component.sld_sim_action = "((0,1,7,3),(0,2,ff,20),(0,1,6,3),(0,2,ffffffff,20),(0,2,1,20),(0,2,2,20),(0,2,3,20),(0,2,4,20))",
+// 		sld_virtual_jtag_component.sld_sim_n_scan = 8,
+// 		sld_virtual_jtag_component.sld_sim_total_length = 198;
+// `endif //MODEL_TECH
+// `endif //VERILATOR
 
 endmodule
 
