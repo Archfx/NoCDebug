@@ -91,6 +91,12 @@ read_verilog -sv src_verilog/lib/jtag_wb/vjtag_wb.v
 read_verilog -sv src_verilog/dfd/trace_buffer.sv 
 
 # hierarchy -top mor1k_16Soc_top
-synth -top mor1k_16Soc_top
+synth_xilinx -top mor1k_16Soc_top
+
+# mapping to mycells.lib
+#dfflibmap -liberty mycells.lib
+#abc -liberty mycells.lib
+#clean
+
 proc; opt; techmap; opt
 write_verilog synth.v

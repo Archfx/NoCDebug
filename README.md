@@ -22,3 +22,8 @@ sw_alloc_sub,
 packet_gen,
 wrra,
 my_one_hot_arbiter_ext_priority
+
+### Synthesising the Design with Yosys
+
+Install yosys 
+run `yosys synth.ys` in the terminal
