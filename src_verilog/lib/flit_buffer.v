@@ -330,6 +330,12 @@ module fifo_ram     #(
             // end   
 	end
 	
+    // always @(posedge clk ) begin
+    //     if (wr_en)
+    //             queue[wr_addr] <= wr_data;
+    //     if (rd_en)
+    //             memory_rd_data <= queue[rd_addr]; 
+	// end
  
 
 	 	 
