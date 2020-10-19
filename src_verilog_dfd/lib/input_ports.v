@@ -148,7 +148,11 @@ wire [31:0] trace_i [P-1:0];
 
 assign trigger = |trigger_i;
 // assign trace = trigger_i[0]? trace_i[0] : (trigger_i[1]? trace_i[1] : (trigger_i[2]? trace_i[2] : (trigger_i[3]? trace_i[3] : trace_i[4] )));
-assign trace = trigger_i[0]? trace_i[0] : trace_i[1];
+if (P==1) assign trace = trace_i[0] ;
+if (P==2) assign trace = trigger_i[0]? trace_i[0] : trace_i[1] ;
+if (P==3) assign trace = trigger_i[0]? trace_i[0] : (trigger_i[1]? trace_i[1] : trace_i[2]);
+if (P==4) assign trace = trigger_i[0]? trace_i[0] : (trigger_i[1]? trace_i[1] : (trigger_i[2]? trace_i[2] : trace_i[3] ));
+if (P==5) assign trace = trigger_i[0]? trace_i[0] : (trigger_i[1]? trace_i[1] : (trigger_i[2]? trace_i[2] : (trigger_i[3]? trace_i[3] : trace_i[4] )));
 
 genvar i;
 generate 

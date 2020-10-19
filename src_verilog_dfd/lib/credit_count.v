@@ -226,7 +226,12 @@ module credit_counter #(
 
     assign trigger_0 = |trigger_0_i;
     // assign trace_0 = trigger_0_i[0]? trace_0_i[0] : (trigger_0_i[1]? trace_0_i[1] : (trigger_0_i[2]? trace_0_i[2] : (trigger_0_i[3]? trace_0_i[3] : trace_0_i[4] )));
-    assign trace_0 = trigger_0_i[0]? trace_0_i[0] : trace_0_i[1] ;
+    if (P==1) assign trace_0 = trace_0_i[0];
+    if (P==2) assign trace_0 = trigger_0_i[0]? trace_0_i[0] : trace_0_i[1] ;
+    if (P==3) assign trace_0 = trigger_0_i[0]? trace_0_i[0] : (trigger_0_i[1]? trace_0_i[1] : trace_0_i[2] );
+    if (P==4) assign trace_0 = trigger_0_i[0]? trace_0_i[0] : (trigger_0_i[1]? trace_0_i[1] : (trigger_0_i[2]? trace_0_i[2] : trace_0_i[3] ));
+    if (P==5) assign trace_0 = trigger_0_i[0]? trace_0_i[0] : (trigger_0_i[1]? trace_0_i[1] : (trigger_0_i[2]? trace_0_i[2] : (trigger_0_i[3]? trace_0_i[3] : trace_0_i[4] )));
+
     generate
     for(i=0;i<P;i=i+1    ) begin :port_lp
     
@@ -291,7 +296,16 @@ module credit_counter #(
 
     assign trigger_1 = |trigger_1_i;
     // assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] :  (trigger_1_i[6]? trace_1_i[6] :  (trigger_1_i[7]? trace_1_i[7] :  (trigger_1_i[8]? trace_1_i[8] : trace_1_i[9] ) ) ) ) ) )));
-    assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : trace_1_i[3]  ));
+    if (PV==1) assign trace_1 = trace_1_i[0] ;
+    if (PV==2) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : trace_1_i[1] ;
+    if (PV==3) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] :  trace_1_i[2] );
+    if (PV==4) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : trace_1_i[3] ));
+    if (PV==5) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] : trace_1_i[4]  )));
+    if (PV==6) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  trace_1_i[5] ) )));
+    if (PV==7) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] : trace_1_i[6]  ) ) )));
+    if (PV==8) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] :  (trigger_1_i[6]? trace_1_i[6] : trace_1_i[7] ) ) ) )));
+    if (PV==9) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] :  (trigger_1_i[6]? trace_1_i[6] :  (trigger_1_i[7]? trace_1_i[7] : trace_1_i[8]  ) ) ) ) )));
+    if (PV==10) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] :  (trigger_1_i[6]? trace_1_i[6] :  (trigger_1_i[7]? trace_1_i[7] :  (trigger_1_i[8]? trace_1_i[8] : trace_1_i[9] ) ) ) ) ) )));
 
     for(i=0;i< PV;i=i+1) begin :PV_loop2
          sw_mask_gen #(
