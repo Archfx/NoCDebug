@@ -55,11 +55,9 @@ endgenerate
 
    always @(posedge clk) begin
       if (we)
-      mem[0] <= din;
-	// mem[waddr] <= din;
+	mem[waddr] <= din;
       if (re)
-      rdata <= mem[0];
-	// rdata <= mem[raddr];
+	rdata <= mem[raddr];
    end
 
 endmodule

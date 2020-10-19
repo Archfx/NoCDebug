@@ -86,9 +86,7 @@ module input_ports
     granted_dest_port_all,
     refresh_w_counter,
     reset,
-    clk,
-    trigger,
-    trace 
+    clk
 );
     
          
@@ -139,16 +137,6 @@ module input_ports
    
     input refresh_w_counter;
     
-    //Dfd
-    output trigger;
-    output [31:0] trace;  
-    
-wire [P-1:0] trigger_i;
-wire [31:0] trace_i [P-1:0];
-
-assign trigger = |trigger_i;
-// assign trace = trigger_i[0]? trace_i[0] : (trigger_i[1]? trace_i[1] : (trigger_i[2]? trace_i[2] : (trigger_i[3]? trace_i[3] : trace_i[4] )));
-assign trace = trigger_i[0]? trace_i[0] : trace_i[1];
 
 genvar i;
 generate 
@@ -215,9 +203,7 @@ generate
         .vc_weight_is_consumed(vc_weight_is_consumed_all [(i+1)*V-1 : i*V]),
         .iport_weight_is_consumed(iport_weight_is_consumed_all[i]),
         .refresh_w_counter(refresh_w_counter),
-        .granted_dest_port(granted_dest_port_all[(i+1)*P_1-1 : i*P_1]) ,
-        .trigger(trigger_i[i]),
-        .trace(trace_i[i]) 
+        .granted_dest_port(granted_dest_port_all[(i+1)*P_1-1 : i*P_1])        
     );
     
     end//for      
@@ -291,9 +277,7 @@ module input_queue_per_port  #(
     vc_weight_is_consumed,
     iport_weight_is_consumed,
     refresh_w_counter,
-    granted_dest_port,
-    trigger,
-    trace  
+    granted_dest_port    
 );
 
  
@@ -358,15 +342,7 @@ module input_queue_per_port  #(
     input   [PPSw-1 : 0] port_pre_sel;
     input   [V-1  : 0]  swap_port_presel;
   
-    // DfD
-    output trigger;
-    output [31:0] trace;
-   
-    wire trigger_0,trigger_1,trigger_2;
-    wire [31:0] trace_0,trace_1,trace_2;
-    
-    assign trigger = (trigger_0|trigger_1|trigger_2);
-	assign trace = trigger_0? trace_0 : (trigger_1? trace_1: trace_2);
+            
     
     wire [Cw-1 : 0] class_in;
     wire [DSTPw-1 : 0] destport_in,destport_in_encoded;
@@ -418,7 +394,29 @@ module input_queue_per_port  #(
             
      
      
-          
+    // synopsys  translate_off
+    // synthesis translate_off                                      
+     `ifdef MONITORE_PATH
+     
+    genvar j;
+    reg[V-1 :0] t1;
+    generate
+    for (j=0;j<V;j=j+1)begin : lp        
+    always @(posedge clk) begin
+        if(reset)begin 
+             t1[j]<=1'b0;               
+        end else begin 
+            if(flit_in_we >0 && vc_num_in[j] && t1[j]==0)begin 
+                $display("%t : Parser: class_in=%x, destport_in=%x, dest_e_addr_in=%x, src_e_addr_in=%x, vc_num_in=%x,hdr_flit_wr=%x, hdr_flg_in=%x,tail_flg_in=%x ",$time,class_in, destport_in, dest_e_addr_in, src_e_addr_in, vc_num_in,hdr_flit_wr, hdr_flg_in,tail_flg_in);
+                t1[j]<=1;
+            end           
+        end
+    end
+    end
+    endgenerate
+    `endif
+    // synthesis translate_on
+    // synopsys  translate_on       
      
      
 always @ (posedge clk or posedge reset) begin 
@@ -689,7 +687,6 @@ generate
     /* verilator lint_off WIDTH */    
     if(SWA_ARBITER_TYPE != "RRA")begin  : wrra
     /* verilator lint_on WIDTH */
-    // - not used
         wire granted_flit_is_tail;
         
         one_hot_mux #(
@@ -749,36 +746,32 @@ generate
             .vc_not_empty(ivc_not_empty),
             .reset(reset),
             .clk(clk),
-            .ssa_rd(ssa_ivc_num_getting_sw_grant),
-            .trigger(trigger_0),
-            .trace(trace_0)
+            .ssa_rd(ssa_ivc_num_getting_sw_grant)
         );
    
-    // end else begin :spec//not nonspec comb
+    end else begin :spec//not nonspec comb
  
 
-    //     flit_buffer #(
-    //         .V(V),
-    //         .B(B),   // buffer space :flit per VC 
-    //         .Fpay(Fpay),
-    //         .DEBUG_EN(DEBUG_EN),
-    //         .SSA_EN(SSA_EN)
-    //     )
-    //     the_flit_buffer
-    //     (
-    //         .din(flit_in),     // Data in
-    //         .vc_num_wr(vc_num_in),//write vertual channel   
-    //         .vc_num_rd(ivc_num_getting_sw_grant),//read vertual channel     
-    //         .wr_en(flit_in_we),   // Write enable
-    //         .rd_en(any_ivc_sw_request_granted),     // Read the next word
-    //         .dout(buffer_out),    // Data out
-    //         .vc_not_empty(ivc_not_empty),
-    //         .reset(reset),
-    //         .clk(clk),
-//         .ssa_rd(ssa_ivc_num_getting_sw_grant),
-    //         .trigger(trigger_1),
-    //         .trace(trace_1)
-    //     );  
+        flit_buffer #(
+            .V(V),
+            .B(B),   // buffer space :flit per VC 
+            .Fpay(Fpay),
+            .DEBUG_EN(DEBUG_EN),
+            .SSA_EN(SSA_EN)
+        )
+        the_flit_buffer
+        (
+            .din(flit_in),     // Data in
+            .vc_num_wr(vc_num_in),//write vertual channel   
+            .vc_num_rd(ivc_num_getting_sw_grant),//read vertual channel     
+            .wr_en(flit_in_we),   // Write enable
+            .rd_en(any_ivc_sw_request_granted),     // Read the next word
+            .dout(buffer_out),    // Data out
+            .vc_not_empty(ivc_not_empty),
+            .reset(reset),
+            .clk(clk),
+            .ssa_rd(ssa_ivc_num_getting_sw_grant)
+        );  
   
     end       
 endgenerate    
@@ -805,9 +798,7 @@ endgenerate
         .destport_encoded(destport_in_encoded),
         .lkdestport_encoded(lk_destination_in_encoded),
         .reset(reset),
-        .clk(clk),
-        .trigger(trigger_1),
-        .trace(trace_1)
+        .clk(clk)
      );
 
     header_flit_update_lk_route_ovc #(
@@ -832,9 +823,7 @@ endgenerate
         .lk_dest_not_registered(lk_destination_in_encoded),
         .sel (sel),
         .reset (reset),
-        .clk (clk),
-        .trigger(trigger_2),
-        .trace(trace_2)
+        .clk (clk)
     );
     
     assign flit_wr =(flit_in_we )? vc_num_in : {V{1'b0}};
@@ -852,7 +841,65 @@ endgenerate
     assign    class_rd_fifo = (C>1)? reset_ivc : {V{1'bx}};
     assign    ivc_request = ivc_not_empty;    
 
+//synthesis translate_off
+//synopsys  translate_off
+generate 
+if(DEBUG_EN) begin :dbg
 
+    debug_IVC_flit_type_order_check #(
+    	.V(V)
+    )
+    IVC_flit_type_check
+    (
+    	.clk(clk),
+    	.reset(reset),
+    	.hdr_flg_in(hdr_flg_in),
+    	.tail_flg_in(tail_flg_in),
+    	.flit_in_we(flit_in_we),
+    	.vc_num_in(vc_num_in),
+    	.reset_all_errors(1'b0),
+    	.active_IVC_hdr_flit_received_err( ),
+    	.inactive_IVC_tail_flit_received_err( ),
+    	.inactive_IVC_body_flit_received_err( )
+    );
+
+     /* verilator lint_off WIDTH */  
+     if (( TOPOLOGY == "RING" || TOPOLOGY == "LINE" || TOPOLOGY == "MESH" || TOPOLOGY == "TORUS")) begin : mesh_based
+     /* verilator lint_on WIDTH */  
+
+        debug_mesh_tori_route_ckeck #(
+            .T1(T1),
+            .T2(T2),
+            .T3(T3),
+            .ROUTE_TYPE(ROUTE_TYPE),
+            .V(V),
+            .AVC_ATOMIC_EN(AVC_ATOMIC_EN),
+            .SW_LOC(SW_LOC),
+            .ESCAP_VC_MASK(ESCAP_VC_MASK),
+            .TOPOLOGY(TOPOLOGY),
+            .DSTPw(DSTPw),
+            .RAw(RAw),
+            .EAw(EAw)
+        )
+        route_ckeck
+        (
+            .reset(reset),
+            .clk(clk),
+            .hdr_flg_in(hdr_flg_in),
+            .flit_in_we(flit_in_we),
+            .vc_num_in(vc_num_in),
+            .flit_is_tail(flit_is_tail),
+            .ivc_num_getting_sw_grant(ivc_num_getting_sw_grant),
+            .current_r_addr(current_r_addr),
+            .dest_e_addr_in(dest_e_addr_in),
+            .src_e_addr_in(src_e_addr_in),
+            .destport_in(destport_in)      
+        );   
+    end//mesh  
+end//DEBUG_EN 
+endgenerate 
+//synopsys  translate_on  
+//synthesis translate_on
 
 
 endmodule

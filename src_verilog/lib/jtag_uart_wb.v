@@ -1,3 +1,7 @@
+// synthesis translate_off
+`timescale 1ns / 1ps
+// synthesis translate_on
+
 
 module jtag_uart_wb #(
     parameter FPGA_VENDOR = "ALTERA",

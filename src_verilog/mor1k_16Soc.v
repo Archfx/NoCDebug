@@ -117,10 +117,6 @@ module mor1k_16Soc (
 	
 	wire 					noc_clk,noc_reset;    
     
-	// Trace
-    wire trigger,trigger_0,trigger_1,trigger_2,trigger_3,trigger_4,trigger_5,trigger_6,trigger_7,trigger_8,trigger_9,trigger_10,trigger_11,trigger_12,trigger_13,trigger_14,trigger_15,trigger_NOC;
-    wire [31:0] trace,trace_0,trace_1,trace_2,trace_3,trace_4,trace_5,trace_6,trace_7,trace_8,trace_9,trace_10,trace_11,trace_12,trace_13,trace_14,trace_15,trace_NOC;  
-
 //NoC
  	noc #(
  .TOPOLOGY(TOPOLOGY),
@@ -158,9 +154,7 @@ module mor1k_16Soc (
 		.flit_in_wr_all(flit_in_wr_all) ,
 		.credit_out_all(credit_out_all) ,
 		.reset(noc_reset) ,
-		.clk(noc_clk) ,
-        .trigger(trigger_NOC),
-        .trace(trace_NOC)
+		.clk(noc_clk) 
 	);
 
  	
@@ -220,9 +214,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[0]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[0]) , 
 		.ni_flit_out(ni_flit_out[0]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[0]),
-        .trigger(trigger_0),
-        .trace(trace_0)  
+		.ni_flit_out_wr(ni_flit_out_wr[0]) 
 	);
  
 
@@ -257,9 +249,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[1]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[1]) , 
 		.ni_flit_out(ni_flit_out[1]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[1]),
-        .trigger(trigger_1),
-        .trace(trace_1) 
+		.ni_flit_out_wr(ni_flit_out_wr[1]) 
 	);
  
 
@@ -294,9 +284,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[2]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[2]) , 
 		.ni_flit_out(ni_flit_out[2]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[2]),
-        .trigger(trigger_2),
-        .trace(trace_2)  
+		.ni_flit_out_wr(ni_flit_out_wr[2]) 
 	);
  
 
@@ -331,9 +319,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[3]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[3]) , 
 		.ni_flit_out(ni_flit_out[3]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[3]),
-        .trigger(trigger_3),
-        .trace(trace_3)  
+		.ni_flit_out_wr(ni_flit_out_wr[3]) 
 	);
  
 
@@ -368,9 +354,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[4]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[4]) , 
 		.ni_flit_out(ni_flit_out[4]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[4]),
-        .trigger(trigger_4),
-        .trace(trace_4)  
+		.ni_flit_out_wr(ni_flit_out_wr[4]) 
 	);
  
 
@@ -405,9 +389,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[5]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[5]) , 
 		.ni_flit_out(ni_flit_out[5]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[5]),
-        .trigger(trigger_5),
-        .trace(trace_5)  
+		.ni_flit_out_wr(ni_flit_out_wr[5]) 
 	);
  
 
@@ -442,9 +424,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[6]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[6]) , 
 		.ni_flit_out(ni_flit_out[6]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[6]),
-        .trigger(trigger_6),
-        .trace(trace_6)  
+		.ni_flit_out_wr(ni_flit_out_wr[6]) 
 	);
  
 
@@ -479,9 +459,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[7]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[7]) , 
 		.ni_flit_out(ni_flit_out[7]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[7]),
-        .trigger(trigger_7),
-        .trace(trace_7)  
+		.ni_flit_out_wr(ni_flit_out_wr[7]) 
 	);
  
 
@@ -516,9 +494,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[8]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[8]) , 
 		.ni_flit_out(ni_flit_out[8]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[8]),
-        .trigger(trigger_8),
-        .trace(trace_8)  
+		.ni_flit_out_wr(ni_flit_out_wr[8]) 
 	);
  
 
@@ -553,9 +529,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[9]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[9]) , 
 		.ni_flit_out(ni_flit_out[9]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[9]),
-        .trigger(trigger_9),
-        .trace(trace_9)  
+		.ni_flit_out_wr(ni_flit_out_wr[9]) 
 	);
  
 
@@ -590,9 +564,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[10]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[10]) , 
 		.ni_flit_out(ni_flit_out[10]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[10]),
-        .trigger(trigger_10),
-        .trace(trace_10)  
+		.ni_flit_out_wr(ni_flit_out_wr[10]) 
 	);
  
 
@@ -627,9 +599,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[11]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[11]) , 
 		.ni_flit_out(ni_flit_out[11]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[11]),
-        .trigger(trigger_11),
-        .trace(trace_11)  
+		.ni_flit_out_wr(ni_flit_out_wr[11]) 
 	);
  
 
@@ -664,9 +634,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[12]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[12]) , 
 		.ni_flit_out(ni_flit_out[12]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[12]),
-        .trigger(trigger_12),
-        .trace(trace_12)  
+		.ni_flit_out_wr(ni_flit_out_wr[12]) 
 	);
  
 
@@ -701,9 +669,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[13]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[13]) , 
 		.ni_flit_out(ni_flit_out[13]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[13]),
-        .trigger(trigger_13),
-        .trace(trace_13)  
+		.ni_flit_out_wr(ni_flit_out_wr[13]) 
 	);
  
 
@@ -738,9 +704,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[14]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[14]) , 
 		.ni_flit_out(ni_flit_out[14]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[14]),
-        .trigger(trigger_14),
-        .trace(trace_14)  
+		.ni_flit_out_wr(ni_flit_out_wr[14]) 
 	);
  
 
@@ -775,26 +739,7 @@ endgenerate
 		.ni_flit_in(ni_flit_in[15]) , 
 		.ni_flit_in_wr(ni_flit_in_wr[15]) , 
 		.ni_flit_out(ni_flit_out[15]) , 
-		.ni_flit_out_wr(ni_flit_out_wr[15]),
-        .trigger(trigger_15),
-        .trace(trace_15)  
+		.ni_flit_out_wr(ni_flit_out_wr[15]) 
 	);
-
-	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3|trigger_4|trigger_5|trigger_6|trigger_7|trigger_8|trigger_9|trigger_10|trigger_11|trigger_12|trigger_13|trigger_14|trigger_15|trigger_NOC);
-	assign trace = trigger_NOC? trace_NOC : (trigger_0? trace_0 : (trigger_1? trace_1 :(trigger_2? trace_2 : (trigger_3? trace_3: (trigger_4? trace_4: (trigger_5? trace_5: (trigger_6? trace_6: (trigger_7? trace_7: (trigger_8? trace_8: (trigger_9? trace_9: (trigger_10? trace_10: (trigger_11? trace_11: (trigger_12? trace_12: (trigger_13? trace_13: (trigger_14? trace_14: trace_15)))))))))))))));
-
-	trace_buffer #(
-    	.Fpay (32),
-    	.TB_Depth(512)
-	)  the_trace_buffer (
-        .trace(trace),     // Data in
-        .trigger(trigger),   // Write enable
-        .rd(),   // Read the buffer using JTaG
-        .dout(),    // Data out
-        .reset(reset),
-        .clk(clk)
-        // ssa_rd
-    );
-
  
 endmodule

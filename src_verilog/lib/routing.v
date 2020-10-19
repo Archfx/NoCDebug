@@ -44,9 +44,7 @@ module ni_conventional_routing #(
     clk,
     current_r_addr,
     dest_e_addr,
-    destport,
-    trigger,
-    trace
+    destport
 );    
 
     function integer log2;
@@ -62,19 +60,11 @@ module ni_conventional_routing #(
     input   [RAw-1   :0] current_r_addr;
     input   [EAw-1   :0] dest_e_addr;
     output  [DSTPw-1 :0] destport;
-    // DfD
-    output trigger;
-    output [31:0] trace;
-   
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_0,trace_1;    
     
  generate 
     /* verilator lint_off WIDTH */ 
     if(TOPOLOGY == "MESH" || TOPOLOGY == "TORUS"  || TOPOLOGY ==  "RING" || TOPOLOGY ==  "LINE") begin :mesh_torus
     /* verilator lint_on WIDTH */ 
-    assign trigger = trigger_0;
-	assign trace = trace_0;
     
     localparam
         NX = T1,
@@ -138,16 +128,10 @@ module ni_conventional_routing #(
             .current_y(current_ry),
             .dest_x(dest_ex),
             .dest_y(dest_ey),
-            .destport(destport),
-            .trigger(trigger_0),
-            .trace(trace_0)
+            .destport(destport)
         );
     
     end else begin : others
-
-        assign trigger = 1'b0;
-        assign trace = 32'd0;
-
         localparam
             K=T1,
             L=T2,
@@ -239,9 +223,7 @@ module look_ahead_routing #(
     destport_encoded,   // current router destination port number       
     lkdestport_encoded, // look ahead destination port number
     reset,
-    clk,
-    trigger,
-    trace
+    clk
 );
     
      function integer log2;
@@ -270,21 +252,13 @@ module look_ahead_routing #(
     input   [DSTPw-1  :   0]  destport_encoded;
     output  [DSTPw-1  :   0]  lkdestport_encoded;
     input                   reset,clk;
-    // DfD
-    output trigger;
-    output [31:0] trace;
-
-    wire trigger_0;
-    wire [31:0] trace_0;
+    
     genvar i;
     generate 
     /* verilator lint_off WIDTH */ 
     if(TOPOLOGY == "MESH" || TOPOLOGY == "TORUS"  || TOPOLOGY ==  "RING" || TOPOLOGY ==  "LINE")begin :mesh_torus
     /* verilator lint_on WIDTH */ 
      
-        assign trigger = trigger_0;
-        assign trace = trace_0;
-
        localparam
         NX = T1,
         NY = T2,
@@ -349,17 +323,12 @@ module look_ahead_routing #(
         	.destport_encoded(destport_encoded),
         	.lkdestport_encoded(lkdestport_encoded),
         	.reset(reset),
-        	.clk(clk),
-            .trigger(trigger_0),
-            .trace(trace_0)
+        	.clk(clk)
         );
     /* verilator lint_off WIDTH */      
     end else if (TOPOLOGY == "FATTREE") begin: fat
     /* verilator lint_on WIDTH */          
     
-        assign trigger = 1'b0;
-        assign trace = 32'b0;
-
         wire  [PLKw-1 : 0]  neighbors_rx;
         wire  [PLw-1 : 0]  neighbors_ry;
        
@@ -388,10 +357,7 @@ module look_ahead_routing #(
     /* verilator lint_off WIDTH */      
     end else if (TOPOLOGY == "TREE") begin: tree
     /* verilator lint_on WIDTH */          
-     
-        assign trigger = 1'b0;
-        assign trace = 32'b0;       
-                   
+            
         wire  [PLKw-1 : 0]  neighbors_rx_tree;
         wire  [PLw-1 : 0]  neighbors_ry_tree;
        
@@ -430,54 +396,54 @@ Determine the next router address based on the packet destination port
 ********************************************************/
 
 
-// module next_router_addr_selector_onehot #(
-//     parameter P = 5,
-//     parameter RXw = 3,  // The router's x dimention adress width in bits
-//     parameter RYw = 3  // The router's y dimention adress width in bits
-//     )
-//     (
-//     destport_onehot,
-//     neighbors_rx,
-//     neighbors_ry,
-//     next_rx,
-//     next_ry     
-//     );
+module next_router_addr_selector_onehot #(
+    parameter P = 5,
+    parameter RXw = 3,  // The router's x dimention adress width in bits
+    parameter RYw = 3  // The router's y dimention adress width in bits
+    )
+    (
+    destport_onehot,
+    neighbors_rx,
+    neighbors_ry,
+    next_rx,
+    next_ry     
+    );
     
-//     localparam
-//         PRXw = P * RXw,
-//         PRYw = P * RYw; 
+    localparam
+        PRXw = P * RXw,
+        PRYw = P * RYw; 
     
-//     input [P-1   :  0]  destport_onehot;
-//     input [PRXw-1:  0]  neighbors_rx;
-//     input [PRYw-1:  0]  neighbors_ry;
-//     output[RXw-1  :    0]  next_rx;
-//     output[RYw-1  :    0]  next_ry;  
+    input [P-1   :  0]  destport_onehot;
+    input [PRXw-1:  0]  neighbors_rx;
+    input [PRYw-1:  0]  neighbors_ry;
+    output[RXw-1  :    0]  next_rx;
+    output[RYw-1  :    0]  next_ry;  
     
-//     one_hot_mux #(
-//         .IN_WIDTH(PRXw),
-//         .SEL_WIDTH(P),
-//         .OUT_WIDTH(RXw)
-//     )
-//     next_x_mux
-//     (
-//         .mux_in(neighbors_rx),
-//         .mux_out(next_rx),
-//         .sel(destport_onehot)
-//     );
+    one_hot_mux #(
+        .IN_WIDTH(PRXw),
+        .SEL_WIDTH(P),
+        .OUT_WIDTH(RXw)
+    )
+    next_x_mux
+    (
+        .mux_in(neighbors_rx),
+        .mux_out(next_rx),
+        .sel(destport_onehot)
+    );
     
-//     one_hot_mux #(
-//         .IN_WIDTH(PRYw),
-//         .SEL_WIDTH(P),
-//         .OUT_WIDTH(RYw)
-//     )
-//     next_y_mux
-//     (
-//         .mux_in(neighbors_ry),
-//         .mux_out(next_ry),
-//         .sel(destport_onehot)
-//     );
+    one_hot_mux #(
+        .IN_WIDTH(PRYw),
+        .SEL_WIDTH(P),
+        .OUT_WIDTH(RYw)
+    )
+    next_y_mux
+    (
+        .mux_in(neighbors_ry),
+        .mux_out(next_ry),
+        .sel(destport_onehot)
+    );
         
-// endmodule    
+endmodule    
 
 
 

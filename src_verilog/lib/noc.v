@@ -1,4 +1,6 @@
-
+// synthesis translate_off
+`timescale 1ns / 1ps
+// synthesis translate_on
 
 
 /**********************************************************************
@@ -66,9 +68,7 @@ module  noc #(
     flit_in_wr_all,  
     credit_out_all,
     reset,
-    clk,
-    trigger,
-    trace
+    clk
  );
  
     `define INCLUDE_TOPOLOGY_LOCALPARAM
@@ -88,9 +88,6 @@ module  noc #(
     input  [NEFw-1 : 0] flit_in_all;
     input  [NE-1 : 0] flit_in_wr_all;  
     output [NEV-1 : 0] credit_out_all;
-    //DfD
-    output trigger;
-    output [31:0] trace; 
 
 
 generate 
@@ -131,9 +128,7 @@ if (TOPOLOGY ==    "MESH" || TOPOLOGY ==  "TORUS" || TOPOLOGY == "RING" || TOPOL
     	.credit_in_all(credit_in_all),
     	.flit_in_all(flit_in_all),
     	.flit_in_wr_all(flit_in_wr_all),
-    	.credit_out_all(credit_out_all),
-        .trigger(trigger),
-        .trace(trace)
+    	.credit_out_all(credit_out_all)
     );
     
     end else if (TOPOLOGY == "FATTREE") begin : fat

@@ -1,4 +1,6 @@
-
+// synthesis translate_off
+`timescale 1ns / 1ps
+// synthesis translate_on
 
 /**************************************
 * Module: tree
@@ -47,9 +49,7 @@ module  tree_noc #(
     credit_in_all,
     flit_in_all,  
     flit_in_wr_all,  
-    credit_out_all,
-    trigger,
-    trace     
+    credit_out_all    
 );
 
     `define INCLUDE_TOPOLOGY_LOCALPARAM
@@ -102,13 +102,7 @@ module  tree_noc #(
     input  [NE-1 : 0] flit_in_wr_all;  
     output [NEV-1 : 0] credit_out_all;                
                     
-     //DfD
-    output trigger;
-    output [31:0] trace;    
-
-    wire trigger_0,trigger_1;
-    wire [31:0] trace_0,trace_1;  
-
+           
     wire [PLKw-1 : 0]   neighbors_pos_all [NR-1 :0];//get a fixed value for each individual router
     wire [PLw-1  : 0]  neighbors_layer_all [NR-1 :0];  
     wire [PRAw-1 : 0]  neighbors_r_all [NR-1 :0]; 
@@ -147,8 +141,7 @@ module  tree_noc #(
   assign current_pos_addr [ROOT_ID] = {LKw{1'b0}};       
   assign current_r_addr[ROOT_ID] = {current_layer_addr [ROOT_ID],current_pos_addr[ROOT_ID]};
 
-    assign trigger = (trigger_0|trigger_1);//|trigger_2|trigger_3);
-    assign trace = trigger_0? trace_0 : trace_1;//(trigger_1? trace_1 :(trigger_2? trace_2 : trace_3));
+ 
     router # (
         .V(V),
         .P(K),
@@ -189,9 +182,7 @@ module  tree_noc #(
         .credit_in_all(router_credit_in_all[ROOT_ID][(K*V)-1 : 0]),
         .congestion_out_all(router_congestion_out_all[ROOT_ID][(K*CONGw)-1 : 0]),            
         .clk(clk),
-        .reset(reset),
-        .trigger(trigger_0),
-        .trace(trace_0)       
+        .reset(reset)       
     );  
 
 
@@ -245,9 +236,7 @@ for( level=1; level<L; level=level+1) begin :level_lp
             .credit_in_all(router_credit_in_all[NRATTOP1+pos]),
             .congestion_out_all(router_congestion_out_all[NRATTOP1+pos]),            
             .clk(clk),
-            .reset(reset),
-            .trigger(trigger_1),
-            .trace(trace_1)      
+            .reset(reset)        
         );  
    
     end//pos

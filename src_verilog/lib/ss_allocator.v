@@ -216,9 +216,11 @@ module  ss_allocator#(
                 .ivc_num_getting_ovc_grant(ivc_num_getting_ovc_grant_all[i]),
                 .ivc_reset(ivc_reset_all[i]),                
                 .decreased_credit_in_ss_ovc(decreased_credit_in_ss_ovc[i])
-
-                // ,.clk(clk)
-                	   
+                //synthesis translate_off 
+                //synopsys  translate_off
+                ,.clk(clk)
+                //synthesis translate_on 
+                //synopsys  translate_on	   
             );           
                
         end//ssa
@@ -282,7 +284,11 @@ module ssa_per_vc #(
         ovc_allocated,
         decreased_credit_in_ss_ovc,
         ivc_reset      
-	      
+//synthesis translate_off 
+//synopsys  translate_off
+        ,clk
+//synthesis translate_on 
+//synopsys  translate_on	      
         
    );             
         
@@ -318,6 +324,11 @@ module ssa_per_vc #(
     output                        decreased_credit_in_ss_ovc;
   
 
+//synthesis translate_off 
+//synopsys  translate_off
+    input clk;
+//synthesis translate_on
+//synopsys  translate_on
 
  
 
@@ -390,7 +401,12 @@ ssa_check_destport #(
 	.destport_in_encoded(destport_in_encoded),
 	.ss_port_hdr_flit(ss_port_hdr_flit),
 	.ss_port_nonhdr_flit(ss_port_nonhdr_flit)
-   
+//synthesis translate_off 
+//synopsys  translate_off	
+	,.clk(clk),
+    .ivc_num_getting_sw_grant(ivc_num_getting_sw_grant)
+//synthesis translate_on
+//synopsys  translate_on    
 );
 
 
@@ -458,10 +474,19 @@ module ssa_check_destport #(
     destport_in_encoded, // header flit packet dest port
     ss_port_hdr_flit, // asserted if the header incomming flit goes to ss port
     ss_port_nonhdr_flit // assert if the body or tail incomming flit goes to ss port
-   
+//synthesis translate_off 
+//synopsys  translate_off
+    ,clk,
+    ivc_num_getting_sw_grant
+//synopsys  translate_on
+//synthesis translate_on    
 );
 
-   
+//synthesis translate_off 
+//synopsys  translate_off
+    input clk,   ivc_num_getting_sw_grant;
+//synopsys  translate_on
+//synthesis translate_on    
 
     input [DSTPw-1 : 0] destport_encoded, destport_in_encoded; 
     output ss_port_hdr_flit, ss_port_nonhdr_flit;
@@ -498,10 +523,12 @@ module ssa_check_destport #(
             .destport_in_encoded(destport_in_encoded),
             .ss_port_hdr_flit(ss_port_hdr_flit),
             .ss_port_nonhdr_flit(ss_port_nonhdr_flit)
-
-            // ,.clk(clk),
-            // .ivc_num_getting_sw_grant(ivc_num_getting_sw_grant)
-
+            //synthesis translate_off 
+            //synopsys  translate_off
+            ,.clk(clk),
+            .ivc_num_getting_sw_grant(ivc_num_getting_sw_grant)
+            //synthesis translate_on 
+            //synopsys  translate_on
         );
     
     end

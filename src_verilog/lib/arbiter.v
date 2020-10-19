@@ -44,9 +44,7 @@ module arbiter #(
    reset, 
    request, 
    grant,
-   any_grant,
-   trigger,
-   trace
+   any_grant
 );
 
     
@@ -56,25 +54,12 @@ module arbiter #(
     input                                        clk;
     input                                        reset;
 
-    output trigger;
-    output [31:0] trace;
 
-    reg trigger_0;
-    reg [31:0] trace_0;
-    wire trigger_1;
-    wire [31:0] trace_1;
-
-    assign trigger = trigger_1;//1'b0; //(trigger_0 | trigger_1);
-    assign trace = trace_1;//32'b0;//trigger_0? trace_0 :trace_1;
-    // assign trigger = (trigger_0 );
-    // assign trace = trace_0 ;
 
     generate 
     if(ARBITER_WIDTH==1)  begin: w1
         assign grant= request;
         assign any_grant =request;
-        assign trigger_1 = 1'b0;
-        assign trace_1 = 32'b0 ;
     end else if(ARBITER_WIDTH<=4) begin: w4
         //my own arbiter 
         my_one_hot_arbiter #(
@@ -86,14 +71,10 @@ module arbiter #(
             .reset         (reset), 
             .request        (request), 
             .grant        (grant),
-            .any_grant    (any_grant),
-            .trigger(trigger_1),
-            .trace(trace_1)
+            .any_grant    (any_grant)
         );
     
     end else begin : wb4
-        assign trigger_1 = 1'b0;
-        assign trace_1 = 32'b0 ;
         
         thermo_arbiter #(
             .ARBITER_WIDTH    (ARBITER_WIDTH)
@@ -127,35 +108,26 @@ module arbiter_priority_en #(
    request, 
    grant,
    any_grant,
-   priority_en,
-   trace,
-   trigger
+   priority_en
 );
 
   
 
 
-    input     [ARBITER_WIDTH-1             :    0]    request;
+    input        [ARBITER_WIDTH-1             :    0]    request;
     output    [ARBITER_WIDTH-1            :    0]    grant;
     output                                            any_grant;
     input                                                clk;
     input                                                reset;
     input                                              priority_en;
-    // DfD
-    output trigger;
-    output [31:0] trace;
-    wire trigger_0;
-    wire [31:0] trace_0; 
+    
+    
     generate 
-    if(ARBITER_WIDTH==1)  begin: w1 
-        assign trigger = 1'b0;
-	    assign trace = 32'd0;
+    if(ARBITER_WIDTH==1)  begin: w1
         assign grant= request;
         assign any_grant =request;
     end else if(ARBITER_WIDTH<=4) begin: w4
         //my own arbiter 
-        assign trigger = trigger_0;
-	    assign trace = trace_0;
         my_one_hot_arbiter_priority_en #(
             .ARBITER_WIDTH    (ARBITER_WIDTH)
         )
@@ -166,15 +138,12 @@ module arbiter_priority_en #(
             .request        (request), 
             .grant        (grant),
             .any_grant    (any_grant),
-            .priority_en (priority_en),
-            .trigger(trigger_0),
-            .trace(trace_0)
+            .priority_en (priority_en)
             
         );
     
     end else begin :wb4
-        assign trigger = 1'b0;
-	    assign trace = 32'd0;
+        
         thermo_arbiter_priority_en #(
             .ARBITER_WIDTH    (ARBITER_WIDTH)
         )
@@ -213,9 +182,7 @@ module my_one_hot_arbiter #(
     output    [ARBITER_WIDTH-1            :    0]    grant,
     output                                            any_grant,
     input                                                clk,
-    input                                                reset,
-    output trigger,
-    output [31:0] trace
+    input                                                reset
 );
    
     function integer log2;
@@ -236,9 +203,7 @@ module my_one_hot_arbiter #(
     )conv
     (
     .one_hot_code(grant),
-    .bin_code(grant_bcd),
-    .trigger(trigger),
-    .trace(trace)
+    .bin_code(grant_bcd)
 
     );
     
@@ -364,9 +329,7 @@ module my_one_hot_arbiter_priority_en #(
     output                                            any_grant,
     input                                                clk,
     input                                                reset,
-    input                                                priority_en,
-    output trigger,
-    output [31:0] trace
+    input                                                priority_en
 );
    
     function integer log2;
@@ -387,9 +350,7 @@ module my_one_hot_arbiter_priority_en #(
     )conv 
     (
         .one_hot_code(grant),
-        .bin_code(grant_bcd),
-        .trigger(trigger),
-        .trace(trace)
+        .bin_code(grant_bcd)
     );
     
     always@(posedge clk or posedge reset) begin
@@ -653,103 +614,99 @@ endmodule
 * 
 *******************************/
 
-// module tree_arbiter #(
-//         parameter    GROUP_NUM        =4,
-//         parameter    ARBITER_WIDTH    =16
-// )
-// (    
-//    clk, 
-//    reset, 
-//    request, 
-//    grant,
-//    any_grant
-// );
+module tree_arbiter #(
+        parameter    GROUP_NUM        =4,
+        parameter    ARBITER_WIDTH    =16
+)
+(    
+   clk, 
+   reset, 
+   request, 
+   grant,
+   any_grant
+);
 
  
-//     function integer log2;
-//       input integer number; begin   
-//          log2=(number <=1) ? 1: 0;    
-//          while(2**log2<number) begin    
-//             log2=log2+1;    
-//          end 	   
-//       end   
-//     endfunction // log2 
+    function integer log2;
+      input integer number; begin   
+         log2=(number <=1) ? 1: 0;    
+         while(2**log2<number) begin    
+            log2=log2+1;    
+         end 	   
+      end   
+    endfunction // log2 
 
-//   localparam N = ARBITER_WIDTH;
-//   localparam S = log2(ARBITER_WIDTH); // ceil of log_2 of N - put manually
+  localparam N = ARBITER_WIDTH;
+  localparam S = log2(ARBITER_WIDTH); // ceil of log_2 of N - put manually
   
 
-//   // I/O interface
-//   input           clk;
-//   input           reset;
-//   input  [N-1:0]  request;
-//   output [N-1:0]  grant;
-//   output          any_grant;
+  // I/O interface
+  input           clk;
+  input           reset;
+  input  [N-1:0]  request;
+  output [N-1:0]  grant;
+  output          any_grant;
 
 
-//     localparam GROUP_WIDTH    =    ARBITER_WIDTH/GROUP_NUM;
+    localparam GROUP_WIDTH    =    ARBITER_WIDTH/GROUP_NUM;
   
-//   wire [GROUP_WIDTH-1        :    0]    group_req    [GROUP_NUM-1        :    0];
-//   wire [GROUP_WIDTH-1        :    0]    group_grant [GROUP_NUM-1        :    0];
-//   wire [GROUP_WIDTH-1        :    0]    grant_masked[GROUP_NUM-1        :    0];
+  wire [GROUP_WIDTH-1        :    0]    group_req    [GROUP_NUM-1        :    0];
+  wire [GROUP_WIDTH-1        :    0]    group_grant [GROUP_NUM-1        :    0];
+  wire [GROUP_WIDTH-1        :    0]    grant_masked[GROUP_NUM-1        :    0];
   
-//   wire [GROUP_NUM-1            :    0] any_group_member_req;
-//   wire [GROUP_NUM-1            :    0] any_group_member_grant;
+  wire [GROUP_NUM-1            :    0] any_group_member_req;
+  wire [GROUP_NUM-1            :    0] any_group_member_grant;
  
     
-//     genvar i;
-//     generate
-//     for (i=0;i<GROUP_NUM;i=i+1) begin :group_lp
+    genvar i;
+    generate
+    for (i=0;i<GROUP_NUM;i=i+1) begin :group_lp
         
-//         //seprate inputs in group
-//         assign group_req[i]    =    request[(i+1)*GROUP_WIDTH-1        :    i*GROUP_WIDTH];
+        //seprate inputs in group
+        assign group_req[i]    =    request[(i+1)*GROUP_WIDTH-1        :    i*GROUP_WIDTH];
         
-//         //check if any member of qrup has request
-//         assign any_group_member_req[i]    =    | group_req[i];
+        //check if any member of qrup has request
+        assign any_group_member_req[i]    =    | group_req[i];
         
-//         //arbiterate one request from each group
-//         arbiter #(
-//             .ARBITER_WIDTH    (GROUP_WIDTH)
-//         )group_member_arbiter
-//         (    
-//             .clk            (clk), 
-//             .reset        (reset), 
-//             .request        (group_req[i]), 
-//             .grant        (group_grant[i]),
-//             .any_grant    (),
-//             .trigger(trigger_0),
-//             .trace(trace_0)
-//         );
+        //arbiterate one request from each group
+        arbiter #(
+            .ARBITER_WIDTH    (GROUP_WIDTH)
+        )group_member_arbiter
+        (    
+            .clk            (clk), 
+            .reset        (reset), 
+            .request        (group_req[i]), 
+            .grant        (group_grant[i]),
+            .any_grant    ()
+        );
         
-//     // mask the non selected groups        
-//         assign grant_masked [i] = (any_group_member_grant[i])?    group_grant[i]: {GROUP_WIDTH{1'b0}};
+    // mask the non selected groups        
+        assign grant_masked [i] = (any_group_member_grant[i])?    group_grant[i]: {GROUP_WIDTH{1'b0}};
     
-//     //assemble the grants
-//         assign grant [(i+1)*GROUP_WIDTH-1        :    i*GROUP_WIDTH] = grant_masked [i];
+    //assemble the grants
+        assign grant [(i+1)*GROUP_WIDTH-1        :    i*GROUP_WIDTH] = grant_masked [i];
     
     
-//     end
-//     endgenerate
+    end
+    endgenerate
     
-//     //select one group which has atleast one active request
+    //select one group which has atleast one active request
     
-//     //arbiterate one request from each group
-//         arbiter #(
-//             .ARBITER_WIDTH    (GROUP_NUM)
-//         )second_arbiter
-//         (    
-//             .clk        (clk), 
-//             .reset        (reset), 
-//             .request    (any_group_member_req), 
-//             .grant        (any_group_member_grant),
-//             .any_grant    (any_grant),
-//             .trigger(trigger_0),
-//             .trace(trace_0)
-//         );
+    //arbiterate one request from each group
+        arbiter #(
+            .ARBITER_WIDTH    (GROUP_NUM)
+        )second_arbiter
+        (    
+            .clk        (clk), 
+            .reset        (reset), 
+            .request    (any_group_member_req), 
+            .grant        (any_group_member_grant),
+            .any_grant    (any_grant)
+        );
                 
     
  
-//  endmodule 
+ endmodule 
  
 
 
@@ -762,51 +719,51 @@ endmodule
 
 *******************************/
 
-// module my_one_hot_arbiter_ext_priority #(
-//     parameter ARBITER_WIDTH =4
+module my_one_hot_arbiter_ext_priority #(
+    parameter ARBITER_WIDTH =4
     
     
-// )
-// (
-//     input   [ARBITER_WIDTH-1            :   0]  request,
-//     input   [ARBITER_WIDTH-1            :   0]  priority_in,
-//     output  [ARBITER_WIDTH-1            :   0]  grant,
-//     output                                      any_grant
-// );
+)
+(
+    input   [ARBITER_WIDTH-1            :   0]  request,
+    input   [ARBITER_WIDTH-1            :   0]  priority_in,
+    output  [ARBITER_WIDTH-1            :   0]  grant,
+    output                                      any_grant
+);
  
-//     function integer log2;
-//       input integer number; begin   
-//          log2=(number <=1) ? 1: 0;    
-//          while(2**log2<number) begin    
-//             log2=log2+1;    
-//          end 	   
-//       end   
-//     endfunction // log2 
+    function integer log2;
+      input integer number; begin   
+         log2=(number <=1) ? 1: 0;    
+         while(2**log2<number) begin    
+            log2=log2+1;    
+         end 	   
+      end   
+    endfunction // log2 
 
-//     localparam ARBITER_BIN_WIDTH= log2(ARBITER_WIDTH);
-//     wire    [ARBITER_BIN_WIDTH-1        :   0]  low_pr;
+    localparam ARBITER_BIN_WIDTH= log2(ARBITER_WIDTH);
+    wire    [ARBITER_BIN_WIDTH-1        :   0]  low_pr;
       
    
-//     wire [ARBITER_WIDTH-1            :   0] low_pr_one_hot = {priority_in[0],priority_in[ARBITER_BIN_WIDTH-1:1]};
+    wire [ARBITER_WIDTH-1            :   0] low_pr_one_hot = {priority_in[0],priority_in[ARBITER_BIN_WIDTH-1:1]};
     
-//     one_hot_to_bin #(
-//         .ONE_HOT_WIDTH    (ARBITER_WIDTH)
-//     )conv 
-//     (
-//         .one_hot_code(low_pr_one_hot),
-//         .bin_code(low_pr)
-//     );
+    one_hot_to_bin #(
+        .ONE_HOT_WIDTH    (ARBITER_WIDTH)
+    )conv 
+    (
+        .one_hot_code(low_pr_one_hot),
+        .bin_code(low_pr)
+    );
       
 
-//     assign any_grant = | request;
+    assign any_grant = | request;
 
-//     generate 
-//         if(ARBITER_WIDTH    ==2) begin: w2       arbiter_2_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
-//         if(ARBITER_WIDTH    ==3) begin: w3       arbiter_3_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
-//         if(ARBITER_WIDTH    ==4) begin: w4       arbiter_4_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
-//     endgenerate
+    generate 
+        if(ARBITER_WIDTH    ==2) begin: w2       arbiter_2_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
+        if(ARBITER_WIDTH    ==3) begin: w3       arbiter_3_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
+        if(ARBITER_WIDTH    ==4) begin: w4       arbiter_4_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
+    endgenerate
 
-// endmodule
+endmodule
 
 
 /*********************************
@@ -882,36 +839,36 @@ endmodule
     
 
  
-//  module fixed_priority_arbiter #(
-//      parameter   ARBITER_WIDTH   =8,
-//      parameter   HIGH_PRORITY_BIT = "HSB"
-//  )
-//  (   
+ module fixed_priority_arbiter #(
+     parameter   ARBITER_WIDTH   =8,
+     parameter   HIGH_PRORITY_BIT = "HSB"
+ )
+ (   
   
-//    request, 
-//    grant,
-//    any_grant
-// );
+   request, 
+   grant,
+   any_grant
+);
 
     
-//     input   [ARBITER_WIDTH-1            :   0]  request;
-//     output  [ARBITER_WIDTH-1            :   0]  grant;
-//     output                                      any_grant;
+    input   [ARBITER_WIDTH-1            :   0]  request;
+    output  [ARBITER_WIDTH-1            :   0]  grant;
+    output                                      any_grant;
    
-//     wire    [ARBITER_WIDTH-1            :   0]  cout;
-//     reg     [ARBITER_WIDTH-1            :   0]  cin;
+    wire    [ARBITER_WIDTH-1            :   0]  cout;
+    reg     [ARBITER_WIDTH-1            :   0]  cin;
     
     
-//     assign  any_grant= | request;
+    assign  any_grant= | request;
     
-//     assign grant    = cin & request;
-//     assign cout     = cin & ~request; 
+    assign grant    = cin & request;
+    assign cout     = cin & ~request; 
     
-//      always @(*) begin 
-//         if( HIGH_PRORITY_BIT == "HSB")  cin      = {1'b1, cout[ARBITER_WIDTH-1 :1]}; // hsb has highest priority
-//         else                            cin      = {cout[ARBITER_WIDTH-2 :0] ,1'b1}; // lsb has highest priority
-//     end//always
-// endmodule
+     always @(*) begin 
+        if( HIGH_PRORITY_BIT == "HSB")  cin      = {1'b1, cout[ARBITER_WIDTH-1 :1]}; // hsb has highest priority
+        else                            cin      = {cout[ARBITER_WIDTH-2 :0] ,1'b1}; // lsb has highest priority
+    end//always
+endmodule
     
 
 

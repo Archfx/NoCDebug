@@ -598,7 +598,17 @@ module mor1kx_cpu_espresso
    endfunction
 
 `ifndef SYNTHESIS
-
+// synthesis translate_off
+   task set_gpr;
+      // verilator public
+      input [4:0] gpr_num;
+      input [OPTION_OPERAND_WIDTH-1:0] gpr_value;
+      begin
+	 mor1kx_rf_espresso.rfa.mem[gpr_num] = gpr_value;
+	 mor1kx_rf_espresso.rfb.mem[gpr_num] = gpr_value;
+      end
+   endtask
+// synthesis translate_on
 `endif
 
    /* mor1kx_ctrl_espresso AUTO_TEMPLATE (

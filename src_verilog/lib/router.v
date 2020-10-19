@@ -78,9 +78,7 @@ module router # (
     credit_in_all,
     congestion_out_all,
     
-    clk,reset,
-    trigger,
-    trace 
+    clk,reset
 
 );
 
@@ -126,16 +124,6 @@ module router # (
     
     input clk,reset;
 
-    // DfD
-    output trigger;
-    output [31:0] trace;
-
-    // Trace
-    wire trigger_0,trigger_1,trigger_2;
-    wire [31:0] trace_0,trace_1,trace_2;
-
-    assign trigger = (trigger_0|trigger_1|trigger_2);
-	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : trace_2) ;
     
     //internal wires
     wire  [PV-1 : 0] ovc_allocated_all;
@@ -245,9 +233,7 @@ module router # (
         .iport_weight_is_consumed_all(iport_weight_is_consumed_all), 
         .refresh_w_counter(refresh_w_counter), 
         .clk(clk), 
-        .reset(reset),
-        .trigger(trigger_0),
-        .trace(trace_0)
+        .reset(reset)
     );
 
 
@@ -285,9 +271,7 @@ module router # (
         .vc_weight_is_consumed_all(vc_weight_is_consumed_all),  
         .iport_weight_is_consumed_all(iport_weight_is_consumed_all),  
         .clk(clk), 
-        .reset(reset),
-        .trigger(trigger_1),
-        .trace(trace_1)
+        .reset(reset)
         );
         
    
@@ -316,9 +300,7 @@ module router # (
         .flit_out_we_all (flit_out_we_all),
         .ssa_flit_wr_all (ssa_flit_wr_all),
         .clk (clk),
-        .reset (reset),
-        .trigger(trigger_2),
-        .trace(trace_2)
+        .reset (reset)
         
     );    
      
@@ -385,13 +367,72 @@ module router # (
     endgenerate 
      
        
-    
+    //synthesis translate_off 
+    //synopsys  translate_off
+    generate 
+     /* verilator lint_off WIDTH */ 
+    if(DEBUG_EN && TOPOLOGY == "MESH")begin :dbg
+     /* verilator lint_on WIDTH */ 
+        debug_mesh_edges #(
+        	.T1(T1),
+        	.T2(T2),
+        	.T3(T3),
+        	.T4(T4),
+        	.RAw(RAw),
+        	.P(P)
+        )
+        debug_edges
+        (
+        	.clk(clk),
+        	.current_r_addr(current_r_addr),
+        	.flit_out_we_all(flit_out_we_all)
+        );
+    end// DEBUG
+    endgenerate   
+    // synthesis translate_on
+    // synopsys  translate_on  
     
     
 // for testing the route path
     
 
+    // synopsys  translate_off
+    // synthesis translate_off
+                                      
+     `ifdef MONITORE_PATH
+     
+    genvar i;
+    reg[P-1 :0] t1,t2;
+    generate
+    for (i=0;i<P;i=i+1)begin : lp                     
     
+   
+    always @(posedge clk) begin
+        if(reset)begin 
+             t1[i]<=1'b0;
+             t2[i]<=1'b0;             
+        end else begin 
+            if(flit_in_we_all[i]>0 && t1[i]==0)begin 
+                $display("%t : router (addr=%h, port=%d)",$time,current_r_addr,i);
+                $display("%t : Flit_in=%b, current_r_addr=%x, Port=%x, neighbors_r_addr=%x, ",$time,flit_in_all[(i+1)*Fw-1 : i*Fw],current_r_addr, i, neighbors_r_addr);
+                t1[i]<=1;
+            end
+            if(flit_out_we_all[i]>0 && t2[i]==0)begin 
+                $display("%t port=%d: Flit_out=%b",$time,i,flit_out_all[(i+1)*Fw-1 : i*Fw]);
+                t2[i]<=1;
+            end
+            
+            
+        end
+    end
+    end
+    endgenerate
+    `endif
+    
+    // synthesis translate_on
+    // synopsys  translate_on  
+
+   
    
     /*
     reg [10 :  0]  counter;
