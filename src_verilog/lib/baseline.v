@@ -329,168 +329,168 @@
     
     
     
-module spec_sw_alloc_can #(
-    parameter V = 4,
-    parameter P = 5,
-    parameter DEBUG_EN = 1,
-    parameter SWA_ARBITER_TYPE = "WRRA"
-)(
-    ivc_granted_all,
-    ivc_request_all,
-    ovc_is_assigned_all,
-    assigned_ovc_not_full_all,
-    dest_port_all,
-    granted_dest_port_all,
-    nonspec_granted_dest_port_all,
-    spec_granted_dest_port_all,
-    valid_speculation,
-    spec_first_arbiter_granted_ivc_all,
-    nonspec_first_arbiter_granted_ivc_all,
-    any_ivc_sw_request_granted_all,
-    vc_weight_is_consumed_all,
-    iport_weight_is_consumed_all,
-    clk,
-    reset    
-);
+// module spec_sw_alloc_can #(
+//     parameter V = 4,
+//     parameter P = 5,
+//     parameter DEBUG_EN = 1,
+//     parameter SWA_ARBITER_TYPE = "WRRA"
+// )(
+//     ivc_granted_all,
+//     ivc_request_all,
+//     ovc_is_assigned_all,
+//     assigned_ovc_not_full_all,
+//     dest_port_all,
+//     granted_dest_port_all,
+//     nonspec_granted_dest_port_all,
+//     spec_granted_dest_port_all,
+//     valid_speculation,
+//     spec_first_arbiter_granted_ivc_all,
+//     nonspec_first_arbiter_granted_ivc_all,
+//     any_ivc_sw_request_granted_all,
+//     vc_weight_is_consumed_all,
+//     iport_weight_is_consumed_all,
+//     clk,
+//     reset    
+// );
 
 
-    localparam  
-        P_1 = P-1,//assumed that no port request for itself!
-        PV  = V * P,
-        VP_1 = V * P_1,                
-        PVP_1 = P * VP_1,   
-        PP_1 = P_1* P;
+//     localparam  
+//         P_1 = P-1,//assumed that no port request for itself!
+//         PV  = V * P,
+//         VP_1 = V * P_1,                
+//         PVP_1 = P * VP_1,   
+//         PP_1 = P_1* P;
                     
-    output [PV-1:  0]  ivc_granted_all;
-    input  [PV-1:  0] ivc_request_all;
-    input  [PV-1:  0] ovc_is_assigned_all;
-    input  [PV-1:  0] assigned_ovc_not_full_all;
-    input  [PVP_1-1:  0]  dest_port_all;
-    output [PP_1-1:  0]  granted_dest_port_all;
-    output [PP_1-1:  0]  nonspec_granted_dest_port_all;
-    output [PP_1-1:  0]  spec_granted_dest_port_all;
-    input  [P-1:  0]  valid_speculation;
-    output [PV-1:  0]  spec_first_arbiter_granted_ivc_all;
-    output [PV-1:  0]  nonspec_first_arbiter_granted_ivc_all;
-    output [P-1:  0] any_ivc_sw_request_granted_all;
-    input  [PV-1 : 0 ] vc_weight_is_consumed_all;
-    input  [P-1:0] iport_weight_is_consumed_all;
-    input clk, reset;  
+//     output [PV-1:  0]  ivc_granted_all;
+//     input  [PV-1:  0] ivc_request_all;
+//     input  [PV-1:  0] ovc_is_assigned_all;
+//     input  [PV-1:  0] assigned_ovc_not_full_all;
+//     input  [PVP_1-1:  0]  dest_port_all;
+//     output [PP_1-1:  0]  granted_dest_port_all;
+//     output [PP_1-1:  0]  nonspec_granted_dest_port_all;
+//     output [PP_1-1:  0]  spec_granted_dest_port_all;
+//     input  [P-1:  0]  valid_speculation;
+//     output [PV-1:  0]  spec_first_arbiter_granted_ivc_all;
+//     output [PV-1:  0]  nonspec_first_arbiter_granted_ivc_all;
+//     output [P-1:  0] any_ivc_sw_request_granted_all;
+//     input  [PV-1 : 0 ] vc_weight_is_consumed_all;
+//     input  [P-1:0] iport_weight_is_consumed_all;
+//     input clk, reset;  
     
 
-    //internal wire 
-    wire  [PV-1:  0]  spec_ivc_granted_all,nonspec_ivc_granted_all;
-    wire  [PV-1:  0] spec_ivc_request_all,nonspec_ivc_request_all;
-    wire  [PV-1:  0] spec_assigned_ovc_not_full_all,nonspec_assigned_ovc_not_full_all;
-    wire  [PVP_1-1:  0]  spec_dest_port_all,nonspec_dest_port_all;
-    wire  [PP_1-1:  0]  spec_granted_dest_port_all_pre;
-    wire  [PP_1-1:  0] nonspec_granted_dest_port_all_pre;
-    wire  [PP_1-1:  0] spec_granted_dest_port_all_accepted;
-    wire  [P-1:  0]  nonspec_inport_granted_all,nonspec_outport_granted_all;
+//     //internal wire 
+//     wire  [PV-1:  0]  spec_ivc_granted_all,nonspec_ivc_granted_all;
+//     wire  [PV-1:  0] spec_ivc_request_all,nonspec_ivc_request_all;
+//     wire  [PV-1:  0] spec_assigned_ovc_not_full_all,nonspec_assigned_ovc_not_full_all;
+//     wire  [PVP_1-1:  0]  spec_dest_port_all,nonspec_dest_port_all;
+//     wire  [PP_1-1:  0]  spec_granted_dest_port_all_pre;
+//     wire  [PP_1-1:  0] nonspec_granted_dest_port_all_pre;
+//     wire  [PP_1-1:  0] spec_granted_dest_port_all_accepted;
+//     wire  [P-1:  0]  nonspec_inport_granted_all,nonspec_outport_granted_all;
     
     
-    wire    [P_1-1:  0]  nonspec_portsel_granted [P-1:  0];
-    wire    [PP_1-1:  0]  spec_request_acceptable;
-    wire  [P_1-1:  0]  spec_request_accepted [P-1:  0];
-    wire  [P-1:  0]  any_spec_request_accepted;
-    wire    [PV-1:  0]  spec_ivc_granted_all_accepted;
-    wire    [P-1:  0] nonspec_any_ivc_grant,spec_any_ivc_grant;
-    wire    [P-1:  0] spec_any_ivc_grant_valid;
+//     wire    [P_1-1:  0]  nonspec_portsel_granted [P-1:  0];
+//     wire    [PP_1-1:  0]  spec_request_acceptable;
+//     wire  [P_1-1:  0]  spec_request_accepted [P-1:  0];
+//     wire  [P-1:  0]  any_spec_request_accepted;
+//     wire    [PV-1:  0]  spec_ivc_granted_all_accepted;
+//     wire    [P-1:  0] nonspec_any_ivc_grant,spec_any_ivc_grant;
+//     wire    [P-1:  0] spec_any_ivc_grant_valid;
     
         
     
-    sw_alloc_sub#(
-        .V(V),
-        .P(P),
-        .SWA_ARBITER_TYPE(SWA_ARBITER_TYPE)     
-    )
-    speculative_alloc
-    (
-        .ivc_granted_all (spec_ivc_granted_all),
-        .ivc_request_all (spec_ivc_request_all),
-        .assigned_ovc_not_full_all (spec_assigned_ovc_not_full_all),
-        .dest_port_all (spec_dest_port_all),
-        .granted_dest_port_all (spec_granted_dest_port_all_pre),
-        .inport_granted_all  ( ),
-        .outport_granted_all ( ),
-        .first_arbiter_granted_ivc_all  (spec_first_arbiter_granted_ivc_all),
-        .first_arbiter_granted_port_all ( ),
-        .any_ivc_grant (spec_any_ivc_grant),
-        .vc_weight_is_consumed_all (vc_weight_is_consumed_all),
-        .iport_weight_is_consumed_all(iport_weight_is_consumed_all),
-        .pck_is_single_flit_all( ),
-        .granted_dst_is_from_a_single_flit_pck( ),
-        .clk (clk),
-        .reset (reset) 
-    );
+//     sw_alloc_sub#(
+//         .V(V),
+//         .P(P),
+//         .SWA_ARBITER_TYPE(SWA_ARBITER_TYPE)     
+//     )
+//     speculative_alloc
+//     (
+//         .ivc_granted_all (spec_ivc_granted_all),
+//         .ivc_request_all (spec_ivc_request_all),
+//         .assigned_ovc_not_full_all (spec_assigned_ovc_not_full_all),
+//         .dest_port_all (spec_dest_port_all),
+//         .granted_dest_port_all (spec_granted_dest_port_all_pre),
+//         .inport_granted_all  ( ),
+//         .outport_granted_all ( ),
+//         .first_arbiter_granted_ivc_all  (spec_first_arbiter_granted_ivc_all),
+//         .first_arbiter_granted_port_all ( ),
+//         .any_ivc_grant (spec_any_ivc_grant),
+//         .vc_weight_is_consumed_all (vc_weight_is_consumed_all),
+//         .iport_weight_is_consumed_all(iport_weight_is_consumed_all),
+//         .pck_is_single_flit_all( ),
+//         .granted_dst_is_from_a_single_flit_pck( ),
+//         .clk (clk),
+//         .reset (reset) 
+//     );
 
     
 
-    sw_alloc_sub#(
-        .V (V),
-        .P (P),
-        .SWA_ARBITER_TYPE(SWA_ARBITER_TYPE)
-    )
-    nonspeculative_alloc
-    (
+//     sw_alloc_sub#(
+//         .V (V),
+//         .P (P),
+//         .SWA_ARBITER_TYPE(SWA_ARBITER_TYPE)
+//     )
+//     nonspeculative_alloc
+//     (
 
-        .ivc_granted_all(nonspec_ivc_granted_all),
-        .ivc_request_all(nonspec_ivc_request_all),
-        .assigned_ovc_not_full_all(nonspec_assigned_ovc_not_full_all),
-        .dest_port_all(nonspec_dest_port_all),
-        .granted_dest_port_all(nonspec_granted_dest_port_all_pre),
-        .inport_granted_all(nonspec_inport_granted_all),
-        .outport_granted_all(nonspec_outport_granted_all),
-        .first_arbiter_granted_ivc_all(nonspec_first_arbiter_granted_ivc_all),
-        .first_arbiter_granted_port_all(),
-        .any_ivc_grant(nonspec_any_ivc_grant),
-        .vc_weight_is_consumed_all (vc_weight_is_consumed_all),
-        .iport_weight_is_consumed_all(iport_weight_is_consumed_all),
-        .pck_is_single_flit_all( ),
-        .granted_dst_is_from_a_single_flit_pck( ),
-        .clk (clk),
-        .reset(reset)
+//         .ivc_granted_all(nonspec_ivc_granted_all),
+//         .ivc_request_all(nonspec_ivc_request_all),
+//         .assigned_ovc_not_full_all(nonspec_assigned_ovc_not_full_all),
+//         .dest_port_all(nonspec_dest_port_all),
+//         .granted_dest_port_all(nonspec_granted_dest_port_all_pre),
+//         .inport_granted_all(nonspec_inport_granted_all),
+//         .outport_granted_all(nonspec_outport_granted_all),
+//         .first_arbiter_granted_ivc_all(nonspec_first_arbiter_granted_ivc_all),
+//         .first_arbiter_granted_port_all(),
+//         .any_ivc_grant(nonspec_any_ivc_grant),
+//         .vc_weight_is_consumed_all (vc_weight_is_consumed_all),
+//         .iport_weight_is_consumed_all(iport_weight_is_consumed_all),
+//         .pck_is_single_flit_all( ),
+//         .granted_dst_is_from_a_single_flit_pck( ),
+//         .clk (clk),
+//         .reset(reset)
     
-    );
+//     );
         
-    assign nonspec_ivc_request_all              = ivc_request_all &  ovc_is_assigned_all;
-    assign spec_ivc_request_all                 = ivc_request_all &  ~ovc_is_assigned_all;
-    assign spec_assigned_ovc_not_full_all       = {PV{1'b1}};
-    assign nonspec_assigned_ovc_not_full_all    = assigned_ovc_not_full_all;    
-    assign spec_dest_port_all                       = dest_port_all;
-    assign nonspec_dest_port_all                    = dest_port_all;
+//     assign nonspec_ivc_request_all              = ivc_request_all &  ovc_is_assigned_all;
+//     assign spec_ivc_request_all                 = ivc_request_all &  ~ovc_is_assigned_all;
+//     assign spec_assigned_ovc_not_full_all       = {PV{1'b1}};
+//     assign nonspec_assigned_ovc_not_full_all    = assigned_ovc_not_full_all;    
+//     assign spec_dest_port_all                       = dest_port_all;
+//     assign nonspec_dest_port_all                    = dest_port_all;
     
-    genvar i,j;
-    generate 
-    for(i=0;i<P; i=i+1) begin :port_lp
-        //remove non-spec inport from the nonspec_outport_granted_all
-        for(j=0;j<P;    j=j+1)begin: port_loop2
-            if(i<j)begin: jj
-                assign nonspec_portsel_granted[i][j-1]  = nonspec_outport_granted_all[j];
-            end else if(i>j)begin: hh
-                assign nonspec_portsel_granted[i][j]        = nonspec_outport_granted_all [j];
-            end
-            //if(i==j) wires are left disconnected  
-        end//j
-        // an speculative grant is acceptable if the non-speculative request is not granted for both inport request and outport grant
-        assign spec_request_acceptable  [(i+1)*P_1-1:  i*P_1] = (nonspec_inport_granted_all[i])? {P_1{1'b0}} : ~nonspec_portsel_granted[i];
-        assign spec_request_accepted    [i]= spec_request_acceptable[(i+1)*P_1-1:  i*P_1] & spec_granted_dest_port_all_pre[(i+1)*P_1-1:  i*P_1];
-        assign any_spec_request_accepted [i] = |spec_request_accepted  [i];
-        assign spec_ivc_granted_all_accepted[(i+1)*V-1:  i*V] = (any_spec_request_accepted [i] & valid_speculation[i])? spec_ivc_granted_all[(i+1)*V-1:  i*V]: {V{1'b0}};
-        assign spec_granted_dest_port_all_accepted[(i+1)*P_1-1:  i*P_1]=valid_speculation[i]? (spec_request_acceptable[(i+1)*P_1-1:  i*P_1] & spec_granted_dest_port_all_pre[(i+1)*P_1-1:  i*P_1]): {P_1{1'b0}};
+//     genvar i,j;
+//     generate 
+//     for(i=0;i<P; i=i+1) begin :port_lp
+//         //remove non-spec inport from the nonspec_outport_granted_all
+//         for(j=0;j<P;    j=j+1)begin: port_loop2
+//             if(i<j)begin: jj
+//                 assign nonspec_portsel_granted[i][j-1]  = nonspec_outport_granted_all[j];
+//             end else if(i>j)begin: hh
+//                 assign nonspec_portsel_granted[i][j]        = nonspec_outport_granted_all [j];
+//             end
+//             //if(i==j) wires are left disconnected  
+//         end//j
+//         // an speculative grant is acceptable if the non-speculative request is not granted for both inport request and outport grant
+//         assign spec_request_acceptable  [(i+1)*P_1-1:  i*P_1] = (nonspec_inport_granted_all[i])? {P_1{1'b0}} : ~nonspec_portsel_granted[i];
+//         assign spec_request_accepted    [i]= spec_request_acceptable[(i+1)*P_1-1:  i*P_1] & spec_granted_dest_port_all_pre[(i+1)*P_1-1:  i*P_1];
+//         assign any_spec_request_accepted [i] = |spec_request_accepted  [i];
+//         assign spec_ivc_granted_all_accepted[(i+1)*V-1:  i*V] = (any_spec_request_accepted [i] & valid_speculation[i])? spec_ivc_granted_all[(i+1)*V-1:  i*V]: {V{1'b0}};
+//         assign spec_granted_dest_port_all_accepted[(i+1)*P_1-1:  i*P_1]=valid_speculation[i]? (spec_request_acceptable[(i+1)*P_1-1:  i*P_1] & spec_granted_dest_port_all_pre[(i+1)*P_1-1:  i*P_1]): {P_1{1'b0}};
           
     
-    end//i
-    endgenerate
+//     end//i
+//     endgenerate
     
-    assign spec_any_ivc_grant_valid  = any_spec_request_accepted & valid_speculation & spec_any_ivc_grant;
-    assign any_ivc_sw_request_granted_all = nonspec_any_ivc_grant | spec_any_ivc_grant_valid;
-    assign granted_dest_port_all = nonspec_granted_dest_port_all_pre | spec_granted_dest_port_all_accepted;
-    assign ivc_granted_all = nonspec_ivc_granted_all  | spec_ivc_granted_all_accepted;    
-    assign nonspec_granted_dest_port_all = nonspec_granted_dest_port_all_pre;
-    assign spec_granted_dest_port_all = spec_granted_dest_port_all_accepted;
+//     assign spec_any_ivc_grant_valid  = any_spec_request_accepted & valid_speculation & spec_any_ivc_grant;
+//     assign any_ivc_sw_request_granted_all = nonspec_any_ivc_grant | spec_any_ivc_grant_valid;
+//     assign granted_dest_port_all = nonspec_granted_dest_port_all_pre | spec_granted_dest_port_all_accepted;
+//     assign ivc_granted_all = nonspec_ivc_granted_all  | spec_ivc_granted_all_accepted;    
+//     assign nonspec_granted_dest_port_all = nonspec_granted_dest_port_all_pre;
+//     assign spec_granted_dest_port_all = spec_granted_dest_port_all_accepted;
     
-endmodule
+// endmodule
  
     
 

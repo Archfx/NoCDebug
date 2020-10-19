@@ -781,9 +781,7 @@ module  vc_alloc_request_gen #(
       	.ivc_num_getting_ovc_grant(ivc_num_getting_ovc_grant),
       	.ssa_ivc_num_getting_ovc_grant_all(ssa_ivc_num_getting_ovc_grant_all),
       	.reset(reset),
-      	.clk(clk),
-        .trigger(),
-        .trace()
+      	.clk(clk)
       ); 
       
       end else begin :ml_mesh // there are several local ports connected to one router. 

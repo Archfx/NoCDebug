@@ -1,0 +1,3 @@
+mor1kx_simple_dpram_sclk line 56
+fifo_ram
+mor1kx_true_dpram_sclk line 49/40

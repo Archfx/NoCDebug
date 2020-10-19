@@ -89,9 +89,13 @@ read_verilog -sv src_verilog/lib/jtag_wb/jtag_source_probe.v
 read_verilog -sv src_verilog/lib/jtag_wb/vjtag.v 
 read_verilog -sv src_verilog/lib/jtag_wb/vjtag_wb.v 
 read_verilog -sv src_verilog/dfd/trace_buffer.sv 
+#show
 
-# hierarchy -top mor1k_16Soc_top
-synth_xilinx -top mor1k_16Soc_top
+#hierarchy -top flit_buffer
+#synth_xilinx -top fifo_ram
+#synth -auto-top
+synth
+
 
 # mapping to mycells.lib
 #dfflibmap -liberty mycells.lib
@@ -100,3 +104,7 @@ synth_xilinx -top mor1k_16Soc_top
 
 proc; opt; techmap; opt
 write_verilog synth.v
+
+tee -o stat.txt stat
+
+write_edif synth.edif

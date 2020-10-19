@@ -230,7 +230,7 @@ module  port_presel_based_dst_ports_credit #(
         end//for
     end//always
     
-    always @(posedge clk or posedge reset) begin
+    always @(posedge clk) begin
         for(k=0;    k<P_1; k=k+1) begin 
             if(reset) begin 
                 credit_per_port[k]   <=  C_INT;
