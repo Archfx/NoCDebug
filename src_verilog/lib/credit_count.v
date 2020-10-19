@@ -343,7 +343,7 @@ module credit_counter #(
 
     
     always @(*) begin
-        for(k=0;    k<PV; k=k+1'b1) begin 
+        for(k=0;    k<PV; k=k+1) begin 
             credit_counter_next[k]    =    credit_counter[k];
             if(credit_increased_all[k]    & ~credit_decreased_all[k]) begin 
                 credit_counter_next[k]    = credit_counter[k]+1'b1;
@@ -354,7 +354,7 @@ module credit_counter #(
     end
     
     always @(*) begin
-        for(k=0;    k<PV; k=k+1'b1) begin 
+        for(k=0;    k<PV; k=k+1) begin 
             full_all_next[k]            =     credit_counter_next[k]         == {Bw{1'b0}};
             nearly_full_all_next[k]        =    credit_counter_next[k]         <= 1;
         end    

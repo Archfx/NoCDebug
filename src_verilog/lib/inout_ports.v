@@ -273,23 +273,7 @@ end
 
     
 
-//synthesis translate_off
-//synopsys  translate_off
-generate
-    if(DEBUG_EN)begin :dbg2   // The SSA must not have conflict with the main VC/Sw allocator
-        localparam VV = V*V;
-        genvar g;
-        for(g=0; g< P; g=g+1 ) begin: p_loop
-            always @ (posedge clk) begin
-                if( (|granted_ovc_num_all[(g+1)*VV-1 : g*VV]) &  (|ssa_granted_ovc_num_all[(g+1)*VV-1 : g*VV])) $display("%t: ERROR: VSA/SSA conflict: granted_ovc_num %m",$time);
-                if( (|ivc_num_getting_sw_grant [(g+1)*V-1 : g*V]) & (|ssa_ivc_num_getting_sw_grant_all[(g+1)*V-1 : g*V]) ) $display("%t: ERROR: VSA/SSA conflict: ivc_num_getting_sw_grant %m",$time);     
-                 if((|(flit_is_tail_all[(g+1)*V-1 : g*V] & ivc_num_getting_sw_grant[(g+1)*V-1 : g*V])) & (|ssa_ivc_reset_all[(g+1)*V-1 : g*V])) $display("%t: ERROR: VSA/SSA conflict: reset_ivc_all %m",$time);   
-            end//always
-        end
-    end //dbg
-endgenerate
-//synopsys  translate_on
-//synthesis translate_on
+
 
 
 //assign port_pre_sel_ld_all= ~ovc_is_assigned_all_next;
@@ -316,20 +300,7 @@ generate
 		assigned_ovc_num_all_next[(k+1)*V-1 : k*V] = granted_ovc_num_all_or_ssa[(k+1)*V-1 : k*V];
 	    end
         end//always
-        //synthesis translate_off
-        //synopsys  translate_off
-        if(DEBUG_EN)begin :dbg
-          always @ (posedge clk) begin
-            if((ivc_num_getting_ovc_grant[k] | ssa_ivc_num_getting_ovc_grant_all[k]) && granted_ovc_num_all_or_ssa[(k+1)*V-1 : k*V]== {V{1'b0}}) begin 
-                    $display("%t: ERROR: granted OVC num is NULL: %m",$time);
-                    
-            end
-          end//always
-        end
-        //synopsys  translate_on
-        //synthesis translate_on
-        
-        
+          
     end//for
 endgenerate
 
@@ -350,17 +321,7 @@ end
  	
 
 generate 
-    //synthesis translate_off 
-    //synopsys  translate_off
-    if(DEBUG_EN && MIN_PCK_SIZE >1 )begin :dbg
-        integer kk;
-        always @(posedge clk ) begin
-            for(kk=0; kk< PV; kk=kk+1'b1 ) if(reset_ivc_all[kk] & (ivc_num_getting_ovc_grant[kk] | ssa_ivc_num_getting_ovc_grant_all[kk]))   $display("%t: ERROR: the ovc %d released and allocat signal is asserted in the same clock cycle : %m",$time,kk);
-        end
-    end
-    //synopsys  translate_on
-    //synthesis translate_on
-            
+           
     if( COMBINATION_TYPE==  "BASELINE") begin : canonical
         
         canonical_credit_counter #(
@@ -575,112 +536,112 @@ endmodule
  
  ******************/
  
- module output_vc_status #(
-    parameter V     =   4,
-    parameter B =   16,
-    parameter CAND_VC_SEL_MODE      =   0   // 0: use arbieration between not full vcs, 1: select the vc with most availble free space
+//  module output_vc_status #(
+//     parameter V     =   4,
+//     parameter B =   16,
+//     parameter CAND_VC_SEL_MODE      =   0   // 0: use arbieration between not full vcs, 1: select the vc with most availble free space
 
-)
+// )
 
-(
-    input    [V-1 :0] wr_in,
-    input   [V-1 :0] credit_in,
-    output  [V-1 :0] nearly_full_vc,
-    output  [V-1 :0] empty_vc,
-    output reg [V-1 :0] cand_vc,
-    input                                               cand_wr_vc_en,
-    input                                                   clk,
-    input                                                   reset
-);
+// (
+//     input    [V-1 :0] wr_in,
+//     input   [V-1 :0] credit_in,
+//     output  [V-1 :0] nearly_full_vc,
+//     output  [V-1 :0] empty_vc,
+//     output reg [V-1 :0] cand_vc,
+//     input                                               cand_wr_vc_en,
+//     input                                                   clk,
+//     input                                                   reset
+// );
 
     
-    function integer log2;
-      input integer number; begin   
-         log2=(number <=1) ? 1: 0;    
-         while(2**log2<number) begin    
-            log2=log2+1;    
-         end 	   
-      end   
-    endfunction // log2 
+//     function integer log2;
+//       input integer number; begin   
+//          log2=(number <=1) ? 1: 0;    
+//          while(2**log2<number) begin    
+//             log2=log2+1;    
+//          end 	   
+//       end   
+//     endfunction // log2 
     
-    localparam  BUFF_WIDTH  =   log2(B);
-    localparam  DEPTH_WIDTH =   BUFF_WIDTH+1;
-    localparam  [DEPTH_WIDTH-1 : 0] B_1         =   B-1;
-    localparam  [DEPTH_WIDTH-1 : 0] B_2         =   B-2;
+//     localparam  BUFF_WIDTH  =   log2(B);
+//     localparam  DEPTH_WIDTH =   BUFF_WIDTH+1;
+//     localparam  [DEPTH_WIDTH-1 : 0] B_1         =   B-1;
+//     localparam  [DEPTH_WIDTH-1 : 0] B_2         =   B-2;
     
     
-    reg  [DEPTH_WIDTH-1 : 0] depth    [V-1 : 0];
-    wire  [V-1 : 0] cand_vc_next;
-    wire  [V-1 : 0] full_vc;
+//     reg  [DEPTH_WIDTH-1 : 0] depth    [V-1 : 0];
+//     wire  [V-1 : 0] cand_vc_next;
+//     wire  [V-1 : 0] full_vc;
     
-    genvar i;
-    generate
-        for(i=0;i<V;i=i+1) begin : vc_loop
-            always@(posedge clk or posedge reset)begin
-                    if(reset)begin
-                        depth[i]<={DEPTH_WIDTH{1'b0}};
-                    end else begin
-                        if(  wr_in[i]  && ~credit_in[i])   depth[i] <= depth[i]+1'b1;
-                        if( ~wr_in[i]  &&  credit_in[i])   depth[i] <= depth[i]-1'b1;
-                    end //reset
-            end//always
+//     genvar i;
+//     generate
+//         for(i=0;i<V;i=i+1) begin : vc_loop
+//             always@(posedge clk or posedge reset)begin
+//                     if(reset)begin
+//                         depth[i]<={DEPTH_WIDTH{1'b0}};
+//                     end else begin
+//                         if(  wr_in[i]  && ~credit_in[i])   depth[i] <= depth[i]+1'b1;
+//                         if( ~wr_in[i]  &&  credit_in[i])   depth[i] <= depth[i]-1'b1;
+//                     end //reset
+//             end//always
 
-            assign  full_vc[i]   = (depth[i] == B);
-            assign  nearly_full_vc[i]= (depth[i] >= B_1);
-            assign  empty_vc[i]  = (depth[i] == {DEPTH_WIDTH{1'b0}});
-
-
-        end//for
-        if(CAND_VC_SEL_MODE==0) begin : nic_arbiter
-            wire  [V-1 :0] request;
-            for(i=0;i<V;i=i+1) begin :req_loop
-                assign  request[i]   = ~ nearly_full_vc[i] & cand_wr_vc_en;
-            end //for
+//             assign  full_vc[i]   = (depth[i] == B);
+//             assign  nearly_full_vc[i]= (depth[i] >= B_1);
+//             assign  empty_vc[i]  = (depth[i] == {DEPTH_WIDTH{1'b0}});
 
 
-            arbiter #(
-                .ARBITER_WIDTH      (V)
-                )
-                the_nic_arbiter
-                (
-                    .clk                (clk),
-                    .reset          (reset),
-                    .request            (request),
-                    .grant          (cand_vc_next),
-                    .any_grant       ()
-                );
-
-        end else begin : min_depth_select
-
-        wire [(V*DEPTH_WIDTH)-1 : 0] depth_array;
-        for(i=0;i<V;i=i+1) begin :depth_loop
-            assign depth_array[((i+1)*(DEPTH_WIDTH))-1  : i*DEPTH_WIDTH]=depth[i];
-        end //for
-
-        fast_minimum_number#(
-            .NUM_OF_INPUTS (V),
-            .DATA_WIDTH (DEPTH_WIDTH)
-
-        )
-        the_min_depth
-        (
-            .in_array (depth_array),
-            .min_out (cand_vc_next)
-        );
-
-        end //else
-
-        always @(posedge clk or posedge reset)begin
-            if          (reset)          cand_vc    <= {V{1'b0}};
-            else    if(cand_wr_vc_en)    cand_vc    <=  cand_vc_next;
-        end
-
-    endgenerate
+//         end//for
+//         if(CAND_VC_SEL_MODE==0) begin : nic_arbiter
+//             wire  [V-1 :0] request;
+//             for(i=0;i<V;i=i+1) begin :req_loop
+//                 assign  request[i]   = ~ nearly_full_vc[i] & cand_wr_vc_en;
+//             end //for
 
 
+//             arbiter #(
+//                 .ARBITER_WIDTH      (V)
+//                 )
+//                 the_nic_arbiter
+//                 (
+//                     .clk                (clk),
+//                     .reset          (reset),
+//                     .request            (request),
+//                     .grant          (cand_vc_next),
+//                     .any_grant       ()
+//                 );
+
+//         end else begin : min_depth_select
+
+//         wire [(V*DEPTH_WIDTH)-1 : 0] depth_array;
+//         for(i=0;i<V;i=i+1) begin :depth_loop
+//             assign depth_array[((i+1)*(DEPTH_WIDTH))-1  : i*DEPTH_WIDTH]=depth[i];
+//         end //for
+
+//         fast_minimum_number#(
+//             .NUM_OF_INPUTS (V),
+//             .DATA_WIDTH (DEPTH_WIDTH)
+
+//         )
+//         the_min_depth
+//         (
+//             .in_array (depth_array),
+//             .min_out (cand_vc_next)
+//         );
+
+//         end //else
+
+//         always @(posedge clk or posedge reset)begin
+//             if          (reset)          cand_vc    <= {V{1'b0}};
+//             else    if(cand_wr_vc_en)    cand_vc    <=  cand_vc_next;
+//         end
+
+//     endgenerate
 
 
-endmodule
+
+
+// endmodule
 
 
 /*************************
@@ -797,7 +758,7 @@ module  vc_alloc_request_gen #(
       
       end else begin :ml_mesh // there are several local ports connected to one router. 
       //select the port first then select the available vc
-        
+    // not used 
                 
         
          mesh_torus_dynamic_portsel_control #(

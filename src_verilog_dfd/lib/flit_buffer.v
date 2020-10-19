@@ -319,16 +319,16 @@ module fifo_ram     #(
 
     // integer j;
 
-	always @(posedge clk ) begin
-			// if (wr_en)
-			// 	 queue[wr_addr] <= wr_data;
-			// if (rd_en)
-			// 	 memory_rd_data <= queue[rd_addr];
-            // for(j=0; j<ADDR_WIDTH; j=j+1) begin
-            //     if (wr_en & wr_addr==j) queue[j] <= wr_data;
-            //     if (rd_en & rd_addr==j) memory_rd_data <= queue[j];
-            // end   
-	end
+	// always @(posedge clk ) begin
+	// 		// if (wr_en)
+	// 		// 	 queue[wr_addr] <= wr_data;
+	// 		// if (rd_en)
+	// 		// 	 memory_rd_data <= queue[rd_addr];
+    //         // for(j=0; j<ADDR_WIDTH; j=j+1) begin
+    //         //     if (wr_en & wr_addr==j) queue[j] <= wr_data;
+    //         //     if (rd_en & rd_addr==j) memory_rd_data <= queue[j];
+    //         // end   
+	// end
 	
     // always @(posedge clk ) begin
     //     if (wr_en)
@@ -337,6 +337,12 @@ module fifo_ram     #(
     //             memory_rd_data <= queue[rd_addr]; 
 	// end
  
+    always @(posedge clk ) begin
+        if (wr_en)
+                queue[0] <= wr_data;
+        if (rd_en)
+                memory_rd_data <= queue[0]; 
+	end
 
 	 	 
 	 
@@ -504,7 +510,7 @@ always @(posedge clk or posedge reset) begin
             if (reset) begin
                  depth  <= {DEPTH_DATA_WIDTH{1'b0}};
             end else begin
-                 if (wr_en & ~rd_en) depth <=  depth + 1'h1;
+                if (wr_en & ~rd_en) depth <=  depth + 1'h1;
                 else if (~wr_en & rd_en) depth <=  depth - 1'h1;
                 
             end
@@ -670,7 +676,7 @@ endgenerate
             if (reset) begin
                  depth  <= {DEPTH_DATA_WIDTH{1'b0}};
             end else begin
-                 if (wr_en & ~rd_en) depth <=  depth + 1'h1;
+                if (wr_en & ~rd_en) depth <=  depth + 1'h1;
                 else if (~wr_en & rd_en) depth <= depth - 1'h1;
                 
             end

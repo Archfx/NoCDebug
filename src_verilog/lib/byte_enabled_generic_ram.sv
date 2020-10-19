@@ -6,19 +6,16 @@
 // Read during write produces old data on ports A and B and old data on mixed ports
 // For device families that do not support this mode (e.g. Stratix V) the ram is not inferred
 
-// synthesis translate_off
-`timescale 1ns / 1ps
-// synthesis translate_on
+
 
 
 module byte_enabled_true_dual_port_ram	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v format
 		parameter INITIAL_EN= "NO",
-		parameter int
-		BYTE_WIDTH = 8,
-		ADDRESS_WIDTH = 6,
-		BYTES = 4,
-		DATA_WIDTH_R = BYTE_WIDTH * BYTES
+		parameter 	BYTE_WIDTH = 8,
+		parameter 	ADDRESS_WIDTH = 6,
+		parameter 	BYTES = 4,
+		parameter 	DATA_WIDTH_R = BYTE_WIDTH * BYTES
 )
 (
 	input [ADDRESS_WIDTH-1:0] addr1,
@@ -379,12 +376,12 @@ if (BYTES==15) begin : byte_en15
 	);
 end
 endgenerate
-endmodule:  byte_enabled_true_dual_port_ram
+endmodule//:  byte_enabled_true_dual_port_ram
 
 module byte_enabled_true_dual_port_ram_1	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 1,
@@ -415,51 +412,51 @@ endgenerate
 
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
-	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// // model the RAM with two dimensional packed array
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_1
+endmodule //: byte_enabled_true_dual_port_ram_1
 
 module byte_enabled_true_dual_port_ram_2	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 2,
@@ -491,52 +488,52 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_2
+endmodule //: byte_enabled_true_dual_port_ram_2
 
 module byte_enabled_true_dual_port_ram_3	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 3,
@@ -565,57 +562,57 @@ for (i=0;i<BYTES;i=i+1)begin : bloop
 end
 endgenerate
 
-	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
+	// localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
-	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// // model the RAM with two dimensional packed array
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_3
+endmodule// : byte_enabled_true_dual_port_ram_3
 
 module byte_enabled_true_dual_port_ram_4	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 4,
@@ -647,56 +644,56 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_4
+endmodule //: byte_enabled_true_dual_port_ram_4
 
 module byte_enabled_true_dual_port_ram_5	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 5,
@@ -728,58 +725,58 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
-		if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// 	if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
-		if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// 	if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_5
+endmodule// : byte_enabled_true_dual_port_ram_5
 
 module byte_enabled_true_dual_port_ram_6	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 6,
@@ -811,60 +808,60 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
-		if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
-		if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// 	if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
+	// 	if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
-		if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
-		if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// 	if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
+	// 	if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_6
+endmodule //: byte_enabled_true_dual_port_ram_6
 
 module byte_enabled_true_dual_port_ram_7	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 7,
@@ -896,62 +893,62 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
-		if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
-		if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
-		if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// 	if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
+	// 	if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
+	// 	if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
-		if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
-		if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
-		if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// 	if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
+	// 	if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
+	// 	if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_7
+endmodule //: byte_enabled_true_dual_port_ram_7
 
 module byte_enabled_true_dual_port_ram_8	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 8,
@@ -983,64 +980,64 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
-		if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
-		if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
-		if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
-		if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// 	if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
+	// 	if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
+	// 	if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
+	// 	if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
-		if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
-		if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
-		if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
-		if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// 	if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
+	// 	if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
+	// 	if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
+	// 	if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_8
+endmodule// : byte_enabled_true_dual_port_ram_8
 
 module byte_enabled_true_dual_port_ram_9	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter 
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 9,
@@ -1072,66 +1069,66 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
-		if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
-		if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
-		if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
-		if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
-		if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// 	if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
+	// 	if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
+	// 	if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
+	// 	if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
+	// 	if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
-		if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
-		if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
-		if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
-		if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
-		if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// 	if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
+	// 	if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
+	// 	if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
+	// 	if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
+	// 	if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_9
+endmodule //: byte_enabled_true_dual_port_ram_9
 
 module byte_enabled_true_dual_port_ram_10	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 10,
@@ -1163,68 +1160,68 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
-		if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
-		if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
-		if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
-		if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
-		if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
-		if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// 	if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
+	// 	if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
+	// 	if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
+	// 	if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
+	// 	if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
+	// 	if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
-		if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
-		if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
-		if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
-		if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
-		if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
-		if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// 	if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
+	// 	if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
+	// 	if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
+	// 	if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
+	// 	if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
+	// 	if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_10
+endmodule //: byte_enabled_true_dual_port_ram_10
 
 module byte_enabled_true_dual_port_ram_11	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 11,
@@ -1256,70 +1253,70 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
-		if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
-		if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
-		if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
-		if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
-		if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
-		if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
-		if(be1[10]) ram[addr1][10] <= data_in_sep1[10];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// 	if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
+	// 	if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
+	// 	if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
+	// 	if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
+	// 	if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
+	// 	if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
+	// 	if(be1[10]) ram[addr1][10] <= data_in_sep1[10];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
-		if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
-		if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
-		if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
-		if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
-		if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
-		if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
-		if(be2[10]) ram[addr2][10] <= data_in_sep2[10];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// 	if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
+	// 	if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
+	// 	if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
+	// 	if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
+	// 	if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
+	// 	if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
+	// 	if(be2[10]) ram[addr2][10] <= data_in_sep2[10];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_11
+endmodule //: byte_enabled_true_dual_port_ram_11
 
 module byte_enabled_true_dual_port_ram_12	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 12,
@@ -1351,72 +1348,72 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
-		if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
-		if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
-		if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
-		if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
-		if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
-		if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
-		if(be1[10]) ram[addr1][10] <= data_in_sep1[10];
-		if(be1[11]) ram[addr1][11] <= data_in_sep1[11];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// 	if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
+	// 	if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
+	// 	if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
+	// 	if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
+	// 	if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
+	// 	if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
+	// 	if(be1[10]) ram[addr1][10] <= data_in_sep1[10];
+	// 	if(be1[11]) ram[addr1][11] <= data_in_sep1[11];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
-		if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
-		if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
-		if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
-		if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
-		if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
-		if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
-		if(be2[10]) ram[addr2][10] <= data_in_sep2[10];
-		if(be2[11]) ram[addr2][11] <= data_in_sep2[11];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// 	if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
+	// 	if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
+	// 	if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
+	// 	if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
+	// 	if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
+	// 	if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
+	// 	if(be2[10]) ram[addr2][10] <= data_in_sep2[10];
+	// 	if(be2[11]) ram[addr2][11] <= data_in_sep2[11];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_12
+endmodule //: byte_enabled_true_dual_port_ram_12
 
 module byte_enabled_true_dual_port_ram_13	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 13,
@@ -1448,74 +1445,74 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
-		if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
-		if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
-		if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
-		if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
-		if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
-		if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
-		if(be1[10]) ram[addr1][10] <= data_in_sep1[10];
-		if(be1[11]) ram[addr1][11] <= data_in_sep1[11];
-		if(be1[12]) ram[addr1][12] <= data_in_sep1[12];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// 	if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
+	// 	if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
+	// 	if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
+	// 	if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
+	// 	if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
+	// 	if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
+	// 	if(be1[10]) ram[addr1][10] <= data_in_sep1[10];
+	// 	if(be1[11]) ram[addr1][11] <= data_in_sep1[11];
+	// 	if(be1[12]) ram[addr1][12] <= data_in_sep1[12];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
-		if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
-		if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
-		if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
-		if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
-		if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
-		if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
-		if(be2[10]) ram[addr2][10] <= data_in_sep2[10];
-		if(be2[11]) ram[addr2][11] <= data_in_sep2[11];
-		if(be2[12]) ram[addr2][12] <= data_in_sep2[12];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// 	if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
+	// 	if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
+	// 	if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
+	// 	if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
+	// 	if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
+	// 	if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
+	// 	if(be2[10]) ram[addr2][10] <= data_in_sep2[10];
+	// 	if(be2[11]) ram[addr2][11] <= data_in_sep2[11];
+	// 	if(be2[12]) ram[addr2][12] <= data_in_sep2[12];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_13
+endmodule// : byte_enabled_true_dual_port_ram_13
 
 module byte_enabled_true_dual_port_ram_14	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 14,
@@ -1547,77 +1544,77 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
-		if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
-		if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
-		if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
-		if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
-		if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
-		if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
-		if(be1[10]) ram[addr1][10] <= data_in_sep1[10];
-		if(be1[11]) ram[addr1][11] <= data_in_sep1[11];
-		if(be1[12]) ram[addr1][12] <= data_in_sep1[12];
-		if(be1[13]) ram[addr1][13] <= data_in_sep1[13];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// 	if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
+	// 	if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
+	// 	if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
+	// 	if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
+	// 	if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
+	// 	if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
+	// 	if(be1[10]) ram[addr1][10] <= data_in_sep1[10];
+	// 	if(be1[11]) ram[addr1][11] <= data_in_sep1[11];
+	// 	if(be1[12]) ram[addr1][12] <= data_in_sep1[12];
+	// 	if(be1[13]) ram[addr1][13] <= data_in_sep1[13];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
-		if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
-		if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
-		if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
-		if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
-		if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
-		if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
-		if(be2[10]) ram[addr2][10] <= data_in_sep2[10];
-		if(be2[11]) ram[addr2][11] <= data_in_sep2[11];
-		if(be2[12]) ram[addr2][12] <= data_in_sep2[12];
-		if(be2[13]) ram[addr2][13] <= data_in_sep2[13];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// 	if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
+	// 	if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
+	// 	if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
+	// 	if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
+	// 	if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
+	// 	if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
+	// 	if(be2[10]) ram[addr2][10] <= data_in_sep2[10];
+	// 	if(be2[11]) ram[addr2][11] <= data_in_sep2[11];
+	// 	if(be2[12]) ram[addr2][12] <= data_in_sep2[12];
+	// 	if(be2[13]) ram[addr2][13] <= data_in_sep2[13];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_14
+endmodule //: byte_enabled_true_dual_port_ram_14
 
 module byte_enabled_true_dual_port_ram_15	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 15,
@@ -1649,78 +1646,78 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg1;
-	reg [DATA_WIDTH_R-1:0] data_reg2;
+	// reg [DATA_WIDTH_R-1:0] data_reg1;
+	// reg [DATA_WIDTH_R-1:0] data_reg2;
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we1) begin
-		if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
-		if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
-		if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
-		if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
-		if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
-		if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
-		if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
-		if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
-		if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
-		if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
-		if(be1[10]) ram[addr1][10] <= data_in_sep1[10];
-		if(be1[11]) ram[addr1][11] <= data_in_sep1[11];
-		if(be1[12]) ram[addr1][12] <= data_in_sep1[12];
-		if(be1[13]) ram[addr1][13] <= data_in_sep1[13];
-		if(be1[14]) ram[addr1][14] <= data_in_sep1[14];
+	// always@(posedge clk)
+	// begin
+	// 	if(we1) begin
+	// 	if(be1[0]) ram[addr1][0] <= data_in_sep1[0];
+	// 	if(be1[1]) ram[addr1][1] <= data_in_sep1[1];
+	// 	if(be1[2]) ram[addr1][2] <= data_in_sep1[2];
+	// 	if(be1[3]) ram[addr1][3] <= data_in_sep1[3];
+	// 	if(be1[4]) ram[addr1][4] <= data_in_sep1[4];
+	// 	if(be1[5]) ram[addr1][5] <= data_in_sep1[5];
+	// 	if(be1[6]) ram[addr1][6] <= data_in_sep1[6];
+	// 	if(be1[7]) ram[addr1][7] <= data_in_sep1[7];
+	// 	if(be1[8]) ram[addr1][8] <= data_in_sep1[8];
+	// 	if(be1[9]) ram[addr1][9] <= data_in_sep1[9];
+	// 	if(be1[10]) ram[addr1][10] <= data_in_sep1[10];
+	// 	if(be1[11]) ram[addr1][11] <= data_in_sep1[11];
+	// 	if(be1[12]) ram[addr1][12] <= data_in_sep1[12];
+	// 	if(be1[13]) ram[addr1][13] <= data_in_sep1[13];
+	// 	if(be1[14]) ram[addr1][14] <= data_in_sep1[14];
 	
-		end
-	data_reg1 <= ram[addr1];
-	end
+	// 	end
+	// data_reg1 <= ram[addr1];
+	// end
 
-	assign data_out1 = data_reg1;
+	// assign data_out1 = data_reg1;
    
-	// port B
-	always@(posedge clk)
-	begin
-		if(we2) begin
-		if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
-		if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
-		if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
-		if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
-		if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
-		if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
-		if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
-		if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
-		if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
-		if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
-		if(be2[10]) ram[addr2][10] <= data_in_sep2[10];
-		if(be2[11]) ram[addr2][11] <= data_in_sep2[11];
-		if(be2[12]) ram[addr2][12] <= data_in_sep2[12];
-		if(be2[13]) ram[addr2][13] <= data_in_sep2[13];
-		if(be2[14]) ram[addr2][14] <= data_in_sep2[14];
+	// // port B
+	// always@(posedge clk)
+	// begin
+	// 	if(we2) begin
+	// 	if(be2[0]) ram[addr2][0] <= data_in_sep2[0];
+	// 	if(be2[1]) ram[addr2][1] <= data_in_sep2[1];
+	// 	if(be2[2]) ram[addr2][2] <= data_in_sep2[2];
+	// 	if(be2[3]) ram[addr2][3] <= data_in_sep2[3];
+	// 	if(be2[4]) ram[addr2][4] <= data_in_sep2[4];
+	// 	if(be2[5]) ram[addr2][5] <= data_in_sep2[5];
+	// 	if(be2[6]) ram[addr2][6] <= data_in_sep2[6];
+	// 	if(be2[7]) ram[addr2][7] <= data_in_sep2[7];
+	// 	if(be2[8]) ram[addr2][8] <= data_in_sep2[8];
+	// 	if(be2[9]) ram[addr2][9] <= data_in_sep2[9];
+	// 	if(be2[10]) ram[addr2][10] <= data_in_sep2[10];
+	// 	if(be2[11]) ram[addr2][11] <= data_in_sep2[11];
+	// 	if(be2[12]) ram[addr2][12] <= data_in_sep2[12];
+	// 	if(be2[13]) ram[addr2][13] <= data_in_sep2[13];
+	// 	if(be2[14]) ram[addr2][14] <= data_in_sep2[14];
 
 		
-		end
-	data_reg2 <= ram[addr2];
-	end
+	// 	end
+	// data_reg2 <= ram[addr2];
+	// end
 
-	assign data_out2 = data_reg2;
+	// assign data_out2 = data_reg2;
 
-endmodule : byte_enabled_true_dual_port_ram_15
+endmodule //: byte_enabled_true_dual_port_ram_15
 
 module byte_enabled_single_port_ram	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 4,
@@ -2022,12 +2019,12 @@ if (BYTES==15) begin : byte_en15
 	);
 end
 endgenerate
-endmodule : byte_enabled_single_port_ram
+endmodule //: byte_enabled_single_port_ram
 
 module byte_enabled_single_port_ram_1	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter 
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 1,
@@ -2056,37 +2053,37 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_1
+endmodule //: byte_enabled_single_port_ram_1
 
 module byte_enabled_single_port_ram_2	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 2,
@@ -2115,38 +2112,38 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_2
+endmodule //: byte_enabled_single_port_ram_2
 
 module byte_enabled_single_port_ram_3	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 3,
@@ -2175,39 +2172,39 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_3
+endmodule //: byte_enabled_single_port_ram_3
 
 module byte_enabled_single_port_ram_4	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 4,
@@ -2236,40 +2233,40 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_4
+endmodule //: byte_enabled_single_port_ram_4
 
 module byte_enabled_single_port_ram_5	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 5,
@@ -2298,41 +2295,41 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
-		if(be[4]) ram[addr][4] <= data_in_sep[4];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// 	if(be[4]) ram[addr][4] <= data_in_sep[4];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_5
+endmodule //: byte_enabled_single_port_ram_5
 
 module byte_enabled_single_port_ram_6	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 6,
@@ -2361,41 +2358,41 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
-		if(be[4]) ram[addr][4] <= data_in_sep[4];
-		if(be[5]) ram[addr][5] <= data_in_sep[5];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// 	if(be[4]) ram[addr][4] <= data_in_sep[4];
+	// 	if(be[5]) ram[addr][5] <= data_in_sep[5];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_6
+endmodule// : byte_enabled_single_port_ram_6
 
 module byte_enabled_single_port_ram_7	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter 
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 7,
@@ -2424,42 +2421,42 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
-		if(be[4]) ram[addr][4] <= data_in_sep[4];
-		if(be[5]) ram[addr][5] <= data_in_sep[5];
-		if(be[6]) ram[addr][6] <= data_in_sep[6];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// 	if(be[4]) ram[addr][4] <= data_in_sep[4];
+	// 	if(be[5]) ram[addr][5] <= data_in_sep[5];
+	// 	if(be[6]) ram[addr][6] <= data_in_sep[6];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_7
+endmodule// : byte_enabled_single_port_ram_7
 
 module byte_enabled_single_port_ram_8	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 8,
@@ -2488,44 +2485,44 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
-		if(be[4]) ram[addr][4] <= data_in_sep[4];
-		if(be[5]) ram[addr][5] <= data_in_sep[5];
-		if(be[6]) ram[addr][6] <= data_in_sep[6];
-		if(be[7]) ram[addr][7] <= data_in_sep[7];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// 	if(be[4]) ram[addr][4] <= data_in_sep[4];
+	// 	if(be[5]) ram[addr][5] <= data_in_sep[5];
+	// 	if(be[6]) ram[addr][6] <= data_in_sep[6];
+	// 	if(be[7]) ram[addr][7] <= data_in_sep[7];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_8
+endmodule //: byte_enabled_single_port_ram_8
 
 module byte_enabled_single_port_ram_9	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 9,
@@ -2554,45 +2551,45 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
-		if(be[4]) ram[addr][4] <= data_in_sep[4];
-		if(be[5]) ram[addr][5] <= data_in_sep[5];
-		if(be[6]) ram[addr][6] <= data_in_sep[6];
-		if(be[7]) ram[addr][7] <= data_in_sep[7];
-		if(be[8]) ram[addr][8] <= data_in_sep[8];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// 	if(be[4]) ram[addr][4] <= data_in_sep[4];
+	// 	if(be[5]) ram[addr][5] <= data_in_sep[5];
+	// 	if(be[6]) ram[addr][6] <= data_in_sep[6];
+	// 	if(be[7]) ram[addr][7] <= data_in_sep[7];
+	// 	if(be[8]) ram[addr][8] <= data_in_sep[8];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_9
+endmodule //: byte_enabled_single_port_ram_9
 
 module byte_enabled_single_port_ram_10	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 10,
@@ -2621,44 +2618,44 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 	
-	reg [DATA_WIDTH_R-1:0] data_reg;
-	// port A
-	integer k;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
-		if(be[4]) ram[addr][4] <= data_in_sep[4];
-		if(be[5]) ram[addr][5] <= data_in_sep[5];
-		if(be[6]) ram[addr][6] <= data_in_sep[6];
-		if(be[7]) ram[addr][7] <= data_in_sep[7];
-		if(be[8]) ram[addr][8] <= data_in_sep[8];
-		if(be[9]) ram[addr][9] <= data_in_sep[9];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// 	if(be[4]) ram[addr][4] <= data_in_sep[4];
+	// 	if(be[5]) ram[addr][5] <= data_in_sep[5];
+	// 	if(be[6]) ram[addr][6] <= data_in_sep[6];
+	// 	if(be[7]) ram[addr][7] <= data_in_sep[7];
+	// 	if(be[8]) ram[addr][8] <= data_in_sep[8];
+	// 	if(be[9]) ram[addr][9] <= data_in_sep[9];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_10
+endmodule //: byte_enabled_single_port_ram_10
 
 module byte_enabled_single_port_ram_11	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 11,
@@ -2687,47 +2684,47 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
-		if(be[4]) ram[addr][4] <= data_in_sep[4];
-		if(be[5]) ram[addr][5] <= data_in_sep[5];
-		if(be[6]) ram[addr][6] <= data_in_sep[6];
-		if(be[7]) ram[addr][7] <= data_in_sep[7];
-		if(be[8]) ram[addr][8] <= data_in_sep[8];
-		if(be[9]) ram[addr][9] <= data_in_sep[9];
-		if(be[10]) ram[addr][10] <= data_in_sep[10];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// 	if(be[4]) ram[addr][4] <= data_in_sep[4];
+	// 	if(be[5]) ram[addr][5] <= data_in_sep[5];
+	// 	if(be[6]) ram[addr][6] <= data_in_sep[6];
+	// 	if(be[7]) ram[addr][7] <= data_in_sep[7];
+	// 	if(be[8]) ram[addr][8] <= data_in_sep[8];
+	// 	if(be[9]) ram[addr][9] <= data_in_sep[9];
+	// 	if(be[10]) ram[addr][10] <= data_in_sep[10];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_11
+endmodule //: byte_enabled_single_port_ram_11
 
 module byte_enabled_single_port_ram_12	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 12,
@@ -2756,48 +2753,48 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
-		if(be[4]) ram[addr][4] <= data_in_sep[4];
-		if(be[5]) ram[addr][5] <= data_in_sep[5];
-		if(be[6]) ram[addr][6] <= data_in_sep[6];
-		if(be[7]) ram[addr][7] <= data_in_sep[7];
-		if(be[8]) ram[addr][8] <= data_in_sep[8];
-		if(be[9]) ram[addr][9] <= data_in_sep[9];
-		if(be[10]) ram[addr][10] <= data_in_sep[10];
-		if(be[11]) ram[addr][11] <= data_in_sep[11];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// 	if(be[4]) ram[addr][4] <= data_in_sep[4];
+	// 	if(be[5]) ram[addr][5] <= data_in_sep[5];
+	// 	if(be[6]) ram[addr][6] <= data_in_sep[6];
+	// 	if(be[7]) ram[addr][7] <= data_in_sep[7];
+	// 	if(be[8]) ram[addr][8] <= data_in_sep[8];
+	// 	if(be[9]) ram[addr][9] <= data_in_sep[9];
+	// 	if(be[10]) ram[addr][10] <= data_in_sep[10];
+	// 	if(be[11]) ram[addr][11] <= data_in_sep[11];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_12
+endmodule// : byte_enabled_single_port_ram_12
 
 module byte_enabled_single_port_ram_13	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 13,
@@ -2826,49 +2823,49 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
-		if(be[4]) ram[addr][4] <= data_in_sep[4];
-		if(be[5]) ram[addr][5] <= data_in_sep[5];
-		if(be[6]) ram[addr][6] <= data_in_sep[6];
-		if(be[7]) ram[addr][7] <= data_in_sep[7];
-		if(be[8]) ram[addr][8] <= data_in_sep[8];
-		if(be[9]) ram[addr][9] <= data_in_sep[9];
-		if(be[10]) ram[addr][10] <= data_in_sep[10];
-		if(be[11]) ram[addr][11] <= data_in_sep[11];
-		if(be[12]) ram[addr][12] <= data_in_sep[12];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// 	if(be[4]) ram[addr][4] <= data_in_sep[4];
+	// 	if(be[5]) ram[addr][5] <= data_in_sep[5];
+	// 	if(be[6]) ram[addr][6] <= data_in_sep[6];
+	// 	if(be[7]) ram[addr][7] <= data_in_sep[7];
+	// 	if(be[8]) ram[addr][8] <= data_in_sep[8];
+	// 	if(be[9]) ram[addr][9] <= data_in_sep[9];
+	// 	if(be[10]) ram[addr][10] <= data_in_sep[10];
+	// 	if(be[11]) ram[addr][11] <= data_in_sep[11];
+	// 	if(be[12]) ram[addr][12] <= data_in_sep[12];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_13
+endmodule //: byte_enabled_single_port_ram_13
 
 module byte_enabled_single_port_ram_14	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter 
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 14,
@@ -2897,50 +2894,50 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
-		if(be[4]) ram[addr][4] <= data_in_sep[4];
-		if(be[5]) ram[addr][5] <= data_in_sep[5];
-		if(be[6]) ram[addr][6] <= data_in_sep[6];
-		if(be[7]) ram[addr][7] <= data_in_sep[7];
-		if(be[8]) ram[addr][8] <= data_in_sep[8];
-		if(be[9]) ram[addr][9] <= data_in_sep[9];
-		if(be[10]) ram[addr][10] <= data_in_sep[10];
-		if(be[11]) ram[addr][11] <= data_in_sep[11];
-		if(be[12]) ram[addr][12] <= data_in_sep[12];
-		if(be[13]) ram[addr][13] <= data_in_sep[13];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// 	if(be[4]) ram[addr][4] <= data_in_sep[4];
+	// 	if(be[5]) ram[addr][5] <= data_in_sep[5];
+	// 	if(be[6]) ram[addr][6] <= data_in_sep[6];
+	// 	if(be[7]) ram[addr][7] <= data_in_sep[7];
+	// 	if(be[8]) ram[addr][8] <= data_in_sep[8];
+	// 	if(be[9]) ram[addr][9] <= data_in_sep[9];
+	// 	if(be[10]) ram[addr][10] <= data_in_sep[10];
+	// 	if(be[11]) ram[addr][11] <= data_in_sep[11];
+	// 	if(be[12]) ram[addr][12] <= data_in_sep[12];
+	// 	if(be[13]) ram[addr][13] <= data_in_sep[13];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_14
+endmodule //: byte_enabled_single_port_ram_14
 
 module byte_enabled_single_port_ram_15	#(
 		parameter INIT_FILE= "sw/ram/ram0.txt",// ram initial file in v forma
 		parameter INITIAL_EN= "NO", 
- 		parameter int
+ 		parameter
 		BYTE_WIDTH = 8,
 		ADDRESS_WIDTH = 6,
 		BYTES = 15,
@@ -2969,43 +2966,43 @@ endgenerate
 	localparam RAM_DEPTH = 1 << ADDRESS_WIDTH;
 
 	// model the RAM with two dimensional packed array
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
+	// logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:RAM_DEPTH-1];
 	
-	generate 
-		if (INITIAL_EN ==  "YES") begin : init
-		   initial $readmemh(INIT_FILE,ram);	
-		end
-	endgenerate
+	// generate 
+	// 	if (INITIAL_EN ==  "YES") begin : init
+	// 	   initial $readmemh(INIT_FILE,ram);	
+	// 	end
+	// endgenerate
 
-	reg [DATA_WIDTH_R-1:0] data_reg;
+	// reg [DATA_WIDTH_R-1:0] data_reg;
 	
 
-	// port A
-	integer k;
+	// // port A
+	// integer k;
 	
-	always@(posedge clk)
-	begin
-		if(we) begin
-		if(be[0]) ram[addr][0] <= data_in_sep[0];
-		if(be[1]) ram[addr][1] <= data_in_sep[1];
-		if(be[2]) ram[addr][2] <= data_in_sep[2];
-		if(be[3]) ram[addr][3] <= data_in_sep[3];
-		if(be[4]) ram[addr][4] <= data_in_sep[4];
-		if(be[5]) ram[addr][5] <= data_in_sep[5];
-		if(be[6]) ram[addr][6] <= data_in_sep[6];
-		if(be[7]) ram[addr][7] <= data_in_sep[7];
-		if(be[8]) ram[addr][8] <= data_in_sep[8];
-		if(be[9]) ram[addr][9] <= data_in_sep[9];
-		if(be[10]) ram[addr][10] <= data_in_sep[10];
-		if(be[11]) ram[addr][11] <= data_in_sep[11];
-		if(be[12]) ram[addr][12] <= data_in_sep[12];
-		if(be[13]) ram[addr][13] <= data_in_sep[13];
-		if(be[14]) ram[addr][14] <= data_in_sep[14];
+	// always@(posedge clk)
+	// begin
+	// 	if(we) begin
+	// 	if(be[0]) ram[addr][0] <= data_in_sep[0];
+	// 	if(be[1]) ram[addr][1] <= data_in_sep[1];
+	// 	if(be[2]) ram[addr][2] <= data_in_sep[2];
+	// 	if(be[3]) ram[addr][3] <= data_in_sep[3];
+	// 	if(be[4]) ram[addr][4] <= data_in_sep[4];
+	// 	if(be[5]) ram[addr][5] <= data_in_sep[5];
+	// 	if(be[6]) ram[addr][6] <= data_in_sep[6];
+	// 	if(be[7]) ram[addr][7] <= data_in_sep[7];
+	// 	if(be[8]) ram[addr][8] <= data_in_sep[8];
+	// 	if(be[9]) ram[addr][9] <= data_in_sep[9];
+	// 	if(be[10]) ram[addr][10] <= data_in_sep[10];
+	// 	if(be[11]) ram[addr][11] <= data_in_sep[11];
+	// 	if(be[12]) ram[addr][12] <= data_in_sep[12];
+	// 	if(be[13]) ram[addr][13] <= data_in_sep[13];
+	// 	if(be[14]) ram[addr][14] <= data_in_sep[14];
 	
-		end
-	data_reg <= ram[addr];
-	end
+	// 	end
+	// data_reg <= ram[addr];
+	// end
 
-	assign data_out = data_reg;	
+	// assign data_out = data_reg;	
 
-endmodule : byte_enabled_single_port_ram_15
+endmodule //: byte_enabled_single_port_ram_15

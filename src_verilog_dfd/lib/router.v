@@ -413,8 +413,7 @@ module router # (
         end
     end
     */
-//synopsys  translate_on
-//synthesis translate_on 
+
 
 
 endmodule

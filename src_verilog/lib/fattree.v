@@ -1,6 +1,4 @@
-// // synthesis translate_off
-// `timescale 1ns / 1ps
-// // synthesis translate_on
+
 
 // /**************************************
 // * Module: fattree
@@ -138,7 +136,6 @@
 // //add roots
 
 // genvar pos,level,port;
-
 
 
 // generate 
