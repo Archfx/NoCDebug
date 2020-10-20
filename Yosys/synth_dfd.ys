@@ -95,6 +95,7 @@ read_verilog -sv ../src_verilog_dfd/dfd/trace_buffer.sv
 #synth_xilinx -top fifo_ram
 #synth -auto-top
 synth
+#show
 
 
 # mapping to mycells.lib
