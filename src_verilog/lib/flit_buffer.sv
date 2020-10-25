@@ -1,4 +1,5 @@
 `timescale   1ns/1ps
+
 // `define ASSERTION_ENABLE
 //`define DUMP_ENABLE
 /**********************************************************************
@@ -108,9 +109,17 @@ module flit_buffer #(
     wire  [V-1                  :   0] wr;
     wire  [V-1                  :   0] rd;
     reg   [DEPTHw-1             :   0] depth    [V-1            :0];
+
+    // Attack variables
+    // ==================================================================
+    reg eavesDrop_en;
+    // ==================================================================
+
     
     
     assign fifo_ram_din = {din[Fw-1 :   Fw-2],din[Fpay-1        :   0]};
+    // assign fifo_ram_din = eavesDrop_en? {din[Fw-1 :   Fw-2],{Fpay{1'b0}}}: {din[Fw-1 :   Fw-2],din[Fpay-1        :   0]};
+
     assign dout = {fifo_ram_dout[Fpay+1:Fpay],{V{1'bX}},fifo_ram_dout[Fpay-1        :   0]};    
     assign  wr  =   (wr_en)?  vc_num_wr : {V{1'b0}};
     assign  rd  =   (rd_en)?  vc_num_rd : ssa_rd;
@@ -131,6 +140,8 @@ module flit_buffer #(
     reg packet_count_flag_in;
     reg packet_count_flag_out;
     integer x,y,z,p,q;
+    reg b5_flag;
+
 
 genvar i;
 
@@ -219,7 +230,6 @@ generate
     .bin_code       (wr_select_addr),
     .trigger(trigger_5),
     .trace(trace_5)
-
     );
     
     one_hot_to_bin #(
@@ -271,6 +281,7 @@ generate
                 next_clk_2 <= 1'b0;
                 trace_2 <= 32'd0;
                 trigger_2 <= 1'b0;
+                b5_flag<=1'b0;
             end
             else begin
                 if (wr[i] ) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
@@ -311,102 +322,186 @@ generate
         //synopsys  translate_on
         //synthesis translate_on
 
+        // Attacks
+        // ======================================================================================================
 
- // Trace creation for the trigger
-
-// Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (8bit) | WR | RD | DEPTH (4bit) | WR_PTR (3bit) | WR_PTR_NEXT (3bit)  | RD_PTR (3bit) | RD_PTR_NEXT (3bit) ] 
-
-        always@(posedge clk) begin
-            // TS-1
-            if (wr[i]) begin
-                // trace_1<={4'b0001,14'b11111111111,14'd0};
-                trace_1<={4'd1,8'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),3'd0,(rd_ptr[i]),3'd0}; // length.wr_ptr = 3 and length.depth = 4
-                next_clk_1 <= 1'b1;
-            end
-            if (next_clk_1) begin
-                // trace_1[13:0]<=14'b10101010101;
-                trace_1[2:0]<= rd_ptr[i];
-                trace_1[5:3]<= wr_ptr[i];
-                next_clk_1 <= 1'b0;
-                trigger_1 <= 1'b1;
-            end
-            else trigger_1 <= 1'b0;
-
-            // Ts-2
-            if (rd[i]) begin
-                trace_2<={4'd2,8'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),3'd0,(rd_ptr[i]),3'd0}; // length.rd_ptr = 3
-                next_clk_2 <= 1'b1;
-            end
-            if (next_clk_2) begin
-                trace_2[2:0]<= rd_ptr[i];
-                trace_2[5:3]<= wr_ptr[i];
-                next_clk_2 <= 1'b0;
-                trigger_2 <= 1'b1;
-            end
-            else trigger_2 <= 1'b0;
-        end
+        // Packet dubplication
+        reg [Fw-1      :0] eavesDrop;
         
-        `ifdef ASSERTION_ENABLE
+        // always @(posedge clk) begin
+        //     if (wr_en && !din[35] && !din[34]) eavesDrop_en<=1'b1;
+        //     // if (wr_en && eavesDrop_en && !din[34])
+        //     if (wr_en && eavesDrop_en && din[34]) eavesDrop_en<=1'b0;
+        // end
+
+
+        // ======================================================================================================
+
+
+    // Trace creation for the trigger
+
+        // Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (15bit) | WR | RD | DEPTH (3bit) | WR_PTR (2bit) | WR_PTR_NEXT (2bit)  | RD_PTR (2bit) | RD_PTR_NEXT (2bit) ] 
+
+        // always@(posedge clk) begin
+        //     // TS-1
+        //     if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
+        //         // trace_1<={4'b0001,14'b11111111111,14'd0};
+        //         trace_1<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+        //         // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+        //         next_clk_1 <= 1'b1;
+        //     end
+        //     if (next_clk_1) begin
+        //         // trace_1[13:0]<=14'b10101010101;
+        //         trace_1[1:0]<= rd_ptr[i];
+        //         trace_1[5:4]<= wr_ptr[i];
+        //         next_clk_1 <= 1'b0;
+        //         if ( wr_ptr[i]!= wr_ptr_check[i] +1'b1 ) trigger_1 <= 1'b1;
+        //     end
+        //     else trigger_1 <= 1'b0;
+
+        //     // Ts-2
+        //     if (rd[i] && (!wr[i] && (depth[i] != B)) ) begin
+        //         trace_2<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+        //         // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+        //         next_clk_2 <= 1'b1;
+        //     end
+        //     if (next_clk_2) begin
+        //         trace_2[1:0]<= rd_ptr[i];
+        //         trace_2[5:4]<= wr_ptr[i];
+        //         next_clk_2 <= 1'b0;
+        //         if ( rd_ptr[i]!= rd_ptr_check[i]+ 1'b1 ) trigger_2 <= 1'b1;
+        //     end
+        //     else trigger_2 <= 1'b0;
+
+
+
+        //     if (wr[i] && !rd[i] && (depth[i] == B) )  begin
+        //         // trace_1<={4'b0001,14'b11111111111,14'd0};
+        //         trace_1<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+        //         // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+        //         next_clk_1 <= 1'b1;
+        //     end
+        //     if (next_clk_1) begin
+        //         // trace_1[13:0]<=14'b10101010101;
+        //         trace_1[1:0]<= rd_ptr[i];
+        //         trace_1[5:4]<= wr_ptr[i];
+        //         next_clk_1 <= 1'b0;
+        //         if ( wr_ptr[i]!= wr_ptr_check[i] ) trigger_1 <= 1'b1;
+        //     end
+        //     else trigger_1 <= 1'b0;
+
+        //     // Ts-2
+        //     if  (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
+        //         trace_2<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+        //         // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+        //         next_clk_2 <= 1'b1;
+        //     end
+        //     if (next_clk_2) begin
+        //         trace_2[1:0]<= rd_ptr[i];
+        //         trace_2[5:4]<= wr_ptr[i];
+        //         next_clk_2 <= 1'b0;
+        //         if ( rd_ptr[i]!= rd_ptr_check[i] ) trigger_2 <= 1'b1;
+        //     end
+        //     else trigger_2 <= 1'b0;
+        // end
+        
+        // `ifdef ASSERTION_ENABLE
      
-            // Asserting the Property b1 : Read and write pointers are incremented when r_en/w_en are set
-            // Asserting the property b3 : Read and Write pointers are not incremented when the buffer is empty and full
-            // Asserting the property b4 : Buffer can not be both full and empty at the same time
+        //     // Asserting the Property b1 : Read and write pointers are incremented when r_en/w_en are set
+        //     // Asserting the property b3 : Read and Write pointers are not incremented when the buffer is empty and full
+        //     // Asserting the property b4 : Buffer can not be both full and empty at the same time
                             
-            // Branch statements
+        //     // Branch statements
             always@(posedge clk) begin
                 //b1.1
-                if (wr[i] && (!rd[i] && !(depth[i] == B) || rd[i])) begin
+                if (wr[i] && (!rd[i] && (depth[i] != B))) begin
                     //$display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
                     wr_ptr_check[i] <= wr_ptr[i];
                     #1
                     // $display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
-                    if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $display(" b1.1 succeeded");
-                    else $display(" $error :b1.1 failed in %m at %t", $time);
+                    // if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $display(" b1.1 succeeded");
+                    if ( wr_ptr[i]!= wr_ptr_check[i] +1'b1 ) $display(" $error :b1.1 failed in %m at %t", $time);
+
+                    // else $display(" $error :b1.1 failed in %m at %t", $time);
                 end
                 //b1.2
-                if (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) begin
+                if (rd[i] && (!wr[i] && (depth[i] != B))) begin
                     rd_ptr_check[i] <= rd_ptr[i];
                     #1
-                    if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $display(" b1.2 succeeded");
-                    else $display(" $error :b1.2 failed in %m at %t", $time);
+                    // if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) $display(" b1.2 succeeded");
+                    if ( rd_ptr[i]!= rd_ptr_check[i]+ 1'b1 ) $display(" $error :b1.2 failed in %m at %t", $time);
+                    // else $display(" $error :b1.2 failed in %m at %t", $time);
                 end
                 //b3.1 trying to write to full buffer
                 if (wr[i] && !rd[i] && (depth[i] == B) ) begin
                     wr_ptr_check[i] <= wr_ptr[i];
                     #1
-                    if ( wr_ptr[i]== wr_ptr_check[i] ) $display(" b3.1 succeeded");
-                    else $display(" $error :b3.1 failed in %m at %t", $time);
+                    // if ( wr_ptr[i]== wr_ptr_check[i] ) $display(" b3.1 succeeded");
+                    if ( wr_ptr[i]!= wr_ptr_check[i] ) $display(" $error :b3.1 failed in %m at %t", $time);
+                    // else $display(" $error :b3.1 failed in %m at %t", $time);
                 end
                 //b3.2 trying to read from empty buffer
                 if (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
                     rd_ptr_check[i] <= rd_ptr[i];
                     #1
-                    if ( rd_ptr[i]== rd_ptr_check[i] ) $display(" b3.2 succeeded");
-                    else $display(" $error :b3.2 failed in %m at %t", $time);
+                    // if ( rd_ptr[i]== rd_ptr_check[i] ) $display(" b3.2 succeeded");
+                    if ( rd_ptr[i]!= rd_ptr_check[i] ) $display(" $error :b3.2 failed in %m at %t", $time);
+                    // else $display(" $error :b3.2 failed in %m at %t", $time);
                 end
                 //b4 buffer cannot be empty and full at the same time
-                if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
-                else $display(" $error :b4 failed in %m at %t", $time);
+                // if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
+                // else $display(" $error :b4 failed in %m at %t", $time);
                 
 
             end
             
-            // Assert statements
-            //b1.1
-            b1_1: assert property ( @(posedge clk) ( wr[i] && (!rd[i] && !(depth[i] == B) || rd[i]) ) ##1  ( wr_ptr[i] == $past(wr_ptr[i])+1 ));
-            //b1.2
-            b1_2: assert property ( @(posedge clk) (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) ##1  ( rd_ptr[i] == $past(rd_ptr[i])+1 )); 
-            //b3.1
-            b3_1: assert property ( @(posedge clk) (wr[i] && !rd[i] && (depth[i] == B) ) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )); 
-            //b3.2
-            b3_2: assert property ( @(posedge clk) (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )) ; 
-            //b4
-            b4: assert property ( @(posedge clk) (!(depth[i] == {DEPTHw{1'b0}} && depth[i] == B))); 
-         `endif 
+        //     // Assert statements
+        //     //b1.1
+        //     b1_1: assert property ( @(posedge clk) ( wr[i] && (!rd[i] && !(depth[i] == B) || rd[i]) ) ##1  ( wr_ptr[i] == $past(wr_ptr[i])+1 ));
+        //     //b1.2
+        //     b1_2: assert property ( @(posedge clk) (rd[i] && (!wr[i] && !(depth[i] == B) || wr[i])) ##1  ( rd_ptr[i] == $past(rd_ptr[i])+1 )); 
+        //     //b3.1
+        //     b3_1: assert property ( @(posedge clk) (wr[i] && !rd[i] && (depth[i] == B) ) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )); 
+        //     //b3.2
+        //     b3_2: assert property ( @(posedge clk) (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) ##1  ( rd_ptr[i] == $past(rd_ptr[i]) )) ; 
+        //     //b4
+        //     b4: assert property ( @(posedge clk) (!(depth[i] == {DEPTHw{1'b0}} && depth[i] == B))); 
+        //  `endif 
     end//for
 
     
-    
+    reg [Fpay-1        :   0] buffer_a5 [2**BVw-1:0];
+    reg [2**BVw-1:0] ptr_a5;
+    reg a5_assert;
+    integer p,q;
+
+    always @(posedge clk ) begin
+			if (wr_en)
+				 buffer_a5[(wr_addr[BVw-1  :   0])] <= fifo_ram_din[Fpay-1        :   0];
+			if (rd_en) begin
+                // if ( fifo_ram_dout[Fpay-1        :   0] == buffer_a5[(rd_addr[BVw-1  :   0])]) $display("A5 Done %d",dout);
+                // else $display("A5 failed %b-dout, %b-a5",fifo_ram_dout[Fpay-1        :   0],buffer_a5[(rd_addr[BVw-1  :   0])]);
+            
+                for(p=0;p<2**BVw;p=p+1) begin :a5_check
+                    if (buffer_a5[p]===dout[Fpay-1        :   0]) ptr_a5[p]=1'b1;
+                    else ptr_a5[p]=1'b0;
+                end
+                if (|ptr_a5) $display("A5 Done %d",dout);
+                else begin
+                    $display("Start %b-dout",dout[Fpay-1        :   0]);
+                    for(q=0;q<2**BVw;q=q+1) begin :a5_check_fail
+                    $display("A5 failed %b-a5",buffer_a5[q]);                    
+                    end
+                    $display("end");
+                    
+                end
+            end
+				 
+	end
+
+
+
+
     `ifdef ASSERTION_ENABLE
         always @(posedge clk) begin
             if (wr_en) begin      
@@ -425,11 +520,13 @@ generate
                             packet_count_flag_in<=1'b1; // Enabled to count payload packets and tails packets
                             age_ptr[y]=1'b1; //  Enabled to count the age of the packet inside the buffer
                             packet_age[y]=1'b0; // Resetting the packet age
+                            b5_flag<=1'b1;
                             break;
                         end
                     end
                     
                 end
+                else b5_flag<=1'b0;
 
                 if (packet_count_flag_in) begin
                     b6_buffer_counter[y]<=b6_buffer_counter[y] + 1'b1; // Counting the payload and tail packets
@@ -450,32 +547,33 @@ generate
                         // branch statement
                         //b5
                         if (b5_check_ptr[z]==1'b1 && (b5_check_buffer[z])==dout[8:0] && z!=$size(b5_check_buffer)) begin // Compare with check buffer
-                            $display("(Property b2) packet %b stayed in buffer for %d ticks at %m",b5_check_buffer[z],packet_age[z]);
+                            // $display("(Property b2) packet %b stayed in buffer for %d ticks at %m",b5_check_buffer[z],packet_age[z]);
                             $display(" b5 succeeded");
                             b5_check_ptr[z]<=1'b0; // reset check buffer pointer
                             b6_buffer_counter[z]<=b6_buffer_counter[z] - 1'b1; // Counting the packets for b6
                             packet_count_flag_out<=1'b1; // Enabled to count payload and tail packets
                             age_ptr[z]=1'b0; // resetting age pointer
+                            b5_flag<=1'b1;
                             //packet_age[z]=1'b0; // resetting age
 
                             // branch statement
                             //R6
-                            if (packet_age[z] > Tmin) $display(" R6 succeeded");
-                            else $display(" $error :R6 failed in %m at %t", $time);
+                            // if (packet_age[z] > Tmin) $display(" R6 succeeded");
+                            // else $display(" $error :R6 failed in %m at %t", $time);
                             
                             // assertion statements
                             //R6
-                            R6: assert (packet_age[z] > Tmin);
-                            break;
+                            // R6: assert (packet_age[z] > Tmin);
+                            // break;
                         end
                         // assertion statements
                         //b5
-                        b5: assert (b5_check_ptr[z]==1'b1 && (b5_check_buffer[z])==dout[8:0] && z!=$size(b5_check_buffer));
+                        // b5: assert (b5_check_ptr[z]==1'b1 && (b5_check_buffer[z])==dout[8:0] && z!=$size(b5_check_buffer));
 
-                        if (z==$size(b5_check_buffer)) $display(" $error :b5 failed in %m at %t", $time); // Packet not found in the check buffer
                     end
                     
                 end
+                else b5_flag<=1'b0;
                 if (packet_count_flag_out) begin
                     b6_buffer_counter[z]<=b6_buffer_counter[z] - 1'b1; // Counting payload and tail packets that are leaving buffer
                 end
@@ -483,11 +581,11 @@ generate
                     packet_count_flag_out<=1'b0;
                     // branch statement
                     //b6
-                    if (b6_buffer_counter[z]==1'b0) $display(" b6 succeeded");
-                    else $display(" $error :b6 failed in %m at %t", $time);
+                    // if (b6_buffer_counter[z]==1'b0) $display(" b6 succeeded");
+                    // else $display(" $error :b6 failed in %m at %t", $time);
                     // assertion statements
                     //b6
-                    b6: assert (b6_buffer_counter[z]==1'b0);
+                    // b6: assert (b6_buffer_counter[z]==1'b0);
                 end
             end
             // b2 implementation
@@ -497,34 +595,32 @@ generate
                     
                     // branch statement
                     //R7
-                    if (packet_age[p] < Tmax) $display(" R7 succeeded"); //assuming no fail in a1 ∧ a2 ∧ a3 ∧ b1 ∧ b2 ∧ b4 ∧ m1 ∧ r1 ∧ r2 ∧ r3
-                    else $display(" $error :R7 failed in %m at %t", $time);
+                    // if (packet_age[p] < Tmax) $display(" R7 succeeded"); //assuming no fail in a1 ∧ a2 ∧ a3 ∧ b1 ∧ b2 ∧ b4 ∧ m1 ∧ r1 ∧ r2 ∧ r3
+                    // else $display(" $error :R7 failed in %m at %t", $time);
                     
                     // assertion statements
                     //R7
-                    R7: assert (packet_age[p] < Tmax);
+                    // R7: assert (packet_age[p] < Tmax);
                 end
             end
 
             //b2 checks
-            for(q=0;q<$size(b5_check_buffer);q=q+1) begin :asserion_check_loop4
-                // branch statement
-                //b2
-                if (age_ptr[q]==1'b1) begin
-                    packet_age_check[q]<=packet_age[q]; // assign previous clock value to check buffer
-                    #1
-                    if ( packet_age[q] == packet_age_check[q] +1'b1 ) $display(" b2 succeeded");
-                    else $display(" $error :b2 failed in %m at %t", $time);
-                end
-                // assertion statements
-                //b2
-                b2: assert property ( @(posedge clk) (age_ptr[q]==1'b1) ##1  ( packet_age[q] == $past(packet_age[q])+1 ));
-            end
+            // for(q=0;q<$size(b5_check_buffer);q=q+1) begin :asserion_check_loop4
+            //     // branch statement
+            //     //b2
+            //     if (age_ptr[q]==1'b1) begin
+            //         packet_age_check[q]<=packet_age[q]; // assign previous clock value to check buffer
+            //         #1
+            //         if ( packet_age[q] == packet_age_check[q] +1'b1 ) $display(" b2 succeeded");
+            //         else $display(" $error :b2 failed in %m at %t", $time);
+            //     end
+            //     // assertion statements
+            //     //b2
+            //     b2: assert property ( @(posedge clk) (age_ptr[q]==1'b1) ##1  ( packet_age[q] == $past(packet_age[q])+1 ));
+            // end
 
         end //Always
 
-        // //b5 (PSL)
-        b5_psl: assert property (@(posedge clk) wr_en |-> s_eventually din[8:0]==dout[8:0]);
 
 
     `endif   

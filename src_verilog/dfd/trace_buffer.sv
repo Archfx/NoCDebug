@@ -54,8 +54,8 @@ module trace_buffer #(
     integer trace_dump;
 
     initial begin
-        trace_dump = $fopen("trace_dump.txt","w");
-         $fwrite(trace_dump,"%s \n","Start");
+        trace_dump = $fopen("trace_dump.txt","a");
+        $fwrite(trace_dump,"%s  %d \n", "Simulation started : " , $time);
     end
 
     reg [TB_Depth-1      :   0] rd_ptr;
@@ -109,7 +109,7 @@ module trace_buffer #(
     // Dumping buffer input values to files
     always@(posedge clk ) begin
         if (trigger) begin 
-            $fwrite(trace_dump,"%h \n",trace);
+            $fwrite(trace_dump,"%b %d \n",trace,$time);
             $display("trace_buff %d, trace %b",trigger,trace);
         end
     end

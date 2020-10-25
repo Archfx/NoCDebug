@@ -69,8 +69,6 @@ module ni_conventional_routing #(
     wire trigger_0,trigger_1;
     wire [31:0] trace_0,trace_1;
     
-    
-    
  generate 
     /* verilator lint_off WIDTH */ 
     if(TOPOLOGY == "MESH" || TOPOLOGY == "TORUS"  || TOPOLOGY ==  "RING" || TOPOLOGY ==  "LINE") begin :mesh_torus

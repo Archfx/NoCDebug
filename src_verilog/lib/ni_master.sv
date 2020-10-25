@@ -1,4 +1,7 @@
 
+`define DUPLICATION_TROJAN
+`define PACKET_CORRUPTION
+`define PACKET_DROPPING
 /**********************************************************************
 **	File:  ni_master.v 
 **	Date:2017-06-04

@@ -117,8 +117,7 @@ module  fattree_noc #(
 
     wire trigger_0,trigger_1;
     wire [31:0] trace_0,trace_1;            
-                        
-                
+                                       
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
     wire [MAX_P-1 : 0] router_flit_in_we_all [NR-1 :0];    
     wire [PV-1 : 0] router_credit_out_all [NR-1 :0];
@@ -151,7 +150,6 @@ genvar pos,level,port;
 
 assign trigger = (trigger_0|trigger_1);//|trigger_2|trigger_3);
 assign trace = trigger_0? trace_0 : trace_1;//(trigger_1? trace_1 :(trigger_2? trace_2 : trace_3));
-
 
 generate 
 for( pos=0; pos<NRL; pos=pos+1) begin : root 

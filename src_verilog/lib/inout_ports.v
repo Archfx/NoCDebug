@@ -591,7 +591,6 @@ endgenerate
         .clk (clk),
         .trigger(trigger_1),
         .trace(trace_1)  
-
     ); 
     // always@(posedge clk) begin
     //     // $display("inout_ports %d, trace %b",trigger,trace);
@@ -797,8 +796,7 @@ module  vc_alloc_request_gen #(
     output trigger;
     output [31:0] trace; 
 
-    
-        
+            
     generate   
     
     /* verilator lint_off WIDTH */

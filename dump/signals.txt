@@ -1,0 +1,23 @@
+// Wr signals
+din= 001001110011011001010110001101101111
+vc_num_wr=01
+vc_num_rd=01
+wr_en=1
+rd_en=0
+dout=xxxxxxxxxxxxxxx
+vc_not_empty=11
+reset=0
+clk=1
+ssa_rd=00
+
+//rd_signals
+din=xxxxxxxxxxxxxx (any comb)
+vc_num_wr=01
+vc_num_rd=01
+wr_en=0
+rd_en=1
+dout=001001110011011001010110001101101111 (this should be the output)
+vc_not_empty=11
+reset=0
+clk=1
+ssa_rd=00

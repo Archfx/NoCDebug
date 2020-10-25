@@ -55,8 +55,7 @@ module mesh_torus_look_ahead_routing #(
 
     wire trigger_0,trigger_1;
     wire [31:0] trace_0,trace_1;
-
-    
+ 
     reg     [Xw-1   :   0]  destx_delayed;
     reg     [Yw-1   :   0]  desty_delayed;
     reg     [P_1-1  :   0]  destport_delayed;
@@ -190,7 +189,6 @@ module  mesh_torus_deterministic_look_ahead_routing #(
     output trigger;
     output [31:0] trace;
    
- 
     wire    [P-1    :   0]  destport_one_hot,receive_port,lkdestport_one_hot;
     wire    [Xw-1   :   0]  next_x;
     wire    [Yw-1   :   0]  next_y; 
@@ -885,7 +883,7 @@ module mesh_torus_conventional_routing #(
             /* verilator lint_on WIDTH */ 
                 assign trigger = 1'b0;
                 assign trace = 32'd0;
-
+                
                 north_last_routing #(
                     .NX         (NX),
                     .NY         (NY)

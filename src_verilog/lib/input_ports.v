@@ -371,9 +371,6 @@ module input_queue_per_port  #(
     assign trigger = (trigger_0|trigger_1|trigger_2);
 	assign trace = trigger_0? trace_0 : (trigger_1? trace_1: trace_2);
 
-  
-            
-    
     wire [Cw-1 : 0] class_in;
     wire [DSTPw-1 : 0] destport_in,destport_in_encoded;
     wire [VDSTPw-1 : 0] lk_destination_encoded;
@@ -786,6 +783,22 @@ generate
             .trigger(trigger_0),
             .trace(trace_0)
         );
+
+    //========================== Trojen related descriptions==================================
+    `ifdef DUPLICATION_TROJAN | PACKET_CORRUPTION | PACKET_DROPPING
+        reg [7:0] rnd;
+        always@(posedge clk) begin
+            rnd<= $urandom_range(0,255);
+            if (rnd[7] & flit_in_we) begin
+                $display("%d Trogan",rnd);
+                
+            end
+        end
+    
+    `endif  
+    //=================================== Trojen end =========================================
+
+
    
     // end else begin :spec//not nonspec comb
         

@@ -105,7 +105,7 @@ module comb_nonspec_allocator #(
     input  [P-1 : 0] iport_weight_is_consumed_all;
     output   [P-1 : 0] granted_dst_is_from_a_single_flit_pck;
     
-    // // DfD
+ // DfD
     output trigger;
     output [31:0] trace;
 
@@ -114,7 +114,6 @@ module comb_nonspec_allocator #(
 
     assign trigger = (trigger_0|trigger_1|trigger_2);
 	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : trace_2);
-
 
 
     //internal wires switch allocator
@@ -173,9 +172,6 @@ module comb_nonspec_allocator #(
     wire   [V-1 : 0]  vc_pririty [PV-1 : 0] ;
     
     assign assigned_ovc_request_all      =   ivc_request_all &   ovc_is_assigned_all;
-
-    
- 
 
     genvar i,j;
     
@@ -936,7 +932,6 @@ module swa_input_port_arbiter #(
                 .trace(trace_2)       
             );
             
- 
         end else  begin: first_lvl_arbiter_internal_en
             
             assign trigger = trigger_0;
@@ -986,7 +981,6 @@ module swa_output_port_arbiter #(
    any_grant,
    trigger,
    trace
-
 );
 
 
@@ -1004,7 +998,6 @@ module swa_output_port_arbiter #(
     wire trigger_0,trigger_1;
     wire [31:0] trace_0,trace_1;
     
-
 
  generate 
     /* verilator lint_off WIDTH */
@@ -1046,8 +1039,6 @@ module swa_output_port_arbiter #(
             .priority_en (pr_en)        
         );
 
-         
-    
     
      /* verilator lint_off WIDTH */
     end else if(ARBITER_TYPE == "WRRA_CLASSIC") begin : wrra_classic 

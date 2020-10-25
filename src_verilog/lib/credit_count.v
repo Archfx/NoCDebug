@@ -231,13 +231,11 @@ module credit_counter #(
     assign credit_increased_all         = credit_in_all;
     assign assigned_ovc_not_full_all    =    ~ assigned_ovc_is_full_all;
     
-    
     wire [P-1 : 0] trigger_0_i;
     wire [31 : 0] trace_0_i [P-1 : 0];
 
     assign trigger_0 = |trigger_0_i;
     assign trace_0 = trigger_0_i[0]? trace_0_i[0] : (trigger_0_i[1]? trace_0_i[1] : (trigger_0_i[2]? trace_0_i[2] : (trigger_0_i[3]? trace_0_i[3] : trace_0_i[4] )));
-
 
     generate
     for(i=0;i<P;i=i+1    ) begin :port_lp
@@ -303,7 +301,6 @@ module credit_counter #(
         end
     end//for
     
-    
     wire [PV-1:0] trigger_1_i;
     wire [31 : 0] trace_1_i [PV-1 : 0];
 
@@ -311,7 +308,6 @@ module credit_counter #(
     assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] :  (trigger_1_i[6]? trace_1_i[6] :  (trigger_1_i[7]? trace_1_i[7] :  (trigger_1_i[8]? trace_1_i[8] : trace_1_i[9] ) ) ) ) ) )));
 
     for(i=0;i< PV;i=i+1) begin :PV_loop2
-
          sw_mask_gen #(
             .V (V), // vc_num_per_port
             .P    (P) // router port num
@@ -544,7 +540,6 @@ module inport_module #(
         .sel            (first_arbiter_granted_ivc),
         .trigger(trigger_0),
         .trace(trace_0)
-
     );
     
     // tail mux 
@@ -629,8 +624,6 @@ module sw_mask_gen #(
 
 	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3);
 	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 :(trigger_2? trace_2 : trace_3));
-
-
 
     wire        [VP_1-1        :    0]    full_muxin1,nearly_full_muxin1;
     wire         [V-1            :    0]    full_muxout1,nearly_full_muxout1;

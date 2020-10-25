@@ -115,8 +115,7 @@ module mesh_torus_noc #(
 
     assign trigger =  |trigger_i; 
     assign trace = trigger_i[0]? trace_i[0] : (trigger_i[1]? trace_i[1] : (trigger_i[2]? trace_i[2] : trace_i[3] ));
-              
-                   
+                             
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
     wire [MAX_P-1 : 0] router_flit_in_we_all [NR-1 :0];    
     wire [PV-1 : 0] router_credit_out_all [NR-1 :0];

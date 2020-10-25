@@ -136,9 +136,7 @@ module router # (
 
     assign trigger = (trigger_0|trigger_1|trigger_2);
 	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : trace_2) ;
-
-
-    
+  
     //internal wires
     wire  [PV-1 : 0] ovc_allocated_all;
     wire  [PVV-1 : 0] granted_ovc_num_all;
