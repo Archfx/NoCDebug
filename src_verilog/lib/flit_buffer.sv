@@ -4,7 +4,8 @@
 //`define DUMP_ENABLE
 `define ATTACK_DUMP_ENABLE
 // `define EAVSDROP
-`define PKTCORRP
+// `define PKTCORRP
+`define PKTMISS
 /**********************************************************************
 **	File:  flit_buffer.sv
 **    
@@ -119,6 +120,9 @@ module flit_buffer #(
     `ifdef PKTCORRP
         wire packetCorruption_en;
     `endif 
+    `ifdef PKTMISS
+        reg packetMiss_en;
+    `endif 
     // ==================================================================
 
     // Attacks
@@ -158,6 +162,22 @@ module flit_buffer #(
             // Dumping attach activation time to a file
             always @(posedge clk) begin    
                 if (packetCorruption_en) $fwrite(attack_time,"Packet Corruption attack launched at %d cycle of the clock\n",$time); 
+            end
+                
+        `endif
+    `endif
+
+    `ifdef PKTMISS
+         always @(posedge clk) begin    
+                if (rd_en && (!din[35] || !din[34])) begin
+                    packetMiss_en <= 1'b1;
+                end
+                else packetMiss_en <= 1'b0;
+        end
+        `ifdef ATTACK_DUMP_ENABLE
+            // Dumping attach activation time to a file
+            always @(posedge clk) begin    
+                if (packetMiss_en) $fwrite(attack_time,"Packet missing attack launched at %d cycle of the clock\n",$time); 
             end
                 
         `endif
@@ -312,7 +332,10 @@ generate
                 depth   [i] <= {DEPTHw{1'b0}};
             end
             else begin
-                if (wr[i] ) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
+                if (wr[i] 
+                        `ifdef PKTMISS
+                            && !packetMiss_en
+                        `endif) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
                 if (rd[i] ) rd_ptr [i]<= rd_ptr [i]+ 1'h1;
                 if (wr[i] & ~rd[i]) depth [i]<=
                 //synthesis translate_off
