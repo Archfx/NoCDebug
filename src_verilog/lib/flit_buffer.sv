@@ -522,34 +522,7 @@ generate
     end//for
 
     
-    // reg [Fpay-1        :   0] buffer_a5 [2**BVw-1:0];
-    // reg [2**BVw-1:0] ptr_a5;
-    // reg a5_assert;
-    // integer p,q;
-
-    // always @(posedge clk ) begin
-	// 		if (wr_en)
-	// 			 buffer_a5[(wr_addr[BVw-1  :   0])] <= fifo_ram_din[Fpay-1        :   0];
-	// 		if (rd_en) begin
-    //             // if ( fifo_ram_dout[Fpay-1        :   0] == buffer_a5[(rd_addr[BVw-1  :   0])]) $display("A5 Done %d",dout);
-    //             // else $display("A5 failed %b-dout, %b-a5",fifo_ram_dout[Fpay-1        :   0],buffer_a5[(rd_addr[BVw-1  :   0])]);
-            
-    //             for(p=0;p<2**BVw;p=p+1) begin :a5_check
-    //                 if (buffer_a5[p]===dout[Fpay-1        :   0]) ptr_a5[p]=1'b1;
-    //                 else ptr_a5[p]=1'b0;
-    //             end
-    //             if (|ptr_a5) $display("A5 Done %d",dout);
-    //             else begin
-    //                 $display("Start %b-dout",dout[Fpay-1        :   0]);
-    //                 for(q=0;q<2**BVw;q=q+1) begin :a5_check_fail
-    //                 $display("A5 failed %b-a5",buffer_a5[q]);                    
-    //                 end
-    //                 $display("end");
-                    
-    //             end
-    //         end
-				 
-	// end
+    
 
 
 
