@@ -2,6 +2,9 @@
 
 // `define ASSERTION_ENABLE
 //`define DUMP_ENABLE
+`define ATTACK_DUMP_ENABLE
+// `define EAVSDROP
+`define PKTCORRP
 /**********************************************************************
 **	File:  flit_buffer.sv
 **    
@@ -81,17 +84,15 @@ module flit_buffer #(
     input                   clk;
     input  [V-1        :0]  ssa_rd;
 
+    // assign din = (din[31]===1'dx)? {din[35:32],23'd0,din[8:   0]} : din;
+
     output trigger;
     output [31:0] trace;
 
-    reg [31:0] trace_0,trace_1,trace_2;
-    reg trigger_0,trigger_1,trigger_2;
-    wire trigger_3,trigger_4,trigger_5,trigger_6;
-    wire [31:0] trace_3,trace_4,trace_5,trace_6;
-
-// Temp veriables
-    // reg [13:0] temp1,temp2;
-    reg next_clk_1,next_clk_2;
+    reg [31:0] trace_0;
+    reg trigger_0;
+    wire trigger_1,trigger_2,trigger_3,trigger_4,trigger_5,trigger_6;
+    wire [31:0] trace_1,trace_2,trace_3,trace_4,trace_5,trace_6;
 
 
     localparam BVw              =   log2(BV),
@@ -112,13 +113,69 @@ module flit_buffer #(
 
     // Attack variables
     // ==================================================================
-    reg eavesDrop_en;
+    `ifdef EAVSDROP
+        reg eavesDrop_en;
+    `endif 
+    `ifdef PKTCORRP
+        wire packetCorruption_en;
+    `endif 
     // ==================================================================
+
+    // Attacks
+    // ======================================================================================================
+    `ifdef ATTACK_DUMP_ENABLE
+        integer attack_time;
+        initial begin
+            attack_time = $fopen("attack_time.txt","a");
+            $fwrite(attack_time,"%s  %d \n", "Attack log : " , $time);
+        end
+    `endif
+    
+    `ifdef EAVSDROP
+        // Packet dubplication
+        reg [Fw-1      :0] eavesDrop;
+
+        always @(posedge clk) begin    
+                if (din[35]) begin
+                    eavesDrop <= {din[Fpay-1        :   4],2'd0,din[1 :0]};
+                    #4
+                    eavesDrop_en <= 1'b1;
+                end
+                else eavesDrop_en <= 1'b0;
+        end
+        `ifdef ATTACK_DUMP_ENABLE
+            // Dumping attach activation time to a file
+            always @(posedge clk) begin    
+                if (eavesDrop_en) $fwrite(attack_time,"Eaves drop attack launched at %d cycle of the clock\n",$time); 
+            end
+                
+        `endif
+    `endif
+
+    `ifdef PKTCORRP
+        assign packetCorruption_en = din[35]? 1'b1: 1'b0;
+        `ifdef ATTACK_DUMP_ENABLE
+            // Dumping attach activation time to a file
+            always @(posedge clk) begin    
+                if (packetCorruption_en) $fwrite(attack_time,"Packet Corruption attack launched at %d cycle of the clock\n",$time); 
+            end
+                
+        `endif
+    `endif
+
+    // ======================================================================================================
 
     
     
-    assign fifo_ram_din = {din[Fw-1 :   Fw-2],din[Fpay-1        :   0]};
-    // assign fifo_ram_din = eavesDrop_en? {din[Fw-1 :   Fw-2],{Fpay{1'b0}}}: {din[Fw-1 :   Fw-2],din[Fpay-1        :   0]};
+    // assign fifo_ram_din = {din[Fw-1 :   Fw-2],din[Fpay-1        :   0]};
+    assign fifo_ram_din =
+                            `ifdef EAVSDROP
+                                eavesDrop_en? {eavesDrop[Fw-1 :   Fw-2],eavesDrop[Fpay-1        :0]} : 
+                            `endif 
+                            `ifdef PKTCORRP
+                                packetCorruption_en? {din[ Fw-1 : Fw-2 ],{Fpay{2'b10}}} : 
+                            `endif  
+                            {din[Fw-1 :   Fw-2],din[Fpay-1        :   0]};
 
     assign dout = {fifo_ram_dout[Fpay+1:Fpay],{V{1'bX}},fifo_ram_dout[Fpay-1        :   0]};    
     assign  wr  =   (wr_en)?  vc_num_wr : {V{1'b0}};
@@ -127,35 +184,11 @@ module flit_buffer #(
     assign trigger= trigger_0 | trigger_1 | trigger_3 | trigger_4 | trigger_5 | trigger_6 ;
     assign trace = trigger_0? trace_0 : ((trigger_1)? trace_1 : (trigger_2? trace_2 : (trigger_3? trace_3 : (trigger_4? trace_4 : (trigger_5? trace_5 : trace_6)))));
     
-
-    // Assertion variables
-    // string instance_name = $sformatf("%m");
-    // integer packet_age [10          :0]; // Counting packet age
-    reg [15     :   0] packet_age [10          :0]; // Counting packet age
-    reg [15     :   0] packet_age_check [10          :0]; // Counting packet age
-    reg [1      :   0] age_ptr [10      :   0] ;
-    reg [8     :   0] b5_check_buffer [10          :0]; // Buffer table
-    reg [1      :   0] b5_check_ptr [10      :   0] ;
-    reg [4     :   0] b6_buffer_counter [10          :0]; // Packet counter
-    reg packet_count_flag_in;
-    reg packet_count_flag_out;
     integer x,y,z,p,q;
     reg b5_flag;
 
 
 genvar i;
-
-
-initial begin
-    for(x=0;x<10;x=x+1) begin :assertion_loop0
-        b5_check_ptr[x] <= 1'b0;
-        b6_buffer_counter[x] <= 1'b0;
-        packet_age[x]=1'b0; 
-        age_ptr[x] = 1'b0;
-    end
-    packet_count_flag_in<=1'b0;
-    packet_count_flag_out<=1'b0;
-end
 
 
 generate 
@@ -255,7 +288,10 @@ generate
         .wr_data        (fifo_ram_din), 
         .wr_addr        (wr_addr[BVw-1  :   0]),
         .rd_addr        (rd_addr[BVw-1  :   0]),
-        .wr_en          (wr_en),
+        .wr_en          (wr_en
+                        `ifdef EAVSDROP
+                            | eavesDrop_en
+                        `endif),
         .rd_en          (rd_en),
         .clk            (clk),
         .rd_data        (fifo_ram_dout)
@@ -274,17 +310,6 @@ generate
                 rd_ptr  [i] <= {Bw{1'b0}};
                 wr_ptr  [i] <= {Bw{1'b0}};
                 depth   [i] <= {DEPTHw{1'b0}};
-                
-                trace_0 <= 32'd0;
-                trigger_0 <= 1'b0;
-                next_clk_1 <= 1'b0;
-                trace_1 <= 32'd0;
-                trigger_1 <= 1'b0;
-                next_clk_2 <= 1'b0;
-                trace_2 <= 32'd0;
-                trigger_2 <= 1'b0;
-                b5_flag<=1'b0;
-
             end
             else begin
                 if (wr[i] ) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
@@ -334,8 +359,10 @@ generate
         // A5/A6-Check
         // ======================================================================================================
         always @(posedge clk or posedge reset) begin
-                
-                if (wr_en) buffer_a5[(wr_addr[BVw-1  :   0])] <= fifo_ram_din[Fpay-1        :   0];
+
+                if (reset) b5_flag<=1'b0;
+               
+                if (wr_en) buffer_a5[(wr_addr[BVw-1  :   0])] <= din[Fpay-1        :   0];
 
                 if (rd_en) begin
                     // if ( fifo_ram_dout[Fpay-1        :   0] == buffer_a5[(rd_addr[BVw-1  :   0])]) $display("A5 Done %d",dout);
@@ -366,48 +393,53 @@ generate
         // ======================================================================================================
 
 
-        // Attacks
-        // ======================================================================================================
-
-        // Packet dubplication
-        reg [Fw-1      :0] eavesDrop;
-        
-        // always @(posedge clk) begin
-        //     if (wr_en && !din[35] && !din[34]) eavesDrop_en<=1'b1;
-        //     // if (wr_en && eavesDrop_en && !din[34])
-        //     if (wr_en && eavesDrop_en && din[34]) eavesDrop_en<=1'b0;
-        // end
-
-
-        // ======================================================================================================
-
-
         // Trace creation for the trigger
         // ======================================================================================================
 
-    wire trigger_1,trigger_2;
-    wire [31:0] trace_1,trace_2;
+        reg [31:0] trace_1_i [1:0];
+        reg [1:0] trigger_1_i ;
+        reg [31:0] trace_2_i [1:0];
+        reg [1:0] trigger_2_i ;
 
-    reg [31:0] trace_1_i [1:0];
-    reg [1:0] trigger_1_i ;
-    reg [31:0] trace_2_i [1:0];
-    reg [1:0] trigger_2_i ;
+        // Temp veriables
+        // reg [13:0] temp1,temp2;
+        reg [1:0] next_clk_1 ;
+        reg [1:0] next_clk_2 ;
 
-    // Temp veriables
-    // reg [13:0] temp1,temp2;
-    reg [1:0] next_clk_1 ;
-    reg [1:0] next_clk_2 ;
+        assign trigger_1 = |trigger_1_i;
+        assign trigger_2 = |trigger_2_i;
 
-    assign trigger_1 = |trigger_1_i;
-    assign trigger_2 = |trigger_2_i;
-
-    assign trace_1 = trigger_1_i[0]? trace_1_i[0]:trace_1_i[1];
-    assign trace_2 = trigger_2_i[0]? trace_2_i[0]:trace_2_i[1];
+        assign trace_1 = trigger_1_i[0]? trace_1_i[0]:trace_1_i[1];
+        assign trace_2 = trigger_2_i[0]? trace_2_i[0]:trace_2_i[1];
 
 
         // Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (15bit) | WR | RD | DEPTH (3bit) | WR_PTR (2bit) | WR_PTR_NEXT (2bit)  | RD_PTR (2bit) | RD_PTR_NEXT (2bit) ] 
 
-        always@(posedge clk) begin
+        always@(posedge clk or posedge reset) begin
+            if (reset) begin
+                trace_0 <= 32'd0;
+                trigger_0 <= 1'b0;
+
+                next_clk_1[0] <= 1'b0;
+                next_clk_1[1] <= 1'b0;
+
+
+                trace_1_i[0] <= 32'd0;
+                trace_1_i[1] <= 32'd0;
+
+                trigger_1_i[0] <= 1'b0;
+                trigger_1_i[1] <= 1'b0;
+
+
+                next_clk_2[0] <= 1'b0;
+                next_clk_2[1] <= 1'b0;
+
+                trace_2_i[0] <= 32'd0;
+                trace_2_i[1] <= 32'd0;
+
+                trigger_2_i[0] <= 1'b0;
+                trigger_2_i[1] <= 1'b0;
+            end
             // TS-1
             if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
                 // trace_1<={4'b0001,14'b11111111111,14'd0};
@@ -471,7 +503,7 @@ generate
 
             if (rd_en && !(|ptr_a5)) begin
                 trigger_0 <= 1'b1;
-                trace_0<={4'd5,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                trace_0<={4'd5,dout[35:32],dout[8:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
 
             end 
             else trigger_0 <= 1'b0;
@@ -542,136 +574,7 @@ generate
         //     //b4
         //     b4: assert property ( @(posedge clk) (!(depth[i] == {DEPTHw{1'b0}} && depth[i] == B))); 
         //  `endif 
-    end//for
-
-    
-    
-
-
-
-
-    `ifdef ASSERTION_ENABLE
-        always @(posedge clk) begin
-            if (wr_en) begin      
-
-                // Asserting the property b5 : Data that was read from the buffer was at some point in time written into the buffer
-                // Asserting the property b6 : The same number of packets that were written in to the buffer can be read from the buffer
-
-                // b5 : adding the header to monitoring list
-                if (din[35]==1'b1) begin // Header found
-                    //  $display ("Buffer in %b",din);
-                    for(y=0;y<$size(b5_check_buffer);y=y+1) begin :asserion_check_loop1
-                        if (!b5_check_ptr[y]) begin
-                            b5_check_buffer[y]<=din[8:0]; // Adding the packet header to check buffer
-                            b5_check_ptr[y]<=1'b1; // check buffer pointer
-                            b6_buffer_counter[y]<=b6_buffer_counter[y] + 1'b1; // Packet counter for entering packets
-                            packet_count_flag_in<=1'b1; // Enabled to count payload packets and tails packets
-                            age_ptr[y]=1'b1; //  Enabled to count the age of the packet inside the buffer
-                            packet_age[y]=1'b0; // Resetting the packet age
-                            b5_flag<=1'b1;
-                            break;
-                        end
-                    end
-                    
-                end
-                else b5_flag<=1'b0;
-
-                if (packet_count_flag_in) begin
-                    b6_buffer_counter[y]<=b6_buffer_counter[y] + 1'b1; // Counting the payload and tail packets
-                end
-
-                if (din[34]==1'b1) begin
-                    packet_count_flag_in<=1'b0; // If tail found, stop Counting packets
-                end
-            end
-
-            if (rd_en) begin      
-
-                // b5 : removing the header from the monitoring list
-                if (dout[35]==1'b1) begin // Header found
-                    // $display (" buffer out %b",dout[31:0]);
-                    for(z=0;z<$size(b5_check_buffer)+1;z=z+1) begin :asserion_check_loop2
-                        // $display ("buffer_values %b",b5_check_buffer[z]);
-                        // branch statement
-                        //b5
-                        if (b5_check_ptr[z]==1'b1 && (b5_check_buffer[z])==dout[8:0] && z!=$size(b5_check_buffer)) begin // Compare with check buffer
-                            // $display("(Property b2) packet %b stayed in buffer for %d ticks at %m",b5_check_buffer[z],packet_age[z]);
-                            $display(" b5 succeeded");
-                            b5_check_ptr[z]<=1'b0; // reset check buffer pointer
-                            b6_buffer_counter[z]<=b6_buffer_counter[z] - 1'b1; // Counting the packets for b6
-                            packet_count_flag_out<=1'b1; // Enabled to count payload and tail packets
-                            age_ptr[z]=1'b0; // resetting age pointer
-                            b5_flag<=1'b1;
-                            //packet_age[z]=1'b0; // resetting age
-
-                            // branch statement
-                            //R6
-                            // if (packet_age[z] > Tmin) $display(" R6 succeeded");
-                            // else $display(" $error :R6 failed in %m at %t", $time);
-                            
-                            // assertion statements
-                            //R6
-                            // R6: assert (packet_age[z] > Tmin);
-                            // break;
-                        end
-                        // assertion statements
-                        //b5
-                        // b5: assert (b5_check_ptr[z]==1'b1 && (b5_check_buffer[z])==dout[8:0] && z!=$size(b5_check_buffer));
-
-                    end
-                    
-                end
-                else b5_flag<=1'b0;
-                if (packet_count_flag_out) begin
-                    b6_buffer_counter[z]<=b6_buffer_counter[z] - 1'b1; // Counting payload and tail packets that are leaving buffer
-                end
-                if (dout[34]==1'b1) begin // tail packet found
-                    packet_count_flag_out<=1'b0;
-                    // branch statement
-                    //b6
-                    // if (b6_buffer_counter[z]==1'b0) $display(" b6 succeeded");
-                    // else $display(" $error :b6 failed in %m at %t", $time);
-                    // assertion statements
-                    //b6
-                    // b6: assert (b6_buffer_counter[z]==1'b0);
-                end
-            end
-            // b2 implementation
-            for(p=0;p<$size(b5_check_buffer);p=p+1) begin :asserion_check_loop3
-                if (age_ptr[p]==1'b1) begin
-                    packet_age[p]=packet_age[p]+1'b1; // Counting the age of packets inside the buffer
-                    
-                    // branch statement
-                    //R7
-                    // if (packet_age[p] < Tmax) $display(" R7 succeeded"); //assuming no fail in a1 ∧ a2 ∧ a3 ∧ b1 ∧ b2 ∧ b4 ∧ m1 ∧ r1 ∧ r2 ∧ r3
-                    // else $display(" $error :R7 failed in %m at %t", $time);
-                    
-                    // assertion statements
-                    //R7
-                    // R7: assert (packet_age[p] < Tmax);
-                end
-            end
-
-            //b2 checks
-            // for(q=0;q<$size(b5_check_buffer);q=q+1) begin :asserion_check_loop4
-            //     // branch statement
-            //     //b2
-            //     if (age_ptr[q]==1'b1) begin
-            //         packet_age_check[q]<=packet_age[q]; // assign previous clock value to check buffer
-            //         #1
-            //         if ( packet_age[q] == packet_age_check[q] +1'b1 ) $display(" b2 succeeded");
-            //         else $display(" $error :b2 failed in %m at %t", $time);
-            //     end
-            //     // assertion statements
-            //     //b2
-            //     b2: assert property ( @(posedge clk) (age_ptr[q]==1'b1) ##1  ( packet_age[q] == $past(packet_age[q])+1 ));
-            // end
-
-        end //Always
-
-
-
-    `endif   
+    end//for 
 
     
     end 
