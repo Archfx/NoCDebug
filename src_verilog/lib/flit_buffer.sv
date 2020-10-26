@@ -329,6 +329,7 @@ generate
         reg [2**BVw-1:0] ptr_a5;
         reg a5_assert;
         integer p,q,r;
+        reg a5_flag;
 
         // A5/A6-Check
         // ======================================================================================================
@@ -339,6 +340,10 @@ generate
                 if (rd_en) begin
                     // if ( fifo_ram_dout[Fpay-1        :   0] == buffer_a5[(rd_addr[BVw-1  :   0])]) $display("A5 Done %d",dout);
                     // else $display("A5 failed %b-dout, %b-a5",fifo_ram_dout[Fpay-1        :   0],buffer_a5[(rd_addr[BVw-1  :   0])]);
+                    
+                    a5_flag<=1'b1;
+                end 
+                if (a5_flag) begin
                     for(p=0;p<2**BVw;p=p+1) begin :a5_check
                         if (buffer_a5[p]===dout[Fpay-1        :   0]) begin
                             ptr_a5[p]=1'b1;
@@ -354,9 +359,8 @@ generate
                         end
                         $display("end");  
                     end
-                    
-
-                end    
+                    a5_flag<=1'b0;  
+                end
         end
         // A5/A6-Check Finished
         // ======================================================================================================
