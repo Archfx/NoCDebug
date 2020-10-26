@@ -381,70 +381,89 @@ generate
         // Trace creation for the trigger
         // ======================================================================================================
 
+    wire trigger_1,trigger_2;
+    wire [31:0] trace_1,trace_2;
+
+    reg [31:0] trace_1_i [1:0];
+    reg [1:0] trigger_1_i ;
+    reg [31:0] trace_2_i [1:0];
+    reg [1:0] trigger_2_i ;
+
+    // Temp veriables
+    // reg [13:0] temp1,temp2;
+    reg [1:0] next_clk_1 ;
+    reg [1:0] next_clk_2 ;
+
+    assign trigger_1 = |trigger_1_i;
+    assign trigger_2 = |trigger_2_i;
+
+    assign trace_1 = trigger_1_i[0]? trace_1_i[0]:trace_1_i[1];
+    assign trace_2 = trigger_2_i[0]? trace_2_i[0]:trace_2_i[1];
+
 
         // Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (15bit) | WR | RD | DEPTH (3bit) | WR_PTR (2bit) | WR_PTR_NEXT (2bit)  | RD_PTR (2bit) | RD_PTR_NEXT (2bit) ] 
 
         always@(posedge clk) begin
-        //     // TS-1
-        //     if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
-        //         // trace_1<={4'b0001,14'b11111111111,14'd0};
-        //         trace_1<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-        //         // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-        //         next_clk_1 <= 1'b1;
-        //     end
-        //     if (next_clk_1) begin
-        //         // trace_1[13:0]<=14'b10101010101;
-        //         trace_1[1:0]<= rd_ptr[i];
-        //         trace_1[5:4]<= wr_ptr[i];
-        //         next_clk_1 <= 1'b0;
-        //         if ( wr_ptr[i]!= wr_ptr_check[i] +1'b1 ) trigger_1 <= 1'b1;
-        //     end
-        //     else trigger_1 <= 1'b0;
+            // TS-1
+            if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
+                // trace_1<={4'b0001,14'b11111111111,14'd0};
+                trace_1_i[0]<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                next_clk_1[0] <= 1'b1;
+            end
+            if (next_clk_1[0]) begin
+                // trace_1[13:0]<=14'b10101010101;
+                trace_1_i[0][1:0]<= rd_ptr[i];
+                trace_1_i[0][5:4]<= wr_ptr[i];
+                next_clk_1[0] <= 1'b0;
+                if ( wr_ptr[i]!= wr_ptr_check[i] +1'b1 ) trigger_1_i[0] <= 1'b1;
+            end
+            else trigger_1_i[0] <= 1'b0;
 
-        //     // Ts-2
-        //     if (rd[i] && (!wr[i] && (depth[i] != B)) ) begin
-        //         trace_2<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
-        //         // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
-        //         next_clk_2 <= 1'b1;
-        //     end
-        //     if (next_clk_2) begin
-        //         trace_2[1:0]<= rd_ptr[i];
-        //         trace_2[5:4]<= wr_ptr[i];
-        //         next_clk_2 <= 1'b0;
-        //         if ( rd_ptr[i]!= rd_ptr_check[i]+ 1'b1 ) trigger_2 <= 1'b1;
-        //     end
-        //     else trigger_2 <= 1'b0;
+            // Ts-2
+            if (rd[i] && (!wr[i] && (depth[i] != B)) ) begin
+                trace_2_i[0]<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                next_clk_2[0] <= 1'b1;
+            end
+            if (next_clk_2[0]) begin
+                trace_2_i[0][1:0]<= rd_ptr[i];
+                trace_2_i[0][5:4]<= wr_ptr[i];
+                next_clk_2[0] <= 1'b0;
+                if ( rd_ptr[i]!= rd_ptr_check[i]+ 1'b1 ) trigger_2_i[0] <= 1'b1;
+            end
+            else trigger_2_i[0] <= 1'b0;
 
 
 
-        //     if (wr[i] && !rd[i] && (depth[i] == B) )  begin
-        //         // trace_1<={4'b0001,14'b11111111111,14'd0};
-        //         trace_1<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-        //         // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-        //         next_clk_1 <= 1'b1;
-        //     end
-        //     if (next_clk_1) begin
-        //         // trace_1[13:0]<=14'b10101010101;
-        //         trace_1[1:0]<= rd_ptr[i];
-        //         trace_1[5:4]<= wr_ptr[i];
-        //         next_clk_1 <= 1'b0;
-        //         if ( wr_ptr[i]!= wr_ptr_check[i] ) trigger_1 <= 1'b1;
-        //     end
-        //     else trigger_1 <= 1'b0;
+            if (wr[i] && !rd[i] && (depth[i] == B) )  begin
+                // trace_1<={4'b0001,14'b11111111111,14'd0};
+                trace_1_i[1]<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                next_clk_1[1] <= 1'b1;
+            end
+            if (next_clk_1[1]) begin
+                // trace_1[13:0]<=14'b10101010101;
+                trace_1_i[1][1:0]<= rd_ptr[i];
+                trace_1_i[1][5:4]<= wr_ptr[i];
+                next_clk_1[1] <= 1'b0;
+                if ( wr_ptr[i]!= wr_ptr_check[i] ) trigger_1_i[1] <= 1'b1;
+            end
+            else trigger_1_i[1] <= 1'b0;
 
-        //     // Ts-2
-        //     if  (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
-        //         trace_2<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
-        //         // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
-        //         next_clk_2 <= 1'b1;
-        //     end
-        //     if (next_clk_2) begin
-        //         trace_2[1:0]<= rd_ptr[i];
-        //         trace_2[5:4]<= wr_ptr[i];
-        //         next_clk_2 <= 1'b0;
-        //         if ( rd_ptr[i]!= rd_ptr_check[i] ) trigger_2 <= 1'b1;
-        //     end
-        //     else trigger_2 <= 1'b0;
+            // Ts-2
+            if  (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
+                trace_2_i[1]<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                next_clk_2[1] <= 1'b1;
+            end
+            if (next_clk_2) begin
+                trace_2_i[1][1:0]<= rd_ptr[i];
+                trace_2_i[1][5:4]<= wr_ptr[i];
+                next_clk_2[1] <= 1'b0;
+                if ( rd_ptr[i]!= rd_ptr_check[i] ) trigger_2_i[1] <= 1'b1;
+            end
+            else trigger_2_i[1] <= 1'b0;
 
             if (rd_en && !(|ptr_a5)) begin
                 trigger_0 <= 1'b1;
