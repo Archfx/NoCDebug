@@ -84,8 +84,8 @@ module flit_buffer #(
     output trigger;
     output [31:0] trace;
 
-    reg [31:0] trace_1,trace_2;
-    reg trigger_1,trigger_2;
+    reg [31:0] trace_0,trace_1,trace_2;
+    reg trigger_0,trigger_1,trigger_2;
     wire trigger_3,trigger_4,trigger_5,trigger_6;
     wire [31:0] trace_3,trace_4,trace_5,trace_6;
 
@@ -124,8 +124,8 @@ module flit_buffer #(
     assign  wr  =   (wr_en)?  vc_num_wr : {V{1'b0}};
     assign  rd  =   (rd_en)?  vc_num_rd : ssa_rd;
     
-    assign trigger= trigger_1 | trigger_3 | trigger_4 | trigger_5 | trigger_6;
-    assign trace = (trigger_1)? trace_1 : (trigger_2? trace_2 : (trigger_3? trace_3 : (trigger_4? trace_4 : (trigger_5? trace_5 : trace_6))));
+    assign trigger= trigger_0 | trigger_1 | trigger_3 | trigger_4 | trigger_5 | trigger_6 ;
+    assign trace = trigger_0? trace_0 : ((trigger_1)? trace_1 : (trigger_2? trace_2 : (trigger_3? trace_3 : (trigger_4? trace_4 : (trigger_5? trace_5 : trace_6)))));
     
 
     // Assertion variables
@@ -275,6 +275,8 @@ generate
                 wr_ptr  [i] <= {Bw{1'b0}};
                 depth   [i] <= {DEPTHw{1'b0}};
                 
+                trace_0 <= 32'd0;
+                trigger_0 <= 1'b0;
                 next_clk_1 <= 1'b0;
                 trace_1 <= 32'd0;
                 trigger_1 <= 1'b0;
@@ -282,6 +284,7 @@ generate
                 trace_2 <= 32'd0;
                 trigger_2 <= 1'b0;
                 b5_flag<=1'b0;
+
             end
             else begin
                 if (wr[i] ) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
@@ -322,6 +325,43 @@ generate
         //synopsys  translate_on
         //synthesis translate_on
 
+        reg [Fpay-1        :   0] buffer_a5 [2**BVw-1:0];
+        reg [2**BVw-1:0] ptr_a5;
+        reg a5_assert;
+        integer p,q,r;
+
+        // A5/A6-Check
+        // ======================================================================================================
+        always @(posedge clk or posedge reset) begin
+                
+                if (wr_en) buffer_a5[(wr_addr[BVw-1  :   0])] <= fifo_ram_din[Fpay-1        :   0];
+
+                if (rd_en) begin
+                    // if ( fifo_ram_dout[Fpay-1        :   0] == buffer_a5[(rd_addr[BVw-1  :   0])]) $display("A5 Done %d",dout);
+                    // else $display("A5 failed %b-dout, %b-a5",fifo_ram_dout[Fpay-1        :   0],buffer_a5[(rd_addr[BVw-1  :   0])]);
+                    for(p=0;p<2**BVw;p=p+1) begin :a5_check
+                        if (buffer_a5[p]===dout[Fpay-1        :   0]) begin
+                            ptr_a5[p]=1'b1;
+                        end 
+                        else ptr_a5[p]=1'b0;
+                    end
+                    // A5
+                    if (|ptr_a5) $display("A5 Done %d",dout);
+                    else begin
+                        $display("Start %b-dout",dout[Fpay-1        :   0]);
+                        for(q=0;q<2**BVw;q=q+1) begin :a5_check_fail
+                        $display("A5 failed %b-a5",buffer_a5[q]);                    
+                        end
+                        $display("end");  
+                    end
+                    
+
+                end    
+        end
+        // A5/A6-Check Finished
+        // ======================================================================================================
+
+
         // Attacks
         // ======================================================================================================
 
@@ -338,11 +378,13 @@ generate
         // ======================================================================================================
 
 
-    // Trace creation for the trigger
+        // Trace creation for the trigger
+        // ======================================================================================================
+
 
         // Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (15bit) | WR | RD | DEPTH (3bit) | WR_PTR (2bit) | WR_PTR_NEXT (2bit)  | RD_PTR (2bit) | RD_PTR_NEXT (2bit) ] 
 
-        // always@(posedge clk) begin
+        always@(posedge clk) begin
         //     // TS-1
         //     if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
         //         // trace_1<={4'b0001,14'b11111111111,14'd0};
@@ -403,7 +445,17 @@ generate
         //         if ( rd_ptr[i]!= rd_ptr_check[i] ) trigger_2 <= 1'b1;
         //     end
         //     else trigger_2 <= 1'b0;
-        // end
+
+            if (rd_en && !(|ptr_a5)) begin
+                trigger_0 <= 1'b1;
+                trace_0<={4'd5,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+
+            end 
+            else trigger_0 <= 1'b0;
+        end
+        
+        // ======================================================================================================
+
         
         // `ifdef ASSERTION_ENABLE
      
@@ -470,34 +522,34 @@ generate
     end//for
 
     
-    reg [Fpay-1        :   0] buffer_a5 [2**BVw-1:0];
-    reg [2**BVw-1:0] ptr_a5;
-    reg a5_assert;
-    integer p,q;
+    // reg [Fpay-1        :   0] buffer_a5 [2**BVw-1:0];
+    // reg [2**BVw-1:0] ptr_a5;
+    // reg a5_assert;
+    // integer p,q;
 
-    always @(posedge clk ) begin
-			if (wr_en)
-				 buffer_a5[(wr_addr[BVw-1  :   0])] <= fifo_ram_din[Fpay-1        :   0];
-			if (rd_en) begin
-                // if ( fifo_ram_dout[Fpay-1        :   0] == buffer_a5[(rd_addr[BVw-1  :   0])]) $display("A5 Done %d",dout);
-                // else $display("A5 failed %b-dout, %b-a5",fifo_ram_dout[Fpay-1        :   0],buffer_a5[(rd_addr[BVw-1  :   0])]);
+    // always @(posedge clk ) begin
+	// 		if (wr_en)
+	// 			 buffer_a5[(wr_addr[BVw-1  :   0])] <= fifo_ram_din[Fpay-1        :   0];
+	// 		if (rd_en) begin
+    //             // if ( fifo_ram_dout[Fpay-1        :   0] == buffer_a5[(rd_addr[BVw-1  :   0])]) $display("A5 Done %d",dout);
+    //             // else $display("A5 failed %b-dout, %b-a5",fifo_ram_dout[Fpay-1        :   0],buffer_a5[(rd_addr[BVw-1  :   0])]);
             
-                for(p=0;p<2**BVw;p=p+1) begin :a5_check
-                    if (buffer_a5[p]===dout[Fpay-1        :   0]) ptr_a5[p]=1'b1;
-                    else ptr_a5[p]=1'b0;
-                end
-                if (|ptr_a5) $display("A5 Done %d",dout);
-                else begin
-                    $display("Start %b-dout",dout[Fpay-1        :   0]);
-                    for(q=0;q<2**BVw;q=q+1) begin :a5_check_fail
-                    $display("A5 failed %b-a5",buffer_a5[q]);                    
-                    end
-                    $display("end");
+    //             for(p=0;p<2**BVw;p=p+1) begin :a5_check
+    //                 if (buffer_a5[p]===dout[Fpay-1        :   0]) ptr_a5[p]=1'b1;
+    //                 else ptr_a5[p]=1'b0;
+    //             end
+    //             if (|ptr_a5) $display("A5 Done %d",dout);
+    //             else begin
+    //                 $display("Start %b-dout",dout[Fpay-1        :   0]);
+    //                 for(q=0;q<2**BVw;q=q+1) begin :a5_check_fail
+    //                 $display("A5 failed %b-a5",buffer_a5[q]);                    
+    //                 end
+    //                 $display("end");
                     
-                end
-            end
+    //             end
+    //         end
 				 
-	end
+	// end
 
 
 
