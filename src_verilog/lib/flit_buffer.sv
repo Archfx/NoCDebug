@@ -1,11 +1,13 @@
 `timescale   1ns/1ps
 
 // `define ASSERTION_ENABLE
-//`define DUMP_ENABLE
-`define ATTACK_DUMP_ENABLE
+// `define DUMP_ENABLE
+// `define ATTACK_DUMP_ENABLE
 // `define EAVSDROP
-// `define PKTCORRP
-`define PKTMISS
+// // `define PKTCORRP
+// // `define PKTDRP
+// // `define FLITSTARV
+
 /**********************************************************************
 **	File:  flit_buffer.sv
 **    
@@ -56,6 +58,13 @@ module flit_buffer #(
         trigger,
         trace
     );
+    
+
+    string instance_name = $sformatf("%m");
+
+
+    
+
 
    
     function integer log2;
@@ -86,6 +95,16 @@ module flit_buffer #(
     input  [V-1        :0]  ssa_rd;
 
     // assign din = (din[31]===1'dx)? {din[35:32],23'd0,din[8:   0]} : din;
+        always@(posedge clk) begin
+        if (instance_name.substr(57,87)=="y_loop[1].x_loop[1].the_router") begin
+            // `define ATTACK_DUMP_ENABLE
+            // `define EAVSDROP
+            $display("%m");
+            // `define PKTCORRP
+            // `define PKTDRP
+            // `define FLITSTARV
+        end
+    end
 
     output trigger;
     output [31:0] trace;
@@ -94,6 +113,22 @@ module flit_buffer #(
     reg trigger_0;
     wire trigger_1,trigger_2,trigger_3,trigger_4,trigger_5,trigger_6;
     wire [31:0] trace_1,trace_2,trace_3,trace_4,trace_5,trace_6;
+
+    reg [31:0] trace_1_i [1:0];
+    reg [0:0] trigger_1_i [1:0];
+    reg [31:0] trace_2_i [1:0];
+    reg [0:0] trigger_2_i [1:0];
+
+    // Temp veriables
+    // reg [13:0] temp1,temp2;
+    reg [0:0] next_clk_1 [1:0];
+    reg [0:0] next_clk_2  [1:0];
+
+    assign trigger_1 = trigger_1_i[0];
+    assign trigger_2 = trigger_2_i[0];
+
+    assign trace_1 = trigger_1_i[0]? trace_1_i[0]:trace_1_i[1];
+    assign trace_2 = trigger_2_i[0]? trace_2_i[0]:trace_2_i[1];
 
 
     localparam BVw              =   log2(BV),
@@ -112,6 +147,7 @@ module flit_buffer #(
     wire  [V-1                  :   0] rd;
     reg   [DEPTHw-1             :   0] depth    [V-1            :0];
 
+    
     // Attack variables
     // ==================================================================
     `ifdef EAVSDROP
@@ -120,8 +156,11 @@ module flit_buffer #(
     `ifdef PKTCORRP
         wire packetCorruption_en;
     `endif 
-    `ifdef PKTMISS
+    `ifdef PKTDRP
         reg packetMiss_en;
+    `endif 
+    `ifdef FLITSTARV
+        reg flitStarvation_en;
     `endif 
     // ==================================================================
 
@@ -131,7 +170,6 @@ module flit_buffer #(
         integer attack_time;
         initial begin
             attack_time = $fopen("attack_time.txt","a");
-            $fwrite(attack_time,"%s  %d \n", "Attack log : " , $time);
         end
     `endif
     
@@ -148,9 +186,9 @@ module flit_buffer #(
                 else eavesDrop_en <= 1'b0;
         end
         `ifdef ATTACK_DUMP_ENABLE
-            // Dumping attach activation time to a file
+            // Dumping attack activation time to a file
             always @(posedge clk) begin    
-                if (eavesDrop_en) $fwrite(attack_time,"Eaves drop attack launched at %d cycle of the clock\n",$time); 
+                if (eavesDrop_en) $fwrite(attack_time,"Eaves drop attack launched at %d cycle of the clock at %m\n",$time); 
             end
                 
         `endif
@@ -159,29 +197,41 @@ module flit_buffer #(
     `ifdef PKTCORRP
         assign packetCorruption_en = din[35]? 1'b1: 1'b0;
         `ifdef ATTACK_DUMP_ENABLE
-            // Dumping attach activation time to a file
+            // Dumping attack activation time to a file
             always @(posedge clk) begin    
-                if (packetCorruption_en) $fwrite(attack_time,"Packet Corruption attack launched at %d cycle of the clock\n",$time); 
+                if (packetCorruption_en) $fwrite(attack_time,"Packet Corruption attack launched at %d cycle of the clock at %m\n",$time); 
             end
                 
         `endif
     `endif
 
-    `ifdef PKTMISS
-         always @(posedge clk) begin    
+    `ifdef PKTDRP
+        always @(posedge clk) begin    
                 if (rd_en && (!din[35] || !din[34])) begin
                     packetMiss_en <= 1'b1;
                 end
                 else packetMiss_en <= 1'b0;
         end
         `ifdef ATTACK_DUMP_ENABLE
-            // Dumping attach activation time to a file
+            // Dumping attack activation time to a file
             always @(posedge clk) begin    
-                if (packetMiss_en) $fwrite(attack_time,"Packet missing attack launched at %d cycle of the clock\n",$time); 
+                if (packetMiss_en) $fwrite(attack_time,"Packet Dropping attack launched at %d cycle of the clock at %m\n",$time); 
             end
                 
         `endif
     `endif
+    `ifdef FLITSTARV
+        
+        `ifdef ATTACK_DUMP_ENABLE
+            // Dumping attack activation time to a file
+            always @(posedge clk) begin    
+                if (flitStarvation_en) $fwrite(attack_time,"Flit starvation Dropping attack launched at %d cycle of the clock at %m\n",$time); 
+            end
+                
+        `endif
+
+    `endif
+    
 
     // ======================================================================================================
 
@@ -309,9 +359,10 @@ generate
         .wr_addr        (wr_addr[BVw-1  :   0]),
         .rd_addr        (rd_addr[BVw-1  :   0]),
         .wr_en          (wr_en
-                        `ifdef EAVSDROP
-                            | eavesDrop_en
-                        `endif),
+                        // `ifdef EAVSDROP
+                        //     | eavesDrop_en
+                        // `endif
+                        ),
         .rd_en          (rd_en),
         .clk            (clk),
         .rd_data        (fifo_ram_dout)
@@ -333,11 +384,16 @@ generate
             end
             else begin
                 if (wr[i] 
-                        `ifdef PKTMISS
-                            && !packetMiss_en
-                        `endif) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
+                        // `ifdef PKTDRP
+                        //     & !packetMiss_en
+                        // `endif
+                        ) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
                 if (rd[i] ) rd_ptr [i]<= rd_ptr [i]+ 1'h1;
-                if (wr[i] & ~rd[i]) depth [i]<=
+                if (wr[i] & ~rd[i]
+                                // `ifdef PKTDRP
+                                //     & !packetMiss_en
+                                // `endif
+                                ) depth [i]<=
                 //synthesis translate_off
                 //synopsys  translate_off
                    #1
@@ -388,11 +444,9 @@ generate
                 if (wr_en) buffer_a5[(wr_addr[BVw-1  :   0])] <= din[Fpay-1        :   0];
 
                 if (rd_en) begin
-                    // if ( fifo_ram_dout[Fpay-1        :   0] == buffer_a5[(rd_addr[BVw-1  :   0])]) $display("A5 Done %d",dout);
-                    // else $display("A5 failed %b-dout, %b-a5",fifo_ram_dout[Fpay-1        :   0],buffer_a5[(rd_addr[BVw-1  :   0])]);
-                    
                     a5_flag<=1'b1;
                 end 
+
                 if (a5_flag) begin
                     for(p=0;p<2**BVw;p=p+1) begin :a5_check
                         if (buffer_a5[p]===dout[Fpay-1        :   0]) begin
@@ -401,8 +455,8 @@ generate
                         else ptr_a5[p]=1'b0;
                     end
                     // A5
-                    if (|ptr_a5) $display("A5 Done %d",dout);
-                    else begin
+                    // if (|ptr_a5) $display("A5 Done %d",dout);
+                    if (!(|ptr_a5)) begin
                         $display("Start %b-dout",dout[Fpay-1        :   0]);
                         for(q=0;q<2**BVw;q=q+1) begin :a5_check_fail
                         $display("A5 failed %b-a5",buffer_a5[q]);                    
@@ -415,28 +469,11 @@ generate
         // A5/A6-Check Finished
         // ======================================================================================================
 
-
         // Trace creation for the trigger
-        // ======================================================================================================
-
-        reg [31:0] trace_1_i [1:0];
-        reg [1:0] trigger_1_i ;
-        reg [31:0] trace_2_i [1:0];
-        reg [1:0] trigger_2_i ;
-
-        // Temp veriables
-        // reg [13:0] temp1,temp2;
-        reg [1:0] next_clk_1 ;
-        reg [1:0] next_clk_2 ;
-
-        assign trigger_1 = |trigger_1_i;
-        assign trigger_2 = |trigger_2_i;
-
-        assign trace_1 = trigger_1_i[0]? trace_1_i[0]:trace_1_i[1];
-        assign trace_2 = trigger_2_i[0]? trace_2_i[0]:trace_2_i[1];
-
+        // =====================================================================================================
 
         // Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (15bit) | WR | RD | DEPTH (3bit) | WR_PTR (2bit) | WR_PTR_NEXT (2bit)  | RD_PTR (2bit) | RD_PTR_NEXT (2bit) ] 
+        // Trace format flit buffer (32bit) : [ TID (4bit)| Flit_header(4) | Flit_properties[8:0](9) | wr[i](1) | rd[i](1) | depth[i](3) | wr_ptr[i](2) | rd_ptr[i](2) | rd_addr(3) | wr_addr(3) ] 
 
         always@(posedge clk or posedge reset) begin
             if (reset) begin
@@ -466,7 +503,7 @@ generate
             // TS-1
             if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
                 // trace_1<={4'b0001,14'b11111111111,14'd0};
-                trace_1_i[0]<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                trace_1_i[0]<={4'd1,dout[35:30],dout[8:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1[0] <= 1'b1;
             end
@@ -481,7 +518,7 @@ generate
 
             // Ts-2
             if (rd[i] && (!wr[i] && (depth[i] != B)) ) begin
-                trace_2_i[0]<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                trace_2_i[0]<={4'd2,dout[35:30],dout[8:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
                 // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
                 next_clk_2[0] <= 1'b1;
             end
@@ -497,7 +534,7 @@ generate
 
             if (wr[i] && !rd[i] && (depth[i] == B) )  begin
                 // trace_1<={4'b0001,14'b11111111111,14'd0};
-                trace_1_i[1]<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                trace_1_i[1]<={4'd3,dout[35:30],dout[8:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1[1] <= 1'b1;
             end
@@ -512,11 +549,11 @@ generate
 
             // Ts-2
             if  (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
-                trace_2_i[1]<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                trace_2_i[1]<={4'd4,dout[35:30],dout[8:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
                 // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
                 next_clk_2[1] <= 1'b1;
             end
-            if (next_clk_2) begin
+            if (next_clk_2[1]) begin
                 trace_2_i[1][1:0]<= rd_ptr[i];
                 trace_2_i[1][5:4]<= wr_ptr[i];
                 next_clk_2[1] <= 1'b0;
@@ -526,8 +563,7 @@ generate
 
             if (rd_en && !(|ptr_a5)) begin
                 trigger_0 <= 1'b1;
-                trace_0<={4'd5,dout[35:32],dout[8:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
-
+                trace_0<={4'd5,dout[35:32],dout[8:0],wr[i],rd[i],depth[i],(wr_ptr[i]),(rd_ptr[i]),rd_addr,wr_addr}; // length.rd_ptr = 2
             end 
             else trigger_0 <= 1'b0;
         end

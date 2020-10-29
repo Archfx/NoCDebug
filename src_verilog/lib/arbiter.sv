@@ -1,4 +1,6 @@
  `timescale     1ns/1ps
+//  `define ATTACK_DUMP_ENABLE
+//  `define PKTSTARV
 //  `define ASSERTION_ENABLE
 /**********************************************************************
 **	File: arbiter.v
@@ -405,7 +407,7 @@ module my_one_hot_arbiter #(
     
 )
 (
-    input        [ARBITER_WIDTH-1             :    0]    request,
+    input     [ARBITER_WIDTH-1             :    0]    request,
     output    [ARBITER_WIDTH-1            :    0]    grant,
     output                                            any_grant,
     input                                                clk,
@@ -422,6 +424,15 @@ module my_one_hot_arbiter #(
          end 	   
       end   
     endfunction // log2 
+
+ 
+    // `ifdef ATTACK_DUMP_ENABLE
+    //     integer attack_time;
+    //     initial begin
+    //         attack_time = $fopen("attack_time.txt","a");
+    //     end
+    // `endif
+    
     
     localparam ARBITER_BIN_WIDTH= log2(ARBITER_WIDTH);
     reg     [ARBITER_BIN_WIDTH-1        :    0]     low_pr;
@@ -437,13 +448,7 @@ module my_one_hot_arbiter #(
     .trace(trace)
 
     );
-
-    //  always@(posedge clk) begin
-    //     $display("arbsss3");
-    // end
-    
-    
-    
+  
     always@(posedge clk or posedge reset) begin
         if(reset) begin
             low_pr    <=    {ARBITER_BIN_WIDTH{1'b0}};
@@ -454,6 +459,24 @@ module my_one_hot_arbiter #(
     
 
     assign any_grant = | request;
+    
+    // wire        [ARBITER_WIDTH-1             :    0]    request_starv;
+    // assign request_starv= `ifdef PKTSTARV (request==4'b1000)?  4'b0000 : `endif request ;
+
+    // if(ARBITER_WIDTH    ==4) begin
+    //     `ifdef PKTSTARV
+    //         // Packet Starvation
+    //         `ifdef ATTACK_DUMP_ENABLE
+    //             // Dumping attack activation time to a file
+    //             always @(posedge clk) begin    
+    //                 if (request==4'b1000) $fwrite(attack_time,"Packet starvation attack launched at %d cycle of the clock at %m\n",$time); 
+    //             end
+                    
+    //         `endif
+    //     `endif
+    // end
+        
+   
 
     generate 
         if(ARBITER_WIDTH    ==2) begin: w2        arbiter_2_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
