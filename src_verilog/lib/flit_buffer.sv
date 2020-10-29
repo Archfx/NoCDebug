@@ -1,11 +1,11 @@
 `timescale   1ns/1ps
 
 // `define ASSERTION_ENABLE
-//`define DUMP_ENABLE
-`define ATTACK_DUMP_ENABLE
+// `define DUMP_ENABLE
+// `define ATTACK_DUMP_ENABLE
 // `define EAVSDROP
 // `define PKTCORRP
-`define PKTMISS
+// `define PKTMISS
 /**********************************************************************
 **	File:  flit_buffer.sv
 **    
@@ -401,8 +401,9 @@ generate
                         else ptr_a5[p]=1'b0;
                     end
                     // A5
-                    if (|ptr_a5) $display("A5 Done %d",dout);
-                    else begin
+                    // if (|ptr_a5) $display("A5 Done %d",dout);
+                    // else begin
+                    if (!(|ptr_a5)) begin
                         $display("Start %b-dout",dout[Fpay-1        :   0]);
                         for(q=0;q<2**BVw;q=q+1) begin :a5_check_fail
                         $display("A5 failed %b-a5",buffer_a5[q]);                    
