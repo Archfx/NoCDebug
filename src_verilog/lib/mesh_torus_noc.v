@@ -111,10 +111,23 @@ module mesh_torus_noc #(
     // wire trigger_0,trigger_1;
     // wire [31:0] trace_0,trace_1;              
     wire [NR-1 :0] trigger_i;
-    wire [31:0] trace_i [NR-1 :0];                
+    wire [31:0] trace_i [NR-1 :0];
+    wire [1:0] meshxy;
+
+    one_hot_to_bin #(
+        .ONE_HOT_WIDTH    (NR)
+    )conv
+    (
+    .one_hot_code(trigger_i),
+    .bin_code(meshxy),
+    .trigger(),
+    .trace()
+
+    );
+
 
     assign trigger =  |trigger_i; 
-    assign trace = trigger_i[0]? trace_i[0] : (trigger_i[1]? trace_i[1] : (trigger_i[2]? trace_i[2] : trace_i[3] ));
+    assign trace = {{1'bX},meshxy,trigger_i[0]? trace_i[0][28:0] : (trigger_i[1]? trace_i[1][28:0] : (trigger_i[2]? trace_i[2][28:0] : trace_i[3][28:0] ))};
                              
     wire [PFw-1 : 0] router_flit_in_all [NR-1 :0];
     wire [MAX_P-1 : 0] router_flit_in_we_all [NR-1 :0];    
@@ -286,8 +299,7 @@ generate
             localparam R_ADDR = (y<<NXw) + x;            
             localparam ROUTER_NUM = (y * NX) +    x;
             assign current_r_addr [ROUTER_NUM] = R_ADDR[RAw-1 :0];
-             
-             
+            
             router # (
                 .V(V),
                 .P(MAX_P),

@@ -2,9 +2,9 @@
 
 // `define ASSERTION_ENABLE
 // `define DUMP_ENABLE
-// `define ATTACK_DUMP_ENABLE
+`define ATTACK_DUMP_ENABLE
 // `define EAVSDROP
-// `define PKTCORRP
+`define PKTCORRP
 // `define PKTMISS
 /**********************************************************************
 **	File:  flit_buffer.sv
@@ -95,6 +95,7 @@ module flit_buffer #(
     wire trigger_1,trigger_2,trigger_3,trigger_4,trigger_5,trigger_6;
     wire [31:0] trace_1,trace_2,trace_3,trace_4,trace_5,trace_6;
 
+    localparam string instance_name = $sformatf("%m");
 
     localparam BVw              =   log2(BV),
                Bw               =   (B==1)? 1 : log2(B),
@@ -116,6 +117,7 @@ module flit_buffer #(
     // ==================================================================
     `ifdef EAVSDROP
         reg eavesDrop_en;
+        reg [Fw-1      :0] eavesDrop;
     `endif 
     `ifdef PKTCORRP
         wire packetCorruption_en;
@@ -125,68 +127,86 @@ module flit_buffer #(
     `endif 
     // ==================================================================
 
-    // Attacks
-    // ======================================================================================================
-    `ifdef ATTACK_DUMP_ENABLE
-        integer attack_time;
-        initial begin
-            attack_time = $fopen("attack_time.txt","a");
-            $fwrite(attack_time,"%s  %d \n", "Attack log : " , $time);
-        end
-    `endif
+    if (instance_name.substr(57,86)=="y_loop[1].x_loop[1].the_router" | instance_name.substr(57,86)=="y_loop[0].x_loop[1].the_router") begin
     
-    `ifdef EAVSDROP
-        // Packet dubplication
-        reg [Fw-1      :0] eavesDrop;
+        // Attacks
+        // ======================================================================================================
+        `ifdef ATTACK_DUMP_ENABLE
+            integer attack_time;
+            initial begin
+                attack_time = $fopen("attack_time.txt","a");
+                $fwrite(attack_time,"%s  %d \n", "Attack log : " , $time);
+            end
+        `endif
+        
+        `ifdef EAVSDROP
+            // Packet dubplication
 
-        always @(posedge clk) begin    
-                if (din[35]) begin
-                    eavesDrop <= {din[Fpay-1        :   4],2'd0,din[1 :0]};
-                    #4
-                    eavesDrop_en <= 1'b1;
+            always @(posedge clk) begin    
+                    if (din[35]) begin
+                        eavesDrop <= {din[Fpay-1        :   4],2'd0,din[1 :0]};
+                        #4
+                        eavesDrop_en <= 1'b1;
+                    end
+                    else eavesDrop_en <= 1'b0;
+            end
+            `ifdef ATTACK_DUMP_ENABLE
+                // Dumping attach activation time to a file
+                always @(posedge clk) begin    
+                    if (eavesDrop_en) $fwrite(attack_time,"Eaves drop attack launched at %d cycle of the clock at %m \n",$time); 
                 end
-                else eavesDrop_en <= 1'b0;
-        end
-        `ifdef ATTACK_DUMP_ENABLE
-            // Dumping attach activation time to a file
-            always @(posedge clk) begin    
-                if (eavesDrop_en) $fwrite(attack_time,"Eaves drop attack launched at %d cycle of the clock\n",$time); 
-            end
-                
+                    
+            `endif
         `endif
-    `endif
 
-    `ifdef PKTCORRP
-        assign packetCorruption_en = din[35]? 1'b1: 1'b0;
-        `ifdef ATTACK_DUMP_ENABLE
-            // Dumping attach activation time to a file
-            always @(posedge clk) begin    
-                if (packetCorruption_en) $fwrite(attack_time,"Packet Corruption attack launched at %d cycle of the clock\n",$time); 
-            end
-                
-        `endif
-    `endif
-
-    `ifdef PKTMISS
-         always @(posedge clk) begin    
-                if (rd_en && (!din[35] || !din[34])) begin
-                    packetMiss_en <= 1'b1;
+        `ifdef PKTCORRP
+            assign packetCorruption_en = din[35]? 1'b1: 1'b0;
+            `ifdef ATTACK_DUMP_ENABLE
+                // Dumping attach activation time to a file
+                always @(posedge clk) begin    
+                    if (packetCorruption_en) $fwrite(attack_time,"Packet Corruption attack launched at %d cycle of the clock at %m \n",$time); 
                 end
-                else packetMiss_en <= 1'b0;
-        end
-        `ifdef ATTACK_DUMP_ENABLE
-            // Dumping attach activation time to a file
-            always @(posedge clk) begin    
-                if (packetMiss_en) $fwrite(attack_time,"Packet missing attack launched at %d cycle of the clock\n",$time); 
-            end
-                
+                    
+            `endif
         `endif
-    `endif
 
-    // ======================================================================================================
+        `ifdef PKTMISS
+            always @(posedge clk) begin    
+                    if (rd_en && (!din[35] || !din[34])) begin
+                        packetMiss_en <= 1'b1;
+                    end
+                    else packetMiss_en <= 1'b0;
+            end
+            `ifdef ATTACK_DUMP_ENABLE
+                // Dumping attach activation time to a file
+                always @(posedge clk) begin    
+                    if (packetMiss_en) $fwrite(attack_time,"Packet missing attack launched at %d cycle of the clock at %m \n",$time); 
+                end
+                    
+            `endif
+        `endif
 
-    
-    
+        // ======================================================================================================   
+        
+    end
+    else begin
+        // Attack variable initialization 
+        // ==================================================================
+        `ifdef EAVSDROP
+            initial begin
+                eavesDrop_en<=1'b0;
+            end
+        `endif 
+        `ifdef PKTCORRP
+            assign packetCorruption_en =1'b0;
+        `endif 
+        `ifdef PKTMISS
+            initial begin
+                packetMiss_en<=1'b0;
+            end
+        `endif 
+        // ==================================================================
+    end
     // assign fifo_ram_din = {din[Fw-1 :   Fw-2],din[Fpay-1        :   0]};
     assign fifo_ram_din =
                             `ifdef EAVSDROP
@@ -467,7 +487,7 @@ generate
             // TS-1
             if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
                 // trace_1<={4'b0001,14'b11111111111,14'd0};
-                trace_1_i[0]<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                trace_1_i[0]<={{3{1'bX}},4'd1,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1[0] <= 1'b1;
             end
@@ -482,7 +502,7 @@ generate
 
             // Ts-2
             if (rd[i] && (!wr[i] && (depth[i] != B)) ) begin
-                trace_2_i[0]<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                trace_2_i[0]<={{3{1'bX}},4'd2,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
                 // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
                 next_clk_2[0] <= 1'b1;
             end
@@ -498,7 +518,7 @@ generate
 
             if (wr[i] && !rd[i] && (depth[i] == B) )  begin
                 // trace_1<={4'b0001,14'b11111111111,14'd0};
-                trace_1_i[1]<={4'd1,15'((din*(din+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                trace_1_i[1]<={{3{1'bX}},4'd3,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1[1] <= 1'b1;
             end
@@ -513,11 +533,11 @@ generate
 
             // Ts-2
             if  (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
-                trace_2_i[1]<={4'd2,15'((dout*(dout+34'd3))%34'd32749),wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                trace_2_i[1]<={{3{1'bX}},4'd4,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
                 // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
                 next_clk_2[1] <= 1'b1;
             end
-            if (next_clk_2) begin
+            if (next_clk_2[1]) begin
                 trace_2_i[1][1:0]<= rd_ptr[i];
                 trace_2_i[1][5:4]<= wr_ptr[i];
                 next_clk_2[1] <= 1'b0;
@@ -527,8 +547,7 @@ generate
 
             if (rd_en && !(|ptr_a5)) begin
                 trigger_0 <= 1'b1;
-                trace_0<={4'd5,dout[35:32],dout[8:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
-
+                trace_0<={{3{1'bX}},4'd5,dout[35:34],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),(rd_ptr[i]),rd_addr,wr_addr}; // length.rd_ptr = 2
             end 
             else trigger_0 <= 1'b0;
         end

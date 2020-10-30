@@ -94,8 +94,8 @@ module mor1k_mpsoc (
 	wire 					noc_clk,noc_reset;  
 
 	// Trace
-    wire trigger,trigger_0,trigger_1,trigger_2,trigger_3,trigger_4;
-    wire [31:0] trace,trace_0,trace_1,trace_2,trace_3,trace_4;  
+    wire trigger,trigger_0,trigger_1,trigger_2,trigger_3,trigger_noc;
+    wire [31:0] trace,trace_0,trace_1,trace_2,trace_3,trace_noc;  
     
 //NoC
  	noc #(
@@ -135,8 +135,8 @@ module mor1k_mpsoc (
 		.credit_out_all(credit_out_all) ,
 		.reset(noc_reset) ,
 		.clk(noc_clk) ,
-        .trigger(trigger_4),
-        .trace(trace_4)  
+        .trigger(trigger_noc),
+        .trace(trace_noc)  
 	);
 
  	
@@ -314,8 +314,8 @@ endgenerate
 
 
 
-	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3|trigger_4);
-	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 :(trigger_2? trace_2 : (trigger_3? trace_3: trace_4)));
+	assign trigger = (trigger_0|trigger_1|trigger_2|trigger_3|trigger_noc);
+	assign trace = {trigger_noc,trigger_noc? trace_noc[30:0] : (trigger_0? trace_0[30:0] : (trigger_1? trace_1[30:0] :(trigger_2? trace_2[30:0] : trace_3[30:0] )))};
 
 	trace_buffer #(
     	.Fpay (32),
@@ -330,17 +330,5 @@ endgenerate
         // ssa_rd
     );
 
-	always@(posedge clk) begin
-        // $display("MpSoc_0 %d, trace %b",trigger_0,trace_0);
-		// $display("MpSoc_1 %d, trace %b",trigger_1,trace_1);
-        // $display("MpSoc_2 %d, trace %b",trigger_2,trace_2);
-        // $display("MpSoc_3 %d, trace %b",trigger_3,trace_3);
-		// // $display("NoC %d, trace %b",trigger_4,trace_4);
-        // $display("SoC %d, trace %b",trigger,trace);
-		if (!(trigger==1'b0) & !(trigger==1'b1) ) $display("soc");
-
-
-
-    end
  
 endmodule
