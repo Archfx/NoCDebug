@@ -2,9 +2,9 @@
 
 // `define ASSERTION_ENABLE
 // `define DUMP_ENABLE
-`define ATTACK_DUMP_ENABLE
+// `define ATTACK_DUMP_ENABLE
 // `define EAVSDROP
-`define PKTCORRP
+// `define PKTCORRP
 // `define PKTMISS
 /**********************************************************************
 **	File:  flit_buffer.sv
@@ -485,25 +485,25 @@ generate
                 trigger_2_i[1] <= 1'b0;
             end
             // TS-1
-            if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
-                // trace_1<={4'b0001,14'b11111111111,14'd0};
+            if (wr[i])  begin
+            // if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
                 trace_1_i[0]<={{3{1'bX}},4'd1,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-                // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                trigger_1_i[0] <= 1'b1;
                 next_clk_1[0] <= 1'b1;
             end
-            if (next_clk_1[0]) begin
-                // trace_1[13:0]<=14'b10101010101;
-                trace_1_i[0][1:0]<= rd_ptr[i];
-                trace_1_i[0][5:4]<= wr_ptr[i];
-                next_clk_1[0] <= 1'b0;
-                if ( wr_ptr[i]!= wr_ptr_check[i] +1'b1 ) trigger_1_i[0] <= 1'b1;
-            end
+            // if (next_clk_1[0]) begin
+            //     trace_1_i[0]<={{3{1'bX}},4'd1,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+            //     next_clk_1[0] <= 1'b0;
+            //     // if ( wr_ptr[i]!= wr_ptr_check[i] +1'b1 ) trigger_1_i[0] <= 1'b1;
+            //     if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) trigger_1_i[0] <= 1'b0;
+            //     // else trigger_1_i[0] <= 1'b0;
+
+            // end
             else trigger_1_i[0] <= 1'b0;
 
             // Ts-2
             if (rd[i] && (!wr[i] && (depth[i] != B)) ) begin
                 trace_2_i[0]<={{3{1'bX}},4'd2,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
-                // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
                 next_clk_2[0] <= 1'b1;
             end
             if (next_clk_2[0]) begin
@@ -517,13 +517,10 @@ generate
 
 
             if (wr[i] && !rd[i] && (depth[i] == B) )  begin
-                // trace_1<={4'b0001,14'b11111111111,14'd0};
                 trace_1_i[1]<={{3{1'bX}},4'd3,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-                // trace_1<={4'd1,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1[1] <= 1'b1;
             end
             if (next_clk_1[1]) begin
-                // trace_1[13:0]<=14'b10101010101;
                 trace_1_i[1][1:0]<= rd_ptr[i];
                 trace_1_i[1][5:4]<= wr_ptr[i];
                 next_clk_1[1] <= 1'b0;
@@ -534,7 +531,6 @@ generate
             // Ts-2
             if  (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
                 trace_2_i[1]<={{3{1'bX}},4'd4,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
-                // trace_2<={4'd2,15'd0,wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
                 next_clk_2[1] <= 1'b1;
             end
             if (next_clk_2[1]) begin
