@@ -83,47 +83,39 @@ module xy_mesh_routing #(
     output trigger;
     output [31:0] trace;
 
-    reg trigger_0;
-    reg [31:0] trace_0;
+    // wire trigger_0;
+    // reg [31:0] trace_0;
     
-    assign trigger = 1'b0;//trigger_0;
-    assign trace = 32'b0;//trace_0;
+    // assign trigger = 1'b0;//trigger_0;
+    // assign trace = 32'b0;//trace_0;
 
     localparam  LOCAL    =    (OUT_BIN==1)?    0    :  1 ,//5'b00001
                 EAST     =    (OUT_BIN==1)?    1    :  2 ,//5'b00010 
                 NORTH    =    (OUT_BIN==1)?    2    :  4 ,//5'b00100    
                 WEST     =    (OUT_BIN==1)?    3    :  8 ,//5'b01000  
-                SOUTH    =    (OUT_BIN==1)?    4    : 16 ;//5'b10000    
+                SOUTH    =    (OUT_BIN==1)?    4    : 15 ;//5'b10000    
     
     
     reg [DSTw-1            :0]    destport_next;
     // reg [DSTw-1            :0]    destport_next_r3;
+
     
-    initial begin
-        trigger_0=1'b0;
-        trace_0=32'd0;
-    end
+    // initial begin
+    //     // trigger_0=1'b0;
+    //     trace_0<=32'd0;
+    // end
     
         
     assign    destport= destport_next;
     
     always@(*)begin
             destport_next    = LOCAL [DSTw-1    :0];
-            if           (dest_x    > current_x)        destport_next    = EAST [DSTw-1    :0];
+            if           (dest_x    > current_x)        destport_next    = EAST [DSTw-1    :0]; //attack
             else if      (dest_x    < current_x)        destport_next    = WEST [DSTw-1    :0];
             else begin
                 if         (dest_y    > current_y)        destport_next    = SOUTH [DSTw-1:0];
                 else if      (dest_y    < current_y)        destport_next    = NORTH [DSTw-1    :0];
             end
-            // $display("Route mesh values dest port %b",destport);
-            // $display("Route mesh values dest x %b , y %b",dest_x,dest_y);
-
-            // if (dest_x<=1'b1 && dest_y<=1'b1) 
-            // else begin
-            //     if (!$isunknown(dest_x) || !$isunknown(dest_y)) $display(" $error :r2 failed in %m at %t", $time);
-            // end
-            
-
 
             `ifdef ASSERTION_ENABLE
                 // Asserting the Property r1 : Route can issue at most one request 
@@ -154,17 +146,21 @@ module xy_mesh_routing #(
             `endif
     end
 
-    always@(*) begin
-        trigger_0=1'b1;
-        trace_0={4'b1000,1'b0,27'(destport_next)};
-        #1
-        trigger_0=1'b0;
-        // $display("route_mesh %b, trace %b ",trigger_0,trace_0);
+    wire trigger_1,trigger_2,trigger_3;
+    assign trigger_1 = !((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL));
+    assign trigger_2 = !(destport==5'b00001 || destport==5'b00010 || destport==5'b00100 || destport==5'b01000 || destport==5'b100000 );
+    assign trigger_3 = !((dest_x<=1'b1 && dest_y<=1'b1));
+    assign trigger = (trigger_1 | trigger_2 | trigger_3)? 1'b1 : 1'b0;
 
-        // trigger_0=1'b0;
-        // $display("route_mesh %b",trigger_0);
+    // always@(*) begin
+    //     // trace<={{3{1'bX}},4'd15,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
+    //     if (!((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL))) $display (" r3 failed");
+    // end
 
-    end
+    assign trace= trigger_1? {{3{1'bX}},4'd11,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}} :
+    (trigger_2? {{3{1'bX}},4'd12,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}} :
+    {{3{1'bX}},4'd13,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}}); // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
+
     
     
 endmodule

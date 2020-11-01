@@ -558,21 +558,21 @@ generate
             end
             else trigger_2 <= 1'b0;
 
-            if (((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) begin
+            // if (((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) begin
                 
-            end
+            // end
 
 
             if (wr_en) begin
                 trigger_0 <= 1'b1;
-                trace_0<={{3{1'bX}},4'd8,din[35:34],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),(rd_ptr[i]),rd_addr,wr_addr}; // length.rd_ptr = 2
+                trace_0<={{3{1'bX}},4'd9,din[35:34],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),(rd_ptr[i]),rd_addr,wr_addr}; // length.rd_ptr = 2
             end 
             else trigger_0 <= 1'b0;
 
 
             if (rd_en && !(|ptr_a5)) begin
                 trigger_0 <= 1'b1;
-                trace_0<={{3{1'bX}},4'd8,dout[35:34],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),(rd_ptr[i]),rd_addr,wr_addr}; // length.rd_ptr = 2
+                trace_0<={{3{1'bX}},4'd10,dout[35:34],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),(rd_ptr[i]),rd_addr,wr_addr}; // length.rd_ptr = 2
             end 
             else trigger_0 <= 1'b0;
         end
