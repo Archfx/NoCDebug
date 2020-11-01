@@ -1,0 +1,21 @@
+
+Trace format (flit buffer [32bit]) : 
+[NoC/IP(1) |RouterID(2)| TraceID(4) | TraceSignals(25)]
+
+TraceSignals(25) for different triggers are explained below
+TID 0: (Trigger condition : )
+
+
+TID 1:
+
+
+TID : 0-4 format is as below
+[ TID (4bit)| Flit_data (15bit) | WR(1) | RD(1) | DEPTH (3bit) | WR_PTR (2bit) | WR_PTR_NEXT (2bit)  | RD_PTR (2bit) | RD_PTR_NEXT (2bit) ]
+
+TID : 5 format is as below
+[ TID (4bit)| Flit_data (15bit) | wr[i](1) | rd[i](1) | depth[i](3) | wr_ptr[i](2) | rd_ptr[i](2) | rd_addr(3) | wr_addr(3) ] 
+
+Flit_data can be expanded as follows:
+Flit_data[15:0]==[header|tail|VC0|VC1|Data(11)]
+Data[11:0](Header)==[Data(5)|DST_PRT(3)|DST(2)|SRC(2)]
+note: In the Flit data region, instead of including the Hashed value using K-nuth variant Sliced part of the flit was included, since due to the original design of the Flit packets sometimes contains "x" values ant by calculating the hash value will couse entire 15bits to become "x"

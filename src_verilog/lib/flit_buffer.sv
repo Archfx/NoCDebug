@@ -87,13 +87,35 @@ module flit_buffer #(
 
     // assign din = (din[31]===1'dx)? {din[35:32],23'd0,din[8:   0]} : din;
 
+    // Trace creation for the trigger
+    // ======================================================================================================
+
     output trigger;
     output [31:0] trace;
 
-    reg [31:0] trace_0;
-    reg trigger_0;
-    wire trigger_1,trigger_2,trigger_3,trigger_4,trigger_5,trigger_6;
-    wire [31:0] trace_1,trace_2,trace_3,trace_4,trace_5,trace_6;
+    reg [31:0] trace_0,trace_1,trace_2;
+    reg trigger_0,trigger_1,trigger_2;
+    wire trigger_3,trigger_4,trigger_5,trigger_6;
+    wire [31:0] trace_3,trace_4,trace_5,trace_6;
+
+    reg [31:0] trace_1_i ;
+    reg  trigger_1_i ;
+    reg [31:0] trace_2_i ;
+    reg trigger_2_i ;
+
+    // Temp veriables
+    // reg [13:0] temp1,temp2;
+    reg [1:0] next_clk_1 ;
+    reg [1:0] next_clk_2 ;
+
+    // assign trigger_1 = trigger_1_i;
+    // assign trigger_2 = trigger_2_i;
+
+    // assign trace_1 = trace_1_i;//trigger_1_i[0]? trace_1_i[0]:trace_1_i;
+    // assign trace_2 = trace_2_i;//[0]? trace_2_i[0]:trace_2_i;
+
+    // ======================================================================================================
+
 
     localparam string instance_name = $sformatf("%m");
 
@@ -437,24 +459,7 @@ generate
         // ======================================================================================================
 
 
-        // Trace creation for the trigger
-        // ======================================================================================================
-
-        reg [31:0] trace_1_i [1:0];
-        reg [1:0] trigger_1_i ;
-        reg [31:0] trace_2_i [1:0];
-        reg [1:0] trigger_2_i ;
-
-        // Temp veriables
-        // reg [13:0] temp1,temp2;
-        reg [1:0] next_clk_1 ;
-        reg [1:0] next_clk_2 ;
-
-        assign trigger_1 = |trigger_1_i;
-        assign trigger_2 = |trigger_2_i;
-
-        assign trace_1 = trigger_1_i[0]? trace_1_i[0]:trace_1_i[1];
-        assign trace_2 = trigger_2_i[0]? trace_2_i[0]:trace_2_i[1];
+        
 
 
         // Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (15bit) | WR | RD | DEPTH (3bit) | WR_PTR (2bit) | WR_PTR_NEXT (2bit)  | RD_PTR (2bit) | RD_PTR_NEXT (2bit) ] 
@@ -464,86 +469,110 @@ generate
                 trace_0 <= 32'd0;
                 trigger_0 <= 1'b0;
 
-                next_clk_1[0] <= 1'b0;
-                next_clk_1[1] <= 1'b0;
+                trace_1 <= 32'd0;
+                trigger_1 <= 1'b0;
+
+                trace_2 <= 32'd0;
+                trigger_2 <= 1'b0;
+
+                next_clk_1 <= 1'b0;
+                next_clk_1 <= 1'b0;
+                next_clk_2 <= 1'b0;
+                next_clk_2 <= 1'b0;
 
 
-                trace_1_i[0] <= 32'd0;
-                trace_1_i[1] <= 32'd0;
-
-                trigger_1_i[0] <= 1'b0;
-                trigger_1_i[1] <= 1'b0;
 
 
-                next_clk_2[0] <= 1'b0;
-                next_clk_2[1] <= 1'b0;
+                // trace_1_i <= 32'd0;
+                // // trace_1_i[1] <= 32'd0;
 
-                trace_2_i[0] <= 32'd0;
-                trace_2_i[1] <= 32'd0;
+                // trigger_1_i <= 1'b0;
+                // // trigger_1_i[1] <= 1'b0;
 
-                trigger_2_i[0] <= 1'b0;
-                trigger_2_i[1] <= 1'b0;
+
+                // next_clk_2<= 1'b0;
+                // // next_clk_2[1] <= 1'b0;
+
+                // trace_2_i <= 32'd0;
+                // // trace_2_i[1] <= 32'd0;
+
+                // trigger_2_i <= 1'b0;
+                // trigger_2_i[1] <= 1'b0;
             end
             // TS-1
-            if (wr[i])  begin
-            // if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
-                trace_1_i[0]<={{3{1'bX}},4'd1,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-                trigger_1_i[0] <= 1'b1;
-                next_clk_1[0] <= 1'b1;
-            end
-            // if (next_clk_1[0]) begin
-            //     trace_1_i[0]<={{3{1'bX}},4'd1,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-            //     next_clk_1[0] <= 1'b0;
-            //     // if ( wr_ptr[i]!= wr_ptr_check[i] +1'b1 ) trigger_1_i[0] <= 1'b1;
-            //     if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) trigger_1_i[0] <= 1'b0;
-            //     // else trigger_1_i[0] <= 1'b0;
+            if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
+                trace_1<={{3{1'bX}},4'd0,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                next_clk_1 <= 1'b1;
+                trigger_1 <= 1'b1;
 
-            // end
-            else trigger_1_i[0] <= 1'b0;
+            end
+            if (next_clk_1) begin
+                trace_1<={{3{1'bX}},4'd1,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                next_clk_1 <= 1'b0;
+                if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) trigger_1 <= 1'b0;
+                else trigger_1 <= 1'b1;
+
+            end
+            else trigger_1 <= 1'b0;
 
             // Ts-2
             if (rd[i] && (!wr[i] && (depth[i] != B)) ) begin
-                trace_2_i[0]<={{3{1'bX}},4'd2,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
-                next_clk_2[0] <= 1'b1;
+                trace_2<={{3{1'bX}},4'd2,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                next_clk_2 <= 1'b1;
+                trigger_2 <= 1'b1;
             end
-            if (next_clk_2[0]) begin
-                trace_2_i[0][1:0]<= rd_ptr[i];
-                trace_2_i[0][5:4]<= wr_ptr[i];
-                next_clk_2[0] <= 1'b0;
-                if ( rd_ptr[i]!= rd_ptr_check[i]+ 1'b1 ) trigger_2_i[0] <= 1'b1;
+            if (next_clk_2) begin
+                trace_2<={{3{1'bX}},4'd3,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
+                next_clk_2 <= 1'b0;
+                if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) trigger_2<= 1'b0;
+                else trigger_2 <= 1'b1;
             end
-            else trigger_2_i[0] <= 1'b0;
+            else trigger_2 <= 1'b0;
 
 
 
             if (wr[i] && !rd[i] && (depth[i] == B) )  begin
-                trace_1_i[1]<={{3{1'bX}},4'd3,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-                next_clk_1[1] <= 1'b1;
+                trace_1<={{3{1'bX}},4'd4,din[35:32],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                trigger_1 <= 1'b1;
+                next_clk_1 <= 1'b1;
             end
-            if (next_clk_1[1]) begin
-                trace_1_i[1][1:0]<= rd_ptr[i];
-                trace_1_i[1][5:4]<= wr_ptr[i];
-                next_clk_1[1] <= 1'b0;
-                if ( wr_ptr[i]!= wr_ptr_check[i] ) trigger_1_i[1] <= 1'b1;
+            if (next_clk_1) begin
+                trace_1<={{3{1'bX}},4'd5,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                next_clk_1 <= 1'b0;
+                if ( wr_ptr[i]== wr_ptr_check[i] ) trigger_1 <= 1'b0;
+                else trigger_1 <= 1'b1;
             end
-            else trigger_1_i[1] <= 1'b0;
+            else trigger_1 <= 1'b0;
 
             // Ts-2
             if  (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
-                trace_2_i[1]<={{3{1'bX}},4'd4,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
-                next_clk_2[1] <= 1'b1;
+                trace_2<={{3{1'bX}},4'd6,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
+                trigger_2 <= 1'b1;
+                next_clk_2 <= 1'b1;
             end
-            if (next_clk_2[1]) begin
-                trace_2_i[1][1:0]<= rd_ptr[i];
-                trace_2_i[1][5:4]<= wr_ptr[i];
-                next_clk_2[1] <= 1'b0;
-                if ( rd_ptr[i]!= rd_ptr_check[i] ) trigger_2_i[1] <= 1'b1;
+            if (next_clk_2) begin
+                trace_2<={{3{1'bX}},4'd7,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
+                next_clk_2 <= 1'b0;
+                if ( rd_ptr[i]== rd_ptr_check[i] ) trigger_2 <= 1'b0;
+                else trigger_2 <= 1'b1;
             end
-            else trigger_2_i[1] <= 1'b0;
+            else trigger_2 <= 1'b0;
+
+            if (((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) begin
+                
+            end
+
+
+            if (wr_en) begin
+                trigger_0 <= 1'b1;
+                trace_0<={{3{1'bX}},4'd8,din[35:34],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),(rd_ptr[i]),rd_addr,wr_addr}; // length.rd_ptr = 2
+            end 
+            else trigger_0 <= 1'b0;
+
 
             if (rd_en && !(|ptr_a5)) begin
                 trigger_0 <= 1'b1;
-                trace_0<={{3{1'bX}},4'd5,dout[35:34],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),(rd_ptr[i]),rd_addr,wr_addr}; // length.rd_ptr = 2
+                trace_0<={{3{1'bX}},4'd8,dout[35:34],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),(rd_ptr[i]),rd_addr,wr_addr}; // length.rd_ptr = 2
             end 
             else trigger_0 <= 1'b0;
         end
@@ -597,6 +626,8 @@ generate
                 //b4 buffer cannot be empty and full at the same time
                 // if (!((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display (" b4 succeeded");
                 // else $display(" $error :b4 failed in %m at %t", $time);
+                if (((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) $display ("  $error :b4 failed in %m at %t", $time);
+
                 
 
             end
