@@ -480,34 +480,16 @@ generate
                 next_clk_2 <= 1'b0;
                 next_clk_2 <= 1'b0;
 
-
-
-
-                // trace_1_i <= 32'd0;
-                // // trace_1_i[1] <= 32'd0;
-
-                // trigger_1_i <= 1'b0;
-                // // trigger_1_i[1] <= 1'b0;
-
-
-                // next_clk_2<= 1'b0;
-                // // next_clk_2[1] <= 1'b0;
-
-                // trace_2_i <= 32'd0;
-                // // trace_2_i[1] <= 32'd0;
-
-                // trigger_2_i <= 1'b0;
-                // trigger_2_i[1] <= 1'b0;
             end
             // TS-1
             if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
-                trace_1<={{3{1'bX}},4'd0,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                trace_1<={{3{1'bX}},4'd0,din[35:32],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1 <= 1'b1;
                 trigger_1 <= 1'b1;
 
             end
             if (next_clk_1) begin
-                trace_1<={{3{1'bX}},4'd1,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                trace_1<={{3{1'bX}},4'd1,din[35:32],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1 <= 1'b0;
                 if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) trigger_1 <= 1'b0;
                 else trigger_1 <= 1'b1;
@@ -537,7 +519,7 @@ generate
                 next_clk_1 <= 1'b1;
             end
             if (next_clk_1) begin
-                trace_1<={{3{1'bX}},4'd5,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
+                trace_1<={{3{1'bX}},4'd5,din[35:32],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1 <= 1'b0;
                 if ( wr_ptr[i]== wr_ptr_check[i] ) trigger_1 <= 1'b0;
                 else trigger_1 <= 1'b1;
