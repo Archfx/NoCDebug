@@ -2,9 +2,9 @@
 
 // `define ASSERTION_ENABLE
 // `define DUMP_ENABLE
-// `define ATTACK_DUMP_ENABLE
+`define ATTACK_DUMP_ENABLE
 // `define EAVSDROP
-// `define PKTCORRP
+`define PKTCORRP
 // `define PKTMISS
 /**********************************************************************
 **	File:  flit_buffer.sv
@@ -149,7 +149,7 @@ module flit_buffer #(
     `endif 
     // ==================================================================
 
-    if (instance_name.substr(57,86)=="y_loop[1].x_loop[1].the_router" | instance_name.substr(57,86)=="y_loop[0].x_loop[1].the_router") begin
+    if (instance_name.substr(57,86)=="y_loop[1].x_loop[1].the_router" ) begin
     
         // Attacks
         // ======================================================================================================
