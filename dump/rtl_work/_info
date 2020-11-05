@@ -11,7 +11,7 @@ cModel Technology
 Z0 d/home/archfx/Documents/NoCDfD/assert_NoC/dump
 vaccumulator
 Z1 DXx6 sv_std 3 std 0 22 VYECXdT12H8WgbUP_5Y6:3
-Z2 !s110 1604558467
+Z2 !s110 1604589734
 !i10b 1
 !s100 <hTBk8]>4IV?Z0l?hj_ES1
 Z3 !s11b Dg1SIo80bB@j0V0VzS_@n1
@@ -28,15 +28,15 @@ Z8 OV;L;2020.1;71
 r1
 !s85 0
 31
-Z9 !s108 1604558467.000000
+Z9 !s108 1604589734.000000
 Z10 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/main_comp.sv|
-Z11 !s90 -sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verialog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/main_comp.sv|
+Z11 !s90 -reportprogress|300|-sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verialog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/main_comp.sv|
 !i113 1
 Z12 o-sv -work work
 Z13 !s92 -sv -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verialog/lib/
 Z14 tCvgOpt 0
 vadd_ss_port
-Z15 !s110 1604558471
+Z15 !s110 1604589738
 !i10b 1
 !s100 `oi4J?UDh79Il7a9Pj_^f1
 R3
@@ -52,15 +52,15 @@ R8
 r1
 !s85 0
 31
-Z19 !s108 1604558471.000000
+Z19 !s108 1604589738.000000
 Z20 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ss_allocator.v|
-Z21 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ss_allocator.v|
+Z21 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ss_allocator.v|
 !i113 1
 Z22 o-vlog01compat -work work
 Z23 !s92 -vlog01compat -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/
 R14
 vadd_sw_loc_one_hot
-Z24 !s110 1604558468
+Z24 !s110 1604589735
 !i10b 1
 !s100 j>Vml<c5XF2FJ_gBzl88[1
 R3
@@ -76,9 +76,9 @@ R8
 r1
 !s85 0
 31
-Z28 !s108 1604558468.000000
-Z29 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus_routting.v|
-Z30 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus_routting.v|
+R9
+Z28 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus_routting.v|
+Z29 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus_routting.v|
 !i113 1
 R22
 R23
@@ -92,8 +92,8 @@ IZb;;?PIXG]DF7<dCe?A`S3
 R4
 R0
 R16
-Z31 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_jtag_uart_wb.v
-Z32 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_jtag_uart_wb.v
+Z30 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_jtag_uart_wb.v
+Z31 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_jtag_uart_wb.v
 !i122 19
 L0 584 32
 R8
@@ -101,14 +101,14 @@ r1
 !s85 0
 31
 R9
-Z33 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_jtag_uart_wb.v|
-Z34 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_jtag_uart_wb.v|
+Z32 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_jtag_uart_wb.v|
+Z33 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_jtag_uart_wb.v|
 !i113 1
 R22
 R23
 R14
 valtera_reset_synchronizer
-Z35 !s110 1604558466
+Z34 !s110 1604589733
 !i10b 1
 !s100 UHE`ECc:Uf7RO>`M^mmT`2
 R3
@@ -124,15 +124,15 @@ R8
 r1
 !s85 0
 31
-Z36 !s108 1604558466.000000
+Z35 !s108 1604589733.000000
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_reset_synchronizer.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_reset_synchronizer.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_reset_synchronizer.v|
 !i113 1
 R22
 R23
 R14
 valtera_simulator_UART
-Z37 !s110 1604558470
+Z36 !s110 1604589737
 !i10b 1
 !s100 cUVWcEDUGMa?WH`I3MjKJ0
 R3
@@ -140,17 +140,17 @@ IY1d4Hj8GA0W6kVB<hTQjf0
 R4
 R0
 R16
-Z38 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_simulator_UART.v
-Z39 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_simulator_UART.v
+Z37 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_simulator_UART.v
+Z38 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_simulator_UART.v
 !i122 54
 L0 17 190
 R8
 r1
 !s85 0
 31
-Z40 !s108 1604558470.000000
-Z41 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_simulator_UART.v|
-Z42 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_simulator_UART.v|
+Z39 !s108 1604589737.000000
+Z40 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_simulator_UART.v|
+Z41 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/altera_simulator_UART.v|
 !i113 1
 R22
 R23
@@ -158,159 +158,159 @@ R14
 naltera_simulator_@u@a@r@t
 varbiter
 R1
-R35
+R34
 !i10b 1
-!s100 172fjV[8Oo]]Q947Xijfo1
+!s100 0Yj:VmLUJ06D5dz>?PY933
 R3
-Ih1WjT6c5<geNg8ZZX3?cG1
+I]O413^BDO?;z5lBf8@CVb0
 R4
 S1
 R0
-Z43 w1604383765
-Z44 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/arbiter.sv
-Z45 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/arbiter.sv
+Z42 w1604589727
+Z43 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/arbiter.sv
+Z44 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/arbiter.sv
 !i122 4
-L0 39 258
+L0 39 116
 R8
 r1
 !s85 0
 31
-R36
-Z46 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/arbiter.sv|
-Z47 !s90 -sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/arbiter.sv|
+R35
+Z45 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/arbiter.sv|
+Z46 !s90 -reportprogress|300|-sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/arbiter.sv|
 !i113 1
 R12
-Z48 !s92 -sv -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/
+Z47 !s92 -sv -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/
 R14
 varbiter_2_one_hot
 R1
-R35
+R34
 !i10b 1
-!s100 ofBcGP9h7gPVFNU_fdaS81
+!s100 V_bDi:Yc882YeMHP=4H@[3
 R3
-I]Q[LEWQOmFdRI8c:>b@3;2
+I[LI<bo8o0L>l?OfZmgnez0
 R4
 S1
 R0
+R42
 R43
 R44
-R45
 !i122 4
-L0 496 18
+L0 359 18
 R8
 r1
 !s85 0
 31
-R36
+R35
+R45
 R46
-R47
 !i113 1
 R12
-R48
+R47
 R14
 varbiter_3_one_hot
 R1
-R35
+R34
 !i10b 1
-!s100 8<8MG7>PW8gQoh2baOn4O3
+!s100 41F?HUJ>KW7lkLzlg6f8M2
 R3
-I<i5_[QM1Vj@BlEjU4nN@j1
+IH_BR0RPlS55=P682X@<Y^0
 R4
 S1
 R0
+R42
 R43
 R44
-R45
 !i122 4
-L0 518 24
+L0 381 24
 R8
 r1
 !s85 0
 31
-R36
+R35
+R45
 R46
-R47
 !i113 1
 R12
-R48
+R47
 R14
 varbiter_4_one_hot
 R1
-R35
+R34
 !i10b 1
-!s100 kmKICE0d;2YC7Mg]4gUaW3
+!s100 fj1WDIXn59;iM6O0k2:ae1
 R3
-IXgmGDLG?j0IZ26EWfU95K1
+IPLh:3DjlH4bidFkEUEF0O2
 R4
 S1
 R0
+R42
 R43
 R44
-R45
 !i122 4
-L0 544 32
+L0 407 32
 R8
 r1
 !s85 0
 31
-R36
+R35
+R45
 R46
-R47
 !i113 1
 R12
-R48
+R47
 R14
 varbiter_ext_priority
 R1
-R35
+R34
 !i10b 1
-!s100 bPl<nL5:MK:?5k4ODR@;l3
+!s100 ]1PJRY]gl>H>EH;MbFGHz2
 R3
-IE@:chaR@>]1XAPLOFh_MD0
+I0ARa21z]ZnYQ1]@?iJIdQ3
 R4
 S1
 R0
+R42
 R43
 R44
-R45
 !i122 4
-L0 1068 56
+L0 931 56
 R8
 r1
 !s85 0
 31
-R36
+R35
+R45
 R46
-R47
 !i113 1
 R12
-R48
+R47
 R14
 varbiter_priority_en
 R1
-R35
+R34
 !i10b 1
-!s100 i[^O`LN5z7l05;C:BZZ@30
+!s100 Sa^_Z?f4F^?Q=R3Gf2D=>2
 R3
-I1>jDJY@EdmS_^GF=18J=]0
+Ib>na23eMSf>F_0:MlhRdU3
 R4
 S1
 R0
+R42
 R43
 R44
-R45
 !i122 4
-L0 305 84
+L0 163 84
 R8
 r1
 !s85 0
 31
-R36
+R35
+R45
 R46
-R47
 !i113 1
 R12
-R48
+R47
 R14
 vbin_to_one_hot
 R1
@@ -372,25 +372,25 @@ R3
 IzSQ1?f35YA;TKUd=W57XX1
 R4
 R0
-Z49 w1600665983
-Z50 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wishbone_bus.v
-Z51 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wishbone_bus.v
+Z48 w1600665983
+Z49 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wishbone_bus.v
+Z50 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wishbone_bus.v
 !i122 31
 L0 514 67
 R8
 r1
 !s85 0
 31
-R28
+Z51 !s108 1604589735.000000
 Z52 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wishbone_bus.v|
-Z53 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wishbone_bus.v|
+Z53 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wishbone_bus.v|
 !i113 1
 R22
 R23
 R14
 vbyte_enabled_single_port_ram
 R1
-R24
+Z54 !s110 1604589736
 !i10b 1
 !s100 n2@U1IY66G@BA@YWQm?5@2
 R3
@@ -399,24 +399,24 @@ R4
 S1
 R0
 R16
-Z54 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/byte_enabled_generic_ram.sv
-Z55 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/byte_enabled_generic_ram.sv
+Z55 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/byte_enabled_generic_ram.sv
+Z56 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/byte_enabled_generic_ram.sv
 !i122 35
 L0 1720 306
 R8
 r1
 !s85 0
 31
-R28
-Z56 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/byte_enabled_generic_ram.sv|
-Z57 !s90 -sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/byte_enabled_generic_ram.sv|
+R51
+Z57 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/byte_enabled_generic_ram.sv|
+Z58 !s90 -reportprogress|300|-sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/byte_enabled_generic_ram.sv|
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_1
 R1
-R24
+R54
 !i10b 1
 !s100 ^LaN9Y;FVObzEjJc50bLF0
 R3
@@ -425,24 +425,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2027 58
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_10
 R1
-R24
+R54
 !i10b 1
 !s100 `W6YeO@Q5Rj8o]k7m[eGF0
 R3
@@ -451,24 +451,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2592 65
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_11
 R1
-R24
+R54
 !i10b 1
 !s100 B3Xo;T4J6Al7D43[4iNhd3
 R3
@@ -477,24 +477,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2658 68
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_12
 R1
-R24
+R54
 !i10b 1
 !s100 ljDUN^`1P4fZ3R_O7P`;73
 R3
@@ -503,24 +503,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2727 69
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_13
 R1
-R24
+R54
 !i10b 1
 !s100 Y`_m9dlelbk3EEccE59Q=2
 R3
@@ -529,24 +529,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2797 70
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_14
 R1
-R24
+R54
 !i10b 1
 !s100 Qm4C]_O:WZQd8al=IFAfU1
 R3
@@ -555,24 +555,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2868 71
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_15
 R1
-R24
+R54
 !i10b 1
 !s100 ^Ro42VMPRCCD:4d4QKbRL3
 R3
@@ -581,24 +581,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2940 72
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_2
 R1
-R24
+R54
 !i10b 1
 !s100 ?]ZEK?>hSk=KGf5zEzS<B0
 R3
@@ -607,24 +607,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2086 59
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_3
 R1
-R24
+R54
 !i10b 1
 !s100 dC^g>5n6d3aWXE=4BR`VE1
 R3
@@ -633,24 +633,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2146 60
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_4
 R1
-R24
+R54
 !i10b 1
 !s100 7QzeVULBKF[Cf00feAc8T3
 R3
@@ -659,24 +659,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2207 61
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_5
 R1
-R24
+R54
 !i10b 1
 !s100 zRHZ][E7g;^>zHh3JmZ5b2
 R3
@@ -685,24 +685,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2269 62
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_6
 R1
-R24
+R54
 !i10b 1
 !s100 PLWX1h@WXTQ^fJThQ5O`a1
 R3
@@ -711,24 +711,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2332 62
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_7
 R1
-R24
+R54
 !i10b 1
 !s100 OhXLB[V_i^P:<Ig8PYHf[3
 R3
@@ -737,24 +737,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2395 63
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_8
 R1
-R24
+R54
 !i10b 1
 !s100 Xb?CGS`Z=@084[V8@PSch3
 R3
@@ -763,24 +763,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2459 65
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_single_port_ram_9
 R1
-R24
+R54
 !i10b 1
 !s100 hG0jG_:mTaeI;_fk9<Td^2
 R3
@@ -789,20 +789,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 2525 66
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram
 R1
@@ -815,20 +815,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 14 369
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_1
 R1
@@ -841,20 +841,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 384 74
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_10
 R1
@@ -867,20 +867,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 1131 92
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_11
 R1
@@ -893,20 +893,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 1224 94
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_12
 R1
@@ -919,20 +919,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 1319 96
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_13
 R1
@@ -945,20 +945,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 1416 98
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_14
 R1
@@ -971,24 +971,24 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 1515 101
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_15
 R1
-R24
+R54
 !i10b 1
 !s100 35neFo@FWGzN]ePA<FdiZ3
 R3
@@ -997,20 +997,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 1617 102
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_2
 R1
@@ -1023,20 +1023,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 459 76
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_3
 R1
@@ -1049,20 +1049,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 536 78
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_4
 R1
@@ -1075,20 +1075,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 615 80
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_5
 R1
@@ -1101,20 +1101,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 696 82
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_6
 R1
@@ -1127,20 +1127,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 779 84
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_7
 R1
@@ -1153,20 +1153,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 864 86
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_8
 R1
@@ -1179,20 +1179,20 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 951 88
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vbyte_enabled_true_dual_port_ram_9
 R1
@@ -1205,23 +1205,23 @@ R4
 S1
 R0
 R16
-R54
 R55
+R56
 !i122 35
 L0 1040 90
 R8
 r1
 !s85 0
 31
-R28
-R56
+R51
 R57
+R58
 !i113 1
 R12
-R48
+R47
 R14
 vcanonical_credit_counter
-Z58 !s110 1604558469
+R54
 !i10b 1
 !s100 LzhJAFI?Ph[EETBZSJz]k2
 R3
@@ -1237,15 +1237,15 @@ R8
 r1
 !s85 0
 31
-Z60 !s108 1604558469.000000
+Z60 !s108 1604589736.000000
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/canonical_credit_count.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/canonical_credit_count.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/canonical_credit_count.v|
 !i113 1
 R22
 R23
 R14
 vcheck_destination_addr
-R37
+R36
 !i10b 1
 !s100 2?KI>EJ5>:A3cXOgf6CHA2
 R3
@@ -1261,9 +1261,9 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 Z63 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/debug.v|
-Z64 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/debug.v|
+Z64 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/debug.v|
 !i113 1
 R22
 R23
@@ -1285,9 +1285,9 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 Z68 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/credit_count.v|
-Z69 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/credit_count.v|
+Z69 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/credit_count.v|
 !i113 1
 R22
 R23
@@ -1319,7 +1319,7 @@ R12
 R13
 R14
 vclass_ovc_table
-R37
+R15
 !i10b 1
 !s100 Jh18j2AaGYzJROPTaKD6A0
 R3
@@ -1335,15 +1335,15 @@ R8
 r1
 !s85 0
 31
-R40
+R19
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/class_table.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/class_table.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/class_table.v|
 !i113 1
 R22
 R23
 R14
 vclassic_weight_counter
-R58
+R54
 !i10b 1
 !s100 [_WM1Yae9F8nY]mhEXD@P3
 R3
@@ -1361,7 +1361,7 @@ r1
 31
 R60
 Z73 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wrra.v|
-Z74 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wrra.v|
+Z74 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wrra.v|
 !i113 1
 R22
 R23
@@ -1383,9 +1383,9 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/clk_source.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/clk_source.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/clk_source.v|
 !i113 1
 R22
 R23
@@ -1407,9 +1407,9 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 Z78 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/comb_nonspec.v|
-Z79 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/comb_nonspec.v|
+Z79 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/comb_nonspec.v|
 !i113 1
 R22
 R23
@@ -1433,13 +1433,13 @@ r1
 31
 R19
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/combined_vc_sw_alloc.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/combined_vc_sw_alloc.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/combined_vc_sw_alloc.v|
 !i113 1
 R22
 R23
 R14
 vcongestion_out_based_3port_avb_ovc
-R2
+R34
 !i10b 1
 !s100 S9PAhfZl881?f=LLRENV70
 R3
@@ -1455,15 +1455,15 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 Z83 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/congestion_analyzer.v|
-Z84 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/congestion_analyzer.v|
+Z84 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/congestion_analyzer.v|
 !i113 1
 R22
 R23
 R14
 vcongestion_out_based_avb_ovc_not_granted_ivc
-R2
+R34
 !i10b 1
 !s100 E2<?iH>oO`]5mZY`AV5`71
 R3
@@ -1479,7 +1479,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -1487,7 +1487,7 @@ R22
 R23
 R14
 vcongestion_out_based_avb_ovc_w2
-R2
+R34
 !i10b 1
 !s100 eI8nAbCAfMfODJ6MZ^2eZ1
 R3
@@ -1503,7 +1503,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -1511,7 +1511,7 @@ R22
 R23
 R14
 vcongestion_out_based_avb_ovc_w3
-R2
+R34
 !i10b 1
 !s100 a6AM_TeS15L^bC8n=W47N3
 R3
@@ -1527,7 +1527,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -1535,7 +1535,7 @@ R22
 R23
 R14
 vcongestion_out_based_avb_ovc_w4
-R2
+R34
 !i10b 1
 !s100 WQIH_f`deJj_HICWoG@L=3
 R3
@@ -1551,7 +1551,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -1559,7 +1559,7 @@ R22
 R23
 R14
 vcongestion_out_based_ivc_notgrant
-R2
+R34
 !i10b 1
 !s100 ;@D^hBRBY7KUnAdDZ`eIH0
 R3
@@ -1575,7 +1575,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -1583,7 +1583,7 @@ R22
 R23
 R14
 vcongestion_out_based_ivc_req
-R2
+R34
 !i10b 1
 !s100 QPg8Q_QSg72n8cPC>RZ>90
 R3
@@ -1599,7 +1599,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -1607,7 +1607,7 @@ R22
 R23
 R14
 vcongestion_out_gen
-R2
+R34
 !i10b 1
 !s100 =AEZ:dJ_3CCzSk@DzXPfL2
 R3
@@ -1623,7 +1623,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -1649,7 +1649,7 @@ r1
 31
 R9
 Z87 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_crc32.v|
-Z88 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_crc32.v|
+Z88 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_crc32.v|
 !i113 1
 R22
 R23
@@ -1695,7 +1695,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R68
 R69
 !i113 1
@@ -1703,7 +1703,7 @@ R22
 R23
 R14
 vcrossbar
-R35
+R34
 !i10b 1
 !s100 9b7^in`MDf>35CaeHUUQi0
 R3
@@ -1719,9 +1719,9 @@ R8
 r1
 !s85 0
 31
-R36
+R35
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/crossbar.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/crossbar.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/crossbar.v|
 !i113 1
 R22
 R23
@@ -1780,7 +1780,7 @@ R12
 R13
 R14
 vdebug_IVC_flit_type_order_check
-R37
+R36
 !i10b 1
 !s100 4b_C82]4mU7z=Dn1i_CT=2
 R3
@@ -1796,7 +1796,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R63
 R64
 !i113 1
@@ -1805,7 +1805,7 @@ R23
 R14
 ndebug_@i@v@c_flit_type_order_check
 vdebug_mesh_edges
-R37
+R36
 !i10b 1
 !s100 cKSAmXioolA@ToNlM@7iZ2
 R3
@@ -1821,7 +1821,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R63
 R64
 !i113 1
@@ -1829,7 +1829,7 @@ R22
 R23
 R14
 vdebug_mesh_tori_route_ckeck
-R37
+R36
 !i10b 1
 !s100 T3bl]dI]3BJ[jZNRWKOh92
 R3
@@ -1845,7 +1845,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R63
 R64
 !i113 1
@@ -1871,13 +1871,13 @@ r1
 31
 R9
 Z92 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/input_ports.v|
-Z93 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/input_ports.v|
+Z93 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/input_ports.v|
 !i113 1
 R22
 R23
 R14
 vdistance_gen
-R15
+Z94 !s110 1604589739
 !i10b 1
 !s100 oYVG6Ro0AK1]d^b29e[f<0
 R3
@@ -1885,24 +1885,24 @@ I=gYQYmCTY<B=RPc^9eEXO3
 R4
 R0
 R59
-Z94 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/traffic_gen.v
-Z95 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/traffic_gen.v
+Z95 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/traffic_gen.v
+Z96 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/traffic_gen.v
 !i122 77
 L0 1007 54
 R8
 r1
 !s85 0
 31
-R19
-Z96 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/traffic_gen.v|
-Z97 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/traffic_gen.v|
+Z97 !s108 1604589739.000000
+Z98 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/traffic_gen.v|
+Z99 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/traffic_gen.v|
 !i113 1
 R22
 R23
 R14
 vduato_mesh_routing
 R1
-R58
+R54
 !i10b 1
 !s100 `;i8GJL?8c@<SN>6Tl2FL1
 R3
@@ -1910,9 +1910,9 @@ IH:Ao:??QK6N7PQ6FZob0U0
 R4
 S1
 R0
-Z98 w1604247798
-Z99 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_mesh.sv
-Z100 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_mesh.sv
+Z100 w1604247798
+Z101 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_mesh.sv
+Z102 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_mesh.sv
 !i122 47
 L0 675 116
 R8
@@ -1920,32 +1920,32 @@ r1
 !s85 0
 31
 R60
-Z101 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_mesh.sv|
-Z102 !s90 -sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_mesh.sv|
+Z103 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_mesh.sv|
+Z104 !s90 -reportprogress|300|-sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_mesh.sv|
 !i113 1
 R12
-R48
+R47
 R14
 vextract_header_flit_info
-R37
+R15
 !i10b 1
 !s100 V=eGajzo5kNlJMJKX4S1O2
 R3
 IIAkNLlUM>BCoX:kmkSVkk2
 R4
 R0
-Z103 w1600664259
-Z104 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/header_flit.v
-Z105 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/header_flit.v
+Z105 w1600664259
+Z106 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/header_flit.v
+Z107 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/header_flit.v
 !i122 64
 L0 130 118
 R8
 r1
 !s85 0
 31
-R40
-Z106 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/header_flit.v|
-Z107 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/header_flit.v|
+R19
+Z108 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/header_flit.v|
+Z109 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/header_flit.v|
 !i113 1
 R22
 R23
@@ -1977,16 +1977,16 @@ R12
 R13
 R14
 vfattree_add_ss_port
-R58
+R54
 !i10b 1
 !s100 HoWM]?^m]SX_@=R4NjjV72
 R3
 IiSZ7zobfB8J@hlkgDF9IR2
 R4
 R0
-Z108 w1601801385
-Z109 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/fattree.v
-Z110 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/fattree.v
+Z110 w1601801385
+Z111 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/fattree.v
+Z112 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/fattree.v
 !i122 44
 L0 1343 36
 R8
@@ -1994,23 +1994,23 @@ r1
 !s85 0
 31
 R60
-Z111 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//topology_localparam.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/fattree.v|
-Z112 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/fattree.v|
+Z113 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//topology_localparam.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/fattree.v|
+Z114 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/fattree.v|
 !i113 1
 R22
 R23
 R14
 vfattree_conventional_routing
-R58
+R54
 !i10b 1
 !s100 jemcASzhXnFG[NQ[AQQY_1
 R3
 IHb^VF>O54L=mDzKCj0l3z1
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 747 93
 R8
@@ -2018,23 +2018,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_destp_generator
-R58
+R54
 !i10b 1
 !s100 K27K<IokILRVl]deR_Q^G3
 R3
 I1l_=nl`bh2JTPL]S?Mjk91
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 1416 51
 R8
@@ -2042,23 +2042,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_destport_decoder
-R58
+R54
 !i10b 1
 !s100 GBRdVegB^V`YU1[@b3SJA2
 R3
 Ic<0I>c;ZC;S]J?HMgPfmU3
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 1023 15
 R8
@@ -2066,23 +2066,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_destport_up_select
-R58
+R54
 !i10b 1
 !s100 08XD>>N0ShNbdQjNK<0=l0
 R3
 IU^clZ7L?IU;:bzaJ9SWA:3
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 721 18
 R8
@@ -2090,23 +2090,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_deterministic_look_ahead_routing
-R58
+R54
 !i10b 1
 !s100 z[?^;]E0Sg5j7VH0f=h4V1
 R3
 IEN1D`Y5kGE0Qn>JKgf2Vg3
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 934 88
 R8
@@ -2114,23 +2114,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_distance_gen
-R58
+R54
 !i10b 1
 !s100 Rh0:d>F;0[FWO^fRD:6_01
 R3
 IEYz=V[J>c0lQ_Ojd@?IT>2
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 1079 66
 R8
@@ -2138,23 +2138,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_look_ahead_routing
-R58
+R54
 !i10b 1
 !s100 gfh[mL@XaEPFz4CA[5hPV0
 R3
 I@NkI0J7SSiPn962^WMf0@3
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 848 73
 R8
@@ -2162,23 +2162,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_mask_non_assignable_destport
-R58
+R54
 !i10b 1
 !s100 279m4k3U=<M2N7H;=DNf51
 R3
 IWNIKGTH@Qn7ke]GgRE^AH0
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 1046 26
 R8
@@ -2186,23 +2186,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_nca_destp_up_routing
-R58
+R54
 !i10b 1
 !s100 X`R]1_4KoP`gJf<LcWE]82
 R3
 IJjQDajQn46P^3WJH@34io3
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 503 102
 R8
@@ -2210,23 +2210,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_nca_random_up_routing
-R58
+R54
 !i10b 1
 !s100 @V1H`zGN6SVkiD3o?FI<:1
 R3
 Iok?Yfco]=SWhLI=mI<=Ra3
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 391 104
 R8
@@ -2234,23 +2234,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_nca_straight_up_routing
-R58
+R54
 !i10b 1
 !s100 5faMEcnR[omg`4KKUbi3Z3
 R3
 IjjHM6>3gCe26M_FQ>e2S<3
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 612 107
 R8
@@ -2258,24 +2258,24 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_noc
-R58
+R54
 !i10b 1
 !s100 S27jcJf:b>cVCNcP>o]B73
 R3
 I_IKhn0MbOXgMOz[m9ReXY3
 R4
 R0
-R108
-R109
 R110
-Z113 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//topology_localparam.v
+R111
+R112
+Z115 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//topology_localparam.v
 !i122 44
 L0 24 504
 R8
@@ -2283,23 +2283,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_router_addr_decode
-R58
+R54
 !i10b 1
 !s100 =?O>aeUOFYo:3:k1W=P[H0
 R3
 I4WV052h2?0eeL[@<KMkgz1
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 1380 33
 R8
@@ -2307,23 +2307,23 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
 R14
 vfattree_ssa_check_destport
-R58
+R54
 !i10b 1
 !s100 =k0hfTN2YI=;LGIB;R9k^0
 R3
 I3@z95W`fW:ZFMgb?9[4U01
 R4
 R0
-R108
-R109
 R110
+R111
+R112
 !i122 44
 L0 1297 44
 R8
@@ -2331,8 +2331,8 @@ r1
 !s85 0
 31
 R60
-R111
-R112
+R113
+R114
 !i113 1
 R22
 R23
@@ -2341,109 +2341,109 @@ vfifo_ram
 R1
 R2
 !i10b 1
-!s100 QWI]TY_j@IGYm0DB`SX1O1
+!s100 AWi_c0b?lAPl4cPTQLINR1
 R3
-INaACnKH_5XA]K5`_8UiA81
+I:^L[V`M]=R0h92CKlb^IQ3
 R4
 S1
 R0
-Z114 w1604558461
-Z115 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/flit_buffer.sv
-Z116 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/flit_buffer.sv
+Z116 w1604561049
+Z117 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/flit_buffer.sv
+Z118 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/flit_buffer.sv
 !i122 13
-L0 697 56
+L0 696 56
 R8
 r1
 !s85 0
 31
 R9
-Z117 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/flit_buffer.sv|
-Z118 !s90 -work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/flit_buffer.sv|
+Z119 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/flit_buffer.sv|
+Z120 !s90 -reportprogress|300|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/flit_buffer.sv|
 !i113 1
-Z119 o-work work
-Z120 !s92 -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/
+Z121 o-work work
+Z122 !s92 -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/
 R14
 vflit_buffer
 R1
 R2
 !i10b 1
-!s100 zRj4I2UBn=JYjhdEIzNK91
+!s100 n3I3^Nhk1NMLT]6bk>SkA0
 R3
-I;T8<h65:m<LF]g2D<7K?92
+Ib_7l@6zLH=88YYzZ1TkH52
 R4
 S1
 R0
-R114
-R115
 R116
+R117
+R118
 !i122 13
-L0 37 649
+L0 37 648
 R8
 r1
 !s85 0
 31
 R9
-R117
-R118
-!i113 1
 R119
 R120
+!i113 1
+R121
+R122
 R14
 vfwft_fifo
 R1
 R2
 !i10b 1
-!s100 10nmEHO5l2b>LZkFV:fm30
+!s100 e5N8oh`g0=0e<=Y8:[NWZ3
 R3
-IH=>I4:YAFb1zDklo6CEVV2
+IRaOfTi:WD]LDzo5h50;]W3
 R4
 S1
 R0
-R114
-R115
 R116
+R117
+R118
 !i122 13
-L0 859 186
+L0 858 186
 R8
 r1
 !s85 0
 31
 R9
-R117
-R118
-!i113 1
 R119
 R120
+!i113 1
+R121
+R122
 R14
 vfwft_fifo_with_output_clear
 R1
 R2
 !i10b 1
-!s100 Cz>8Uo<nJdPQS45O9OlV31
+!s100 n`amDKHcl4TDSQ`jjGWaK1
 R3
-IU9I3eZ]@B9=I8KkT07C2e3
+IjMYeaU`==z2N7;d[6;Q6`0
 R4
 S1
 R0
-R114
-R115
 R116
+R117
+R118
 !i122 13
-L0 1067 183
+L0 1066 183
 R8
 r1
 !s85 0
 31
 R9
-R117
-R118
-!i113 1
 R119
 R120
+!i113 1
+R121
+R122
 R14
 vgeneric_single_port_ram
 R1
-R58
+R54
 !i10b 1
 !s100 8DoSk`W`kPb0XzgDb6Pl^0
 R3
@@ -2452,8 +2452,8 @@ R4
 S1
 R0
 R16
-Z121 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/generic_ram.sv
-Z122 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/generic_ram.sv
+Z123 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/generic_ram.sv
+Z124 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/generic_ram.sv
 !i122 39
 L0 130 67
 R8
@@ -2461,86 +2461,86 @@ r1
 !s85 0
 31
 R60
-Z123 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/generic_ram.sv|
-Z124 !s90 -sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/generic_ram.sv|
+Z125 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/generic_ram.sv|
+Z126 !s90 -reportprogress|300|-sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/generic_ram.sv|
 !i113 1
 R12
-R48
+R47
 R14
 vhdr_flit_weight_update
-R37
+R15
 !i10b 1
 !s100 ]nM9JeC:G0YaGBRDzl6R]3
 R3
 I1h^Y;Rfk0753iiKdfk5=:3
 R4
 R0
-R103
-R104
 R105
+R106
+R107
 !i122 64
 L0 427 46
 R8
 r1
 !s85 0
 31
-R40
-R106
-R107
+R19
+R108
+R109
 !i113 1
 R22
 R23
 R14
 vheader_flit_generator
-R37
+R15
 !i10b 1
 !s100 =fmSag[48NT^JNJbTQf`Z3
 R3
 I:X@Cke3c:KBAdbaiPz`[80
 R4
 R0
-R103
-R104
 R105
+R106
+R107
 !i122 64
 L0 31 96
 R8
 r1
 !s85 0
 31
-R40
-R106
-R107
+R19
+R108
+R109
 !i113 1
 R22
 R23
 R14
 vheader_flit_update_lk_route_ovc
-R37
+R15
 !i10b 1
 !s100 [FSI[eFNo_C87TT5HE:MN1
 R3
 Ih@FBnIijGS18f^>gEWa5D0
 R4
 R0
-R103
-R104
 R105
+R106
+R107
 !i122 64
 L0 259 163
 R8
 r1
 !s85 0
 31
-R40
-R106
-R107
+R19
+R108
+R109
 !i113 1
 R22
 R23
 R14
 vinjection_ratio_ctrl
-R15
+R94
 !i10b 1
 !s100 P[H66UcU:_[8`UNMDjH0@3
 R3
@@ -2548,17 +2548,17 @@ IZdh^@9[McNN`eB2l162nR3
 R4
 R0
 R59
-R94
 R95
+R96
 !i122 77
 L0 707 116
 R8
 r1
 !s85 0
 31
-R19
-R96
 R97
+R98
+R99
 !i113 1
 R22
 R23
@@ -2571,9 +2571,9 @@ R3
 IR7eUdZleGiS8oZijC7eYZ1
 R4
 R0
-Z125 w1601818567
-Z126 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/inout_ports.v
-Z127 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/inout_ports.v
+Z127 w1601818567
+Z128 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/inout_ports.v
+Z129 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/inout_ports.v
 !i122 73
 L0 29 573
 R8
@@ -2581,8 +2581,8 @@ r1
 !s85 0
 31
 R19
-Z128 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/inout_ports.v|
-Z129 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/inout_ports.v|
+Z130 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/inout_ports.v|
+Z131 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/inout_ports.v|
 !i113 1
 R22
 R23
@@ -2604,7 +2604,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R68
 R69
 !i113 1
@@ -2660,7 +2660,7 @@ R22
 R23
 R14
 vjtag_control_port
-Z130 !s110 1604558472
+R94
 !i10b 1
 !s100 B4=<[5[efCHYiR]UEJ0Ze0
 R3
@@ -2668,23 +2668,23 @@ I[UBcUH[ZOLSn=Z2FdL2cG2
 R4
 R0
 R16
-Z131 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/jtag_system_en.v
-Z132 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/jtag_system_en.v
+Z132 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/jtag_system_en.v
+Z133 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/jtag_system_en.v
 !i122 87
 L0 63 99
 R8
 r1
 !s85 0
 31
-Z133 !s108 1604558472.000000
+R97
 Z134 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/jtag_system_en.v|
-Z135 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/jtag_system_en.v|
+Z135 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/jtag_system_en.v|
 !i113 1
 R22
 Z136 !s92 -vlog01compat -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/
 R14
 vjtag_source_probe
-R130
+R94
 !i10b 1
 !s100 [25mgm_^2P3CV84A7]fE13
 R3
@@ -2700,15 +2700,15 @@ R8
 r1
 !s85 0
 31
-R19
+R97
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/jtag_source_probe.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/jtag_source_probe.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/jtag_source_probe.v|
 !i113 1
 R22
 R136
 R14
 vjtag_system_en
-R130
+R94
 !i10b 1
 !s100 [^LQZm9:Le<2CfZ[Y5=Mf0
 R3
@@ -2716,15 +2716,15 @@ ICWNT:`f<h1]KS=l_QR^M^3
 R4
 R0
 R16
-R131
 R132
+R133
 !i122 87
 L0 40 20
 R8
 r1
 !s85 0
 31
-R133
+R97
 R134
 R135
 !i113 1
@@ -2750,13 +2750,13 @@ r1
 31
 R9
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_uart_wb.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_uart_wb.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_uart_wb.v|
 !i113 1
 R22
 R23
 R14
 vlook_ahead_routing
-R24
+R2
 !i10b 1
 !s100 ]OcY4bD`1?SkN2d[:>BDl0
 R3
@@ -2774,14 +2774,14 @@ r1
 31
 R9
 Z140 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/routing.v|
-Z141 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/routing.v|
+Z141 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/routing.v|
 !i113 1
 R22
 R23
 R14
 vmesh_dir
 R1
-R58
+R54
 !i10b 1
 !s100 O=G2i>XKbz1T=PF6^7Q9[1
 R3
@@ -2789,9 +2789,9 @@ IZ03Viz_G8hCU@GRj1[E6N2
 R4
 S1
 R0
-R98
-R99
 R100
+R101
+R102
 !i122 47
 L0 796 52
 R8
@@ -2799,14 +2799,14 @@ r1
 !s85 0
 31
 R60
-R101
-R102
+R103
+R104
 !i113 1
 R12
-R48
+R47
 R14
 vmesh_tori_dspt_clear_gen
-R37
+R36
 !i10b 1
 !s100 Jfn4ln<1bFcJXXA;6_GeA2
 R3
@@ -2822,15 +2822,15 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 Z145 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus.v|
-Z146 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus.v|
+Z146 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus.v|
 !i113 1
 R22
 R23
 R14
 vmesh_tori_endp_addr_decode
-R37
+R36
 !i10b 1
 !s100 54Fc0OjKz4jdVJeiP`D4:2
 R3
@@ -2846,7 +2846,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -2854,7 +2854,7 @@ R22
 R23
 R14
 vmesh_tori_router_addr_decode
-R37
+R36
 !i10b 1
 !s100 j201?jW5Xh39RCNCcb[;U0
 R3
@@ -2870,7 +2870,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -2878,7 +2878,7 @@ R22
 R23
 R14
 vmesh_torus_adaptive_avb_ovc_mux
-R37
+R36
 !i10b 1
 !s100 :WcS6=ZkPaPOFSG[zM1BZ1
 R3
@@ -2894,7 +2894,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -2918,15 +2918,15 @@ R8
 r1
 !s85 0
 31
+R9
 R28
 R29
-R30
 !i113 1
 R22
 R23
 R14
 vmesh_torus_add_ss_port
-R37
+R36
 !i10b 1
 !s100 @b`1INH=EBlg_8]Oo>S]e1
 R3
@@ -2942,7 +2942,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -2966,15 +2966,15 @@ R8
 r1
 !s85 0
 31
+R9
 R28
 R29
-R30
 !i113 1
 R22
 R23
 R14
 vmesh_torus_destp_decoder
-R37
+R36
 !i10b 1
 !s100 I7OUEHLbG<GWn9F4I2COE2
 R3
@@ -2990,7 +2990,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -2998,7 +2998,7 @@ R22
 R23
 R14
 vmesh_torus_destp_generator
-R37
+R36
 !i10b 1
 !s100 =Q4S]FYToX<@]e20bDlNc3
 R3
@@ -3014,7 +3014,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -3038,15 +3038,15 @@ R8
 r1
 !s85 0
 31
+R9
 R28
 R29
-R30
 !i113 1
 R22
 R23
 R14
 vmesh_torus_distance_gen
-R37
+R36
 !i10b 1
 !s100 hY[5kFVeA:obF8FK9=lFX0
 R3
@@ -3062,7 +3062,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -3070,7 +3070,7 @@ R22
 R23
 R14
 vmesh_torus_dynamic_portsel_control
-R37
+R36
 !i10b 1
 !s100 Mh=4Y`O32`z0Om6hI;=F?2
 R3
@@ -3086,7 +3086,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -3110,15 +3110,15 @@ R8
 r1
 !s85 0
 31
+R9
 R28
 R29
-R30
 !i113 1
 R22
 R23
 R14
 vmesh_torus_mask_non_assignable_destport
-R37
+R36
 !i10b 1
 !s100 KnRYSm:bF6J^2g`mN>fGD2
 R3
@@ -3134,7 +3134,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -3158,9 +3158,9 @@ R8
 r1
 !s85 0
 31
+R9
 R28
 R29
-R30
 !i113 1
 R22
 R23
@@ -3182,9 +3182,9 @@ R8
 r1
 !s85 0
 31
+R9
 R28
 R29
-R30
 !i113 1
 R22
 R23
@@ -3206,15 +3206,15 @@ R8
 r1
 !s85 0
 31
+R9
 R28
 R29
-R30
 !i113 1
 R22
 R23
 R14
 vmesh_torus_noc
-R15
+R94
 !i10b 1
 !s100 g?[:KohK]ZJT`T?CVW8Wh3
 R3
@@ -3224,7 +3224,7 @@ R0
 w1604045100
 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus_noc.v
 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus_noc.v
-R113
+R115
 !i122 75
 L0 39 604
 R8
@@ -3233,13 +3233,13 @@ r1
 31
 R19
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//topology_localparam.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus_noc.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus_noc.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mesh_torus_noc.v|
 !i113 1
 R22
 R23
 R14
 vmesh_torus_port_presel_based_dst_routers_vc
-R2
+R34
 !i10b 1
 !s100 H@EZc8MngF9WzDF0JNWV_2
 R3
@@ -3255,7 +3255,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -3263,7 +3263,7 @@ R22
 R23
 R14
 vmesh_torus_port_selector
-R37
+R36
 !i10b 1
 !s100 1Q:;G_KEW;S9kS[fJ6K]=0
 R3
@@ -3279,7 +3279,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -3287,7 +3287,7 @@ R22
 R23
 R14
 vmesh_torus_ssa_check_destport
-R37
+R36
 !i10b 1
 !s100 ldfU9iW4m8LLC1iaiacEe1
 R3
@@ -3303,7 +3303,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -3311,7 +3311,7 @@ R22
 R23
 R14
 vmesh_torus_swap_port_presel_gen
-R37
+R36
 !i10b 1
 !s100 2eN9KQ1ed`;GR`1c7GYTh2
 R3
@@ -3327,7 +3327,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -3335,7 +3335,7 @@ R22
 R23
 R14
 vmesh_torus_vc_alloc_request_gen_adaptive
-R37
+R36
 !i10b 1
 !s100 T0SASZ^BV`Kdo6Nc30Und2
 R3
@@ -3351,7 +3351,7 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 R145
 R146
 !i113 1
@@ -3359,7 +3359,7 @@ R22
 R23
 R14
 vmor1k
-R2
+R34
 !i10b 1
 !s100 1Mk9;Qj48aBXUFU<<<R7f3
 R3
@@ -3375,15 +3375,15 @@ R8
 r1
 !s85 0
 31
-R36
+R35
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1k.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1k.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1k.v|
 !i113 1
 R22
 R23
 R14
 vmor1k_mpsoc
-R35
+R34
 !i10b 1
 !s100 B@l:Sa@F;IlV6]ibjX`ad0
 R3
@@ -3399,16 +3399,16 @@ R8
 r1
 !s85 0
 31
-R36
+R35
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/mor1k_mpsoc.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/mor1k_mpsoc.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/mor1k_mpsoc.v|
 !i113 1
 R22
 !s92 -vlog01compat -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/
 R14
 vmor1k_mpsoc_top
 R1
-R35
+R34
 !i10b 1
 !s100 YgAMXNNzLoIAdog92FgV;0
 R3
@@ -3425,15 +3425,15 @@ R8
 r1
 !s85 0
 31
-R36
+R35
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/mor1k_mpsoc_top.v|
-!s90 -sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/mor1k_mpsoc_top.v|
+!s90 -reportprogress|300|-sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/mor1k_mpsoc_top.v|
 !i113 1
 R12
 Z147 !s92 -sv -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/
 R14
 vmor1k_tile
-R130
+Z148 !s110 1604589740
 !i10b 1
 !s100 Kb[C<3TVdBoE0b^RBX@?92
 R3
@@ -3449,9 +3449,9 @@ R8
 r1
 !s85 0
 31
-R133
+R97
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/tiles/mor1k_tile.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/tiles/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/tiles/mor1k_tile.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/tiles/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/tiles/mor1k_tile.v|
 !i113 1
 R22
 !s92 -vlog01compat -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/tiles/
@@ -3475,13 +3475,13 @@ r1
 31
 R9
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_branch_prediction
-R37
+R36
 !i10b 1
 !s100 5;J;dBGH<ai4[zH48Y]_63
 R3
@@ -3497,15 +3497,15 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_branch_prediction.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_branch_prediction.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_branch_prediction.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_bus_if_avalon
-R37
+R36
 !i10b 1
 !s100 A3B^93QHRHV<BD>hJm34^2
 R3
@@ -3521,15 +3521,15 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_bus_if_avalon.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_bus_if_avalon.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_bus_if_avalon.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_bus_if_wb32
-R58
+R36
 !i10b 1
 !s100 6UI>KecXD7_[k[<]Zo=^:0
 R3
@@ -3547,7 +3547,7 @@ r1
 31
 R60
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_bus_if_wb32.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_bus_if_wb32.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_bus_if_wb32.v|
 !i113 1
 R22
 R23
@@ -3569,15 +3569,15 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cache_lru.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cache_lru.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cache_lru.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_cfgrs
-R15
+R94
 !i10b 1
 !s100 H:KVzRNOW>z:UE6B<G1^>0
 R3
@@ -3593,15 +3593,15 @@ R8
 r1
 !s85 0
 31
-R19
+R97
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cfgrs.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cfgrs.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cfgrs.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_cpu
-R58
+R36
 !i10b 1
 !s100 bCo:J903=K1QczNLdeXEI1
 R3
@@ -3617,15 +3617,15 @@ R8
 r1
 !s85 0
 31
-R60
+R39
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_cpu_cappuccino
-R2
+R34
 !i10b 1
 !s100 4aQK6R5J=S99?VD<_d69g0
 R3
@@ -3641,9 +3641,9 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu_cappuccino.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu_cappuccino.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu_cappuccino.v|
 !i113 1
 R22
 R23
@@ -3667,13 +3667,13 @@ r1
 31
 R19
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu_espresso.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu_espresso.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu_espresso.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_cpu_prontoespresso
-R37
+R36
 !i10b 1
 !s100 >C2<fbJ0b36IG4KWImIc93
 R3
@@ -3689,15 +3689,15 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu_prontoespresso.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu_prontoespresso.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_cpu_prontoespresso.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_ctrl_cappuccino
-R58
+R54
 !i10b 1
 !s100 d5X9:;nGBhEa_GCXjh;1d3
 R3
@@ -3715,7 +3715,7 @@ r1
 31
 R60
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ctrl_cappuccino.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ctrl_cappuccino.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ctrl_cappuccino.v|
 !i113 1
 R22
 R23
@@ -3739,7 +3739,7 @@ r1
 31
 R19
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ctrl_espresso.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ctrl_espresso.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ctrl_espresso.v|
 !i113 1
 R22
 R23
@@ -3761,15 +3761,15 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ctrl_prontoespresso.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ctrl_prontoespresso.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ctrl_prontoespresso.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_dcache
-R58
+R54
 !i10b 1
 !s100 6X@ze:H8MH;840?k?_Z^d1
 R3
@@ -3785,15 +3785,15 @@ R8
 r1
 !s85 0
 31
-R28
+R60
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_dcache.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_dcache.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_dcache.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_decode
-R37
+R36
 !i10b 1
 !s100 CS1YA3DIj6`NmfB3LK^UK1
 R3
@@ -3809,9 +3809,9 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_decode.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_decode.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_decode.v|
 !i113 1
 R22
 R23
@@ -3835,13 +3835,13 @@ r1
 31
 R9
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_decode_execute_cappuccino.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_decode_execute_cappuccino.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_decode_execute_cappuccino.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_dmmu
-R15
+R94
 !i10b 1
 !s100 IzdkjM1J[CN@3fIgQ>]F33
 R3
@@ -3857,9 +3857,9 @@ R8
 r1
 !s85 0
 31
-R19
+R97
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_dmmu.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_dmmu.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_dmmu.v|
 !i113 1
 R22
 R23
@@ -3883,7 +3883,7 @@ r1
 31
 R9
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_execute_alu.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_execute_alu.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_execute_alu.v|
 !i113 1
 R22
 R23
@@ -3905,9 +3905,9 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_execute_ctrl_cappuccino.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_execute_ctrl_cappuccino.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_execute_ctrl_cappuccino.v|
 !i113 1
 R22
 R23
@@ -3931,13 +3931,13 @@ r1
 31
 R9
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_cappuccino.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_cappuccino.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_cappuccino.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_fetch_espresso
-R58
+R36
 !i10b 1
 !s100 3z7^RfIAXeiLFmGDSR7Ee3
 R3
@@ -3953,9 +3953,9 @@ R8
 r1
 !s85 0
 31
-R60
+R39
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_espresso.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_espresso.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_espresso.v|
 !i113 1
 R22
 R23
@@ -3977,15 +3977,15 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_prontoespresso.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_prontoespresso.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_prontoespresso.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_fetch_tcm_prontoespresso
-R37
+R36
 !i10b 1
 !s100 LGZeY?>jmPNQ<JI[3l1dC0
 R3
@@ -4001,15 +4001,15 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_tcm_prontoespresso.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_tcm_prontoespresso.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_fetch_tcm_prontoespresso.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_icache
-R37
+R15
 !i10b 1
 !s100 l85FI6UDZco0WZkgV[9En3
 R3
@@ -4025,15 +4025,15 @@ R8
 r1
 !s85 0
 31
-R40
+R19
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_icache.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_icache.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_icache.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_immu
-R37
+R36
 !i10b 1
 !s100 bSTMkNK;Vzfj;L;9f]J7E0
 R3
@@ -4049,9 +4049,9 @@ R8
 r1
 !s85 0
 31
-R40
+R39
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_immu.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_immu.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_immu.v|
 !i113 1
 R22
 R23
@@ -4073,15 +4073,15 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_lsu_cappuccino.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_lsu_cappuccino.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_lsu_cappuccino.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_lsu_espresso
-R15
+R94
 !i10b 1
 !s100 _:k[Gk<W65`<eL?nR<Oem3
 R3
@@ -4097,9 +4097,9 @@ R8
 r1
 !s85 0
 31
-R19
+R97
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_lsu_espresso.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_lsu_espresso.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_lsu_espresso.v|
 !i113 1
 R22
 R23
@@ -4121,15 +4121,15 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_pic.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_pic.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_pic.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_rf_cappuccino
-R15
+R94
 !i10b 1
 !s100 <J]KZNc7KACZOe[OUC9iJ3
 R3
@@ -4146,9 +4146,9 @@ R8
 r1
 !s85 0
 31
-R19
+R97
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx_utils.vh|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_rf_cappuccino.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_rf_cappuccino.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_rf_cappuccino.v|
 !i113 1
 R22
 R23
@@ -4170,15 +4170,15 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_rf_espresso.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_rf_espresso.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_rf_espresso.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_simple_dpram_sclk
-R37
+R36
 !i10b 1
 !s100 OEjDi1e9niG40m2;52cVP0
 R3
@@ -4194,15 +4194,15 @@ R8
 r1
 !s85 0
 31
-R60
+R39
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_simple_dpram_sclk.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_simple_dpram_sclk.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_simple_dpram_sclk.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_store_buffer
-R58
+R54
 !i10b 1
 !s100 b>D4gNchg6^PMYg9WVBBc0
 R3
@@ -4220,13 +4220,13 @@ r1
 31
 R60
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_store_buffer.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_store_buffer.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_store_buffer.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_ticktimer
-R37
+R15
 !i10b 1
 !s100 gzZ87bBY?<2KM>S4KZ_=J3
 R3
@@ -4242,15 +4242,15 @@ R8
 r1
 !s85 0
 31
-R40
+R19
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ticktimer.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ticktimer.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_ticktimer.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_true_dpram_sclk
-R15
+R94
 !i10b 1
 !s100 8W^Sch1Yh22caVBY?BU9k3
 R3
@@ -4266,15 +4266,15 @@ R8
 r1
 !s85 0
 31
-R19
+R97
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_true_dpram_sclk.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_true_dpram_sclk.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_true_dpram_sclk.v|
 !i113 1
 R22
 R23
 R14
 vmor1kx_wb_mux_cappuccino
-R37
+R15
 !i10b 1
 !s100 MJ_dG<0;kge8Gz>zBBmOX1
 R3
@@ -4290,9 +4290,9 @@ R8
 r1
 !s85 0
 31
-R40
+R19
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_wb_mux_cappuccino.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_wb_mux_cappuccino.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_wb_mux_cappuccino.v|
 !i113 1
 R22
 R23
@@ -4314,68 +4314,68 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-sprs.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//mor1kx-defines.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_wb_mux_espresso.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_wb_mux_espresso.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/mor1kx_wb_mux_espresso.v|
 !i113 1
 R22
 R23
 R14
 vmy_one_hot_arbiter
 R1
-R35
+R34
 !i10b 1
-!s100 k4LRfVO9;NiC2^@CPPK020
+!s100 7?[Ch7VknmlOTQM3z]g>N1
 R3
-IKYMkambOPXXR5V]F:^2Fe3
+INjGM40og?ZR=@1zg`9VBE2
 R4
 S1
 R0
+R42
 R43
 R44
-R45
 !i122 4
-L0 404 90
+L0 262 95
 R8
 r1
 !s85 0
 31
-R36
+R35
+R45
 R46
-R47
 !i113 1
 R12
-R48
+R47
 R14
 vmy_one_hot_arbiter_priority_en
 R1
-R35
+R34
 !i10b 1
-!s100 HeO_PA@CnISYO`2oK<GZ>0
+!s100 _QU7:IDRfHYENOEz?NIDY3
 R3
-I>l1Z?`L4n5YFfcGQgzPh22
+IU]Ji6kihkNHkhl[@fEI5Z0
 R4
 S1
 R0
+R42
 R43
 R44
-R45
 !i122 4
-L0 585 61
+L0 448 61
 R8
 r1
 !s85 0
 31
-R36
+R35
+R45
 R46
-R47
 !i113 1
 R12
-R48
+R47
 R14
 vnegetive_first_routing
 R1
-R58
+R54
 !i10b 1
 !s100 zb^z=20_aCQEeXN5THM]32
 R3
@@ -4383,9 +4383,9 @@ IB]ghh8FIOKbX07b1_ULLM2
 R4
 S1
 R0
-R98
-R99
 R100
+R101
+R102
 !i122 47
 L0 412 108
 R8
@@ -4393,14 +4393,14 @@ r1
 !s85 0
 31
 R60
-R101
-R102
+R103
+R104
 !i113 1
 R12
-R48
+R47
 R14
 vnext_router_addr_selector_bin
-R24
+R2
 !i10b 1
 !s100 5`>H1ZgFjbbUQXnBPG@C73
 R3
@@ -4424,7 +4424,7 @@ R22
 R23
 R14
 vni_conventional_routing
-R24
+R2
 !i10b 1
 !s100 Re^Wj4OZ4fD93E3Q1RlnJ1
 R3
@@ -4449,7 +4449,7 @@ R23
 R14
 vni_master
 R1
-R15
+R94
 !i10b 1
 !s100 Sibzb<]nTJ293g5LgmE7P2
 R3
@@ -4457,22 +4457,22 @@ Il3dHZ4JlV?9`4okUkzOjO1
 R4
 S1
 R0
-Z148 w1601317911
-Z149 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_master.sv
-Z150 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_master.sv
-R113
+Z149 w1601317911
+Z150 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_master.sv
+Z151 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_master.sv
+R115
 !i122 76
 L0 39 1032
 R8
 r1
 !s85 0
 31
-R19
-Z151 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//topology_localparam.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_master.sv|
-Z152 !s90 -sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_master.sv|
+R97
+Z152 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//topology_localparam.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_master.sv|
+Z153 !s90 -reportprogress|300|-sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_master.sv|
 !i113 1
 R12
-R48
+R47
 R14
 vni_vc_dma
 R2
@@ -4493,13 +4493,13 @@ r1
 31
 R9
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_vc_dma.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_vc_dma.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_vc_dma.v|
 !i113 1
 R22
 R23
 R14
 vni_vc_wb_slave_regs
-R58
+R54
 !i10b 1
 !s100 [LOPaaHB9l09nDBa7BlZa1
 R3
@@ -4517,13 +4517,13 @@ r1
 31
 R60
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_vc_wb_slave_regs.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_vc_wb_slave_regs.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/ni_vc_wb_slave_regs.v|
 !i113 1
 R22
 R23
 R14
 vnoc
-R58
+R54
 !i10b 1
 !s100 ;UnbDnR3jW2B[XUm5WbOf1
 R3
@@ -4533,7 +4533,7 @@ R0
 R59
 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/noc.v
 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/noc.v
-R113
+R115
 !i122 42
 L0 31 341
 R8
@@ -4542,7 +4542,7 @@ r1
 31
 R60
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//topology_localparam.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/noc.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/noc.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/noc.v|
 !i113 1
 R22
 R23
@@ -4564,7 +4564,7 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 R78
 R79
 !i113 1
@@ -4572,7 +4572,7 @@ R22
 R23
 R14
 vnormalizer
-R2
+R34
 !i10b 1
 !s100 A57A;^H4NWWck5=7g?hVO3
 R3
@@ -4588,7 +4588,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -4597,7 +4597,7 @@ R23
 R14
 vnorth_last_routing
 R1
-R58
+R54
 !i10b 1
 !s100 BHK;oCV[B<2gd]=V@cHXG3
 R3
@@ -4605,9 +4605,9 @@ ILC7@jdM>kT5Wkb0QS6McD0
 R4
 S1
 R0
-R98
-R99
 R100
+R101
+R102
 !i122 47
 L0 292 109
 R8
@@ -4615,15 +4615,15 @@ r1
 !s85 0
 31
 R60
-R101
-R102
+R103
+R104
 !i113 1
 R12
-R48
+R47
 R14
 vodd_even_routing
 R1
-R58
+R54
 !i10b 1
 !s100 U]JzW?gH]LE<eLVA9kB6d3
 R3
@@ -4631,9 +4631,9 @@ IT6iKo70eLLDMiVRGOS3TR0
 R4
 S1
 R0
-R98
-R99
 R100
+R101
+R102
 !i122 47
 L0 531 129
 R8
@@ -4641,11 +4641,11 @@ r1
 !s85 0
 31
 R60
-R101
-R102
+R103
+R104
 !i113 1
 R12
-R48
+R47
 R14
 vone_hot_demux
 R1
@@ -4726,7 +4726,7 @@ R12
 R13
 R14
 voutput_weight_latch
-R58
+R54
 !i10b 1
 !s100 m4o=H[PG[ddN]n2Bco_762
 R3
@@ -4751,7 +4751,7 @@ R23
 R14
 vovc_status
 R1
-R15
+R94
 !i10b 1
 !s100 i1o?JjDYO5jaCo=6l:D?W0
 R3
@@ -4759,24 +4759,24 @@ I>8[E3[Dnefl7RkG[HDb4_0
 R4
 S1
 R0
-R148
 R149
 R150
+R151
 !i122 76
 L0 929 50
 R8
 r1
 !s85 0
 31
-R19
-R151
+R97
 R152
+R153
 !i113 1
 R12
-R48
+R47
 R14
 vparallel_count_normalize
-R2
+R34
 !i10b 1
 !s100 <1EUO5l1]4OXFSXi]Ol<Y1
 R3
@@ -4792,7 +4792,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -4961,7 +4961,7 @@ R13
 R14
 n@p@c_7_3
 vport_pre_sel_gen
-R2
+R34
 !i10b 1
 !s100 :6GAZg?3ESIOcANC7[5R31
 R3
@@ -4977,7 +4977,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -4985,7 +4985,7 @@ R22
 R23
 R14
 vport_presel_based_dst_ports_credit
-R2
+R34
 !i10b 1
 !s100 8dL2hSRC_SI4=LFLReaD60
 R3
@@ -5001,7 +5001,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -5009,7 +5009,7 @@ R22
 R23
 R14
 vport_presel_based_dst_ports_vc
-R2
+R34
 !i10b 1
 !s100 =QOGRED2[hWJQ3^b0_UIF1
 R3
@@ -5025,7 +5025,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -5033,7 +5033,7 @@ R22
 R23
 R14
 vport_presel_based_dst_routers_ovc
-R2
+R34
 !i10b 1
 !s100 ?^AFJmJAJ^29jGfB=[UTF2
 R3
@@ -5049,7 +5049,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R83
 R84
 !i113 1
@@ -5065,8 +5065,8 @@ IooKIab6z^C=@iV]o;gMQG1
 R4
 R0
 R16
+R30
 R31
-R32
 !i122 19
 L0 327 256
 R8
@@ -5074,8 +5074,8 @@ r1
 !s85 0
 31
 R9
+R32
 R33
-R34
 !i113 1
 R22
 R23
@@ -5089,8 +5089,8 @@ I^Jn;:>diZ6A?WG]>`dEIN1
 R4
 R0
 R16
+R30
 R31
-R32
 !i122 19
 L0 240 77
 R8
@@ -5098,8 +5098,8 @@ r1
 !s85 0
 31
 R9
+R32
 R33
-R34
 !i113 1
 R22
 R23
@@ -5113,8 +5113,8 @@ Ig[]eYH1`S6eA=SiFVC_LO0
 R4
 R0
 R16
+R30
 R31
-R32
 !i122 19
 L0 77 75
 R8
@@ -5122,8 +5122,8 @@ r1
 !s85 0
 31
 R9
+R32
 R33
-R34
 !i113 1
 R22
 R23
@@ -5137,8 +5137,8 @@ Im2o?G1Zj@bGT4ahOTZ;YV2
 R4
 R0
 R16
+R30
 R31
-R32
 !i122 19
 L0 162 68
 R8
@@ -5146,8 +5146,8 @@ r1
 !s85 0
 31
 R9
+R32
 R33
-R34
 !i113 1
 R22
 R23
@@ -5161,8 +5161,8 @@ Ijgi[Nn_I?WQ>JBXWn>_k<0
 R4
 R0
 R16
+R30
 R31
-R32
 !i122 19
 L0 21 46
 R8
@@ -5170,8 +5170,8 @@ r1
 !s85 0
 31
 R9
+R32
 R33
-R34
 !i113 1
 R22
 R23
@@ -5193,9 +5193,9 @@ R8
 r1
 !s85 0
 31
+R9
 R28
 R29
-R30
 !i113 1
 R22
 R23
@@ -5217,15 +5217,15 @@ R8
 r1
 !s85 0
 31
+R9
 R28
 R29
-R30
 !i113 1
 R22
 R23
 R14
 vrouter
-R58
+R36
 !i10b 1
 !s100 NmzcmH??fcV^0?Z6zZ^5E1
 R3
@@ -5235,22 +5235,22 @@ R0
 w1601827923
 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/router.v
 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/router.v
-R113
+R115
 !i122 50
 L0 32 597
 R8
 r1
 !s85 0
 31
-R60
+R39
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//topology_localparam.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/router.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/router.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/router.v|
 !i113 1
 R22
 R23
 R14
 vRxD_fifo
-R37
+R36
 !i10b 1
 !s100 NO4<eNH4MH7AD99g>P?Q:0
 R3
@@ -5258,17 +5258,17 @@ I_E6`bY1fMM5J0X^04Fb9K2
 R4
 R0
 R16
+R37
 R38
-R39
 !i122 54
 L0 217 111
 R8
 r1
 !s85 0
 31
+R39
 R40
 R41
-R42
 !i113 1
 R22
 R23
@@ -5276,7 +5276,7 @@ R14
 n@rx@d_fifo
 vsingle_port_ram
 R1
-R58
+R54
 !i10b 1
 !s100 EAXilgH:AMnVhj0<FmdC50
 R3
@@ -5285,8 +5285,8 @@ R4
 S1
 R0
 R16
-R121
-R122
+R123
+R124
 !i122 39
 L0 391 67
 R8
@@ -5294,11 +5294,11 @@ r1
 !s85 0
 31
 R60
-R123
-R124
+R125
+R126
 !i113 1
 R12
-R48
+R47
 R14
 vsingle_port_ram_top
 R1
@@ -5311,23 +5311,23 @@ R4
 S1
 R0
 R16
-Z153 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_single_port_ram.sv
-Z154 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_single_port_ram.sv
+Z154 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_single_port_ram.sv
+Z155 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_single_port_ram.sv
 !i122 68
 L0 202 294
 R8
 r1
 !s85 0
 31
-R40
-Z155 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_single_port_ram.sv|
-Z156 !s90 -sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_single_port_ram.sv|
+R19
+Z156 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_single_port_ram.sv|
+Z157 !s90 -reportprogress|300|-sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_single_port_ram.sv|
 !i113 1
 R12
-R48
+R47
 R14
 vspec_sw_alloc
-R58
+R54
 !i10b 1
 !s100 YUN8[Mb:A0^LTlj[bOQU>3
 R3
@@ -5345,7 +5345,7 @@ r1
 31
 R60
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/comb-spec1.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/comb-spec1.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/comb-spec1.v|
 !i113 1
 R22
 R23
@@ -5369,13 +5369,13 @@ r1
 31
 R19
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/comb_spec2.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/comb_spec2.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/comb_spec2.v|
 !i113 1
 R22
 R23
 R14
 vspec_sw_alloc_can
-R15
+R94
 !i10b 1
 !s100 0U@1jhW3iRLGg=TWNNJH92
 R3
@@ -5391,9 +5391,9 @@ R8
 r1
 !s85 0
 31
-R19
+R97
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/baseline.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/baseline.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/baseline.v|
 !i113 1
 R22
 R23
@@ -5487,7 +5487,7 @@ R8
 r1
 !s85 0
 31
-R9
+R35
 R68
 R69
 !i113 1
@@ -5511,7 +5511,7 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 R78
 R79
 !i113 1
@@ -5535,7 +5535,7 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 R78
 R79
 !i113 1
@@ -5544,7 +5544,7 @@ R23
 R14
 vtestbench
 R1
-R35
+R34
 !i10b 1
 !s100 8oShZD50iOANj882zVaPO3
 R3
@@ -5561,116 +5561,116 @@ R8
 r1
 !s85 0
 31
-R36
+R35
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/testbench.v|
-!s90 -sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/testbench.v|
+!s90 -reportprogress|300|-sv|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/testbench.v|
 !i113 1
 R12
 R147
 R14
 vthermo_arbiter
 R1
-R35
+R34
 !i10b 1
-!s100 aW`]BGP3mZeocQ`UD[AnD0
+!s100 L:a0ZJ2BU_4Y^GCH_]27I1
 R3
-I81kDI3[oZhPU>_KPK1Q0;0
+IW?do65^ZB^<gSlM^JX=k@2
 R4
 S1
 R0
+R42
 R43
 R44
-R45
 !i122 4
-L0 675 63
+L0 538 63
 R8
 r1
 !s85 0
 31
-R36
+R35
+R45
 R46
-R47
 !i113 1
 R12
-R48
+R47
 R14
 vthermo_arbiter_ext_priority
 R1
-R35
+R34
 !i10b 1
-!s100 zgIclVOeJcQ?e22__;V7a0
+!s100 6J=T^hSZoW<Rz>][_hRLZ1
 R3
-I4g]VbRPBKT?oX99V:o[c22
+I0h]8jMT8`R1YzU_[`QAQV2
 R4
 S1
 R0
+R42
 R43
 R44
-R45
 !i122 4
-L0 815 65
+L0 678 65
 R8
 r1
 !s85 0
 31
-R36
+R35
+R45
 R46
-R47
 !i113 1
 R12
-R48
+R47
 R14
 vthermo_arbiter_priority_en
 R1
-R35
+R34
 !i10b 1
-!s100 h_=j88@PCVz>>Q:^HTTh20
+!s100 R0Jm:g4j:N13[`AU5]QAB0
 R3
-I1SJ39Z3Jihg2Yg:UcdfQE1
+IJl<DSCcP=ABZB0DF11Q`80
 R4
 S1
 R0
+R42
 R43
 R44
-R45
 !i122 4
-L0 743 64
+L0 606 64
 R8
 r1
 !s85 0
 31
-R36
+R35
+R45
 R46
-R47
 !i113 1
 R12
-R48
+R47
 R14
 vthermo_gen
 R1
-R35
+R34
 !i10b 1
-!s100 2L:90iTiWVS_cTLVdDWNe3
+!s100 QTn`4S=ClIAAZ@`BeQh=M1
 R3
-IlY2H0ZkMdED?g2BbS_dbe2
+IG6za`A__hmGnH4BmG9NmN1
 R4
 S1
 R0
+R42
 R43
 R44
-R45
 !i122 4
-L0 655 16
+L0 518 16
 R8
 r1
 !s85 0
 31
-R36
+R35
+R45
 R46
-R47
 !i113 1
 R12
-R48
+R47
 R14
 vtimer
 R24
@@ -5689,16 +5689,16 @@ R8
 r1
 !s85 0
 31
-R28
+R51
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/timer.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/timer.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/timer.v|
 !i113 1
 R22
 R23
 R14
 vtrace_buffer
 R1
-R130
+R148
 !i10b 1
 !s100 AiEOKPSC<ZDO<:YG;l]aR1
 R3
@@ -5715,15 +5715,15 @@ R8
 r1
 !s85 0
 31
-R133
+!s108 1604589740.000000
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/dfd/trace_buffer.sv|
-!s90 -work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/dfd/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/dfd/trace_buffer.sv|
+!s90 -reportprogress|300|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/dfd/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/dfd/trace_buffer.sv|
 !i113 1
-R119
+R121
 !s92 -work work +incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/dfd/
 R14
 vtranc_dir
-R15
+R94
 !i10b 1
 !s100 W0k^<Y@:UO@XPiIgH0BRM0
 R3
@@ -5731,23 +5731,23 @@ IPA>L01Nz?zQbHjOn@1kbA1
 R4
 R0
 R16
-Z157 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_torus.v
-Z158 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_torus.v
+Z158 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_torus.v
+Z159 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_torus.v
 !i122 84
 L0 634 90
 R8
 r1
 !s85 0
 31
-R19
-Z159 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_torus.v|
-Z160 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_torus.v|
+R97
+Z160 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_torus.v|
+Z161 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/route_torus.v|
 !i113 1
 R22
 R23
 R14
 vtranc_duato_routing
-R15
+R94
 !i10b 1
 !s100 `UD[WIaIjM8m>@n]7gk7C3
 R3
@@ -5755,23 +5755,23 @@ I4cCgRA?7iVli3>a2Yl;>Q0
 R4
 R0
 R16
-R157
 R158
+R159
 !i122 84
 L0 505 119
 R8
 r1
 !s85 0
 31
-R19
-R159
+R97
 R160
+R161
 !i113 1
 R22
 R23
 R14
 vtranc_negetive_first_routing
-R15
+R94
 !i10b 1
 !s100 ?WP@?S24JIY3OU2^?C7ob2
 R3
@@ -5779,23 +5779,23 @@ I07JNU4U7eDT4LzoZHCm;j0
 R4
 R0
 R16
-R157
 R158
+R159
 !i122 84
 L0 371 118
 R8
 r1
 !s85 0
 31
-R19
-R159
+R97
 R160
+R161
 !i113 1
 R22
 R23
 R14
 vtranc_north_last_routing
-R15
+R94
 !i10b 1
 !s100 4<EzS@ElZDb?WiZl@=TBE1
 R3
@@ -5803,17 +5803,17 @@ IPk=RgIOeWM?H5<^;m_b^e3
 R4
 R0
 R16
-R157
 R158
+R159
 !i122 84
 L0 243 119
 R8
 r1
 !s85 0
 31
-R19
-R159
+R97
 R160
+R161
 !i113 1
 R22
 R23
@@ -5835,15 +5835,15 @@ R8
 r1
 !s85 0
 31
+R9
 R28
 R29
-R30
 !i113 1
 R22
 R23
 R14
 vtranc_west_first_routing
-R15
+R94
 !i10b 1
 !s100 0C2IC]lnH;K`^kD>>P39E3
 R3
@@ -5851,23 +5851,23 @@ IHY3z__fB_FXShd9oD<[4@0
 R4
 R0
 R16
-R157
 R158
+R159
 !i122 84
 L0 128 107
 R8
 r1
 !s85 0
 31
-R19
-R159
+R97
 R160
+R161
 !i113 1
 R22
 R23
 R14
 vtranc_xy_routing
-R15
+R94
 !i10b 1
 !s100 ^HZPN0MKL<aoo3bPGU;BB0
 R3
@@ -5875,23 +5875,23 @@ IL6FWI>e?f1fRfmGij:T:]2
 R4
 R0
 R16
-R157
 R158
+R159
 !i122 84
 L0 38 80
 R8
 r1
 !s85 0
 31
-R19
-R159
+R97
 R160
+R161
 !i113 1
 R22
 R23
 R14
 vtree_conventional_routing
-R37
+R15
 !i10b 1
 !s100 N5gUa?JzQH9NZULnjP4RL1
 R3
@@ -5899,23 +5899,23 @@ I^fcF8kS;Jcd0BhzR[VW_C1
 R4
 R0
 R59
-Z161 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/tree.v
-Z162 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/tree.v
+Z162 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/tree.v
+Z163 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/tree.v
 !i122 65
 L0 445 49
 R8
 r1
 !s85 0
 31
-R40
-Z163 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//topology_localparam.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/tree.v|
-Z164 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/tree.v|
+R19
+Z164 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib//topology_localparam.v|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/tree.v|
+Z165 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/tree.v|
 !i113 1
 R22
 R23
 R14
 vtree_destp_generator
-R37
+R15
 !i10b 1
 !s100 CRz444[iih>PhQO<e63<X0
 R3
@@ -5923,23 +5923,23 @@ Ig4;L<eHB1[gWn12mE^>f31
 R4
 R0
 R59
-R161
 R162
+R163
 !i122 65
 L0 706 40
 R8
 r1
 !s85 0
 31
-R40
-R163
+R19
 R164
+R165
 !i113 1
 R22
 R23
 R14
 vtree_destport_decoder
-R37
+R15
 !i10b 1
 !s100 6d[X0OcI4T4A6@gi1RoMB2
 R3
@@ -5947,23 +5947,23 @@ IZ1VP3Y?7`<:_LlDANOaM[3
 R4
 R0
 R59
-R161
 R162
+R163
 !i122 65
 L0 668 34
 R8
 r1
 !s85 0
 31
-R40
-R163
+R19
 R164
+R165
 !i113 1
 R22
 R23
 R14
 vtree_deterministic_look_ahead_routing
-R37
+R15
 !i10b 1
 !s100 8nQJd4j>KBnB3_3Vlk7>Z0
 R3
@@ -5971,23 +5971,23 @@ IdO<??:C@1a22B0BMmDbIJ0
 R4
 R0
 R59
-R161
 R162
+R163
 !i122 65
 L0 501 77
 R8
 r1
 !s85 0
 31
-R40
-R163
+R19
 R164
+R165
 !i113 1
 R22
 R23
 R14
 vtree_look_ahead_routing
-R37
+R15
 !i10b 1
 !s100 08`KB=oU4<2kZTJ``KVBz1
 R3
@@ -5995,23 +5995,23 @@ IZZTjDRh77@eWa_Wm[c9VH0
 R4
 R0
 R59
-R161
 R162
+R163
 !i122 65
 L0 587 72
 R8
 r1
 !s85 0
 31
-R40
-R163
+R19
 R164
+R165
 !i113 1
 R22
 R23
 R14
 vtree_nca_routing
-R37
+R15
 !i10b 1
 !s100 GB5XW[=];5UE[Ao=H4mUZ2
 R3
@@ -6019,23 +6019,23 @@ I:<:ZDg69ifZFaY^<;XeNX0
 R4
 R0
 R59
-R161
 R162
+R163
 !i122 65
 L0 360 78
 R8
 r1
 !s85 0
 31
-R40
-R163
+R19
 R164
+R165
 !i113 1
 R22
 R23
 R14
 vtree_noc
-R37
+R15
 !i10b 1
 !s100 f_<Q1jY`S267=?E>_KnYG2
 R3
@@ -6043,18 +6043,18 @@ I`2NomQOaT6XaOKi5>TUYa0
 R4
 R0
 R59
-R161
 R162
-R113
+R163
+R115
 !i122 65
 L0 19 478
 R8
 r1
 !s85 0
 31
-R40
-R163
+R19
 R164
+R165
 !i113 1
 R22
 R23
@@ -6067,9 +6067,9 @@ R3
 IjzNBAOCdOSLFDH^XI[C9z0
 R4
 R0
-R125
-R126
 R127
+R128
+R129
 !i122 73
 L0 744 177
 R8
@@ -6077,8 +6077,8 @@ r1
 !s85 0
 31
 R19
-R128
-R129
+R130
+R131
 !i113 1
 R22
 R23
@@ -6091,9 +6091,9 @@ R3
 I;5SUTS5R?LQA9iDW_85DQ0
 R4
 R0
-R125
-R126
 R127
+R128
+R129
 !i122 73
 L0 923 84
 R8
@@ -6101,14 +6101,14 @@ r1
 !s85 0
 31
 R19
-R128
-R129
+R130
+R131
 !i113 1
 R22
 R23
 R14
 vvjtag
-R130
+R94
 !i10b 1
 !s100 0a_8HQ<IA8XRCg47RPej=2
 R3
@@ -6124,15 +6124,15 @@ R8
 r1
 !s85 0
 31
-R133
+R97
 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/vjtag.v|
-!s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/vjtag.v|
+!s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/vjtag.v|
 !i113 1
 R22
 R136
 R14
 vvjtag_ctrl
-R130
+R94
 !i10b 1
 !s100 C8L0>z5;fmL:52ogOoeFX2
 R3
@@ -6140,23 +6140,23 @@ Izi?^=L^C@mKgiLD6?:7go1
 R4
 R0
 R16
-Z165 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/vjtag_wb.v
-Z166 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/vjtag_wb.v
+Z166 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/vjtag_wb.v
+Z167 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/vjtag_wb.v
 !i122 88
 L0 161 155
 R8
 r1
 !s85 0
 31
-R133
-Z167 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/vjtag_wb.v|
-Z168 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/vjtag_wb.v|
+R97
+Z168 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/vjtag_wb.v|
+Z169 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/jtag_wb/vjtag_wb.v|
 !i113 1
 R22
 R136
 R14
 vvjtag_wb
-R130
+R94
 !i10b 1
 !s100 0:<P<X5TiF9A4[B9l<=lI2
 R3
@@ -6164,23 +6164,23 @@ Im=^]7z<e;:0Jd3i_fhl_P3
 R4
 R0
 R16
-R165
 R166
+R167
 !i122 88
 L0 7 150
 R8
 r1
 !s85 0
 31
-R133
-R167
+R97
 R168
+R169
 !i113 1
 R22
 R136
 R14
 vwb_bram_ctrl
-R58
+R54
 !i10b 1
 !s100 DN_40HV1j^]1]JM8UCdl42
 R3
@@ -6188,8 +6188,8 @@ I;^RPUE:=6^^05<onl:k102
 R4
 R0
 R16
-Z169 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_bram_ctrl.v
-Z170 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_bram_ctrl.v
+Z170 8/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_bram_ctrl.v
+Z171 F/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_bram_ctrl.v
 !i122 43
 L0 34 130
 R8
@@ -6197,14 +6197,14 @@ r1
 !s85 0
 31
 R60
-Z171 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_bram_ctrl.v|
-Z172 !s90 -vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_bram_ctrl.v|
+Z172 !s107 /home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_bram_ctrl.v|
+Z173 !s90 -reportprogress|300|-vlog01compat|-work|work|+incdir+/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/|/home/archfx/Documents/NoCDfD/assert_NoC/src_verilog/lib/wb_bram_ctrl.v|
 !i113 1
 R22
 R23
 R14
 vwb_burst_bram_ctrl
-R58
+R54
 !i10b 1
 !s100 OUj]>Pfh1P=DSin33[IA]0
 R3
@@ -6212,8 +6212,8 @@ IQ3Y[zW?_J93>=l^X6dhMZ1
 R4
 R0
 R16
-R169
 R170
+R171
 !i122 43
 L0 173 348
 R8
@@ -6221,15 +6221,15 @@ r1
 !s85 0
 31
 R60
-R171
 R172
+R173
 !i113 1
 R22
 R23
 R14
 vwb_single_port_ram
 R1
-R37
+R15
 !i10b 1
 !s100 lWZFZCh=;e3XIf9oi<XfP1
 R3
@@ -6238,23 +6238,23 @@ R4
 S1
 R0
 R16
-R153
 R154
+R155
 !i122 68
 L0 37 147
 R8
 r1
 !s85 0
 31
-R40
-R155
+R19
 R156
+R157
 !i113 1
 R12
-R48
+R47
 R14
 vweight_control
-R58
+R54
 !i10b 1
 !s100 YZe5E:ZaAe8o>f07Y<n1K3
 R3
@@ -6278,7 +6278,7 @@ R22
 R23
 R14
 vweight_counter
-R58
+R54
 !i10b 1
 !s100 PFRYX_<SiJRhT1c2V_OZ@3
 R3
@@ -6302,7 +6302,7 @@ R22
 R23
 R14
 vweight_update_per_port
-R58
+R54
 !i10b 1
 !s100 ZBV0Ba1>]K5m:4kk=kbkC3
 R3
@@ -6326,7 +6326,7 @@ R22
 R23
 R14
 vweights_update
-R58
+R54
 !i10b 1
 !s100 ;WAnJ0V[R6;HAIbn^G0Lf2
 R3
@@ -6351,7 +6351,7 @@ R23
 R14
 vwest_first_routing
 R1
-R58
+R54
 !i10b 1
 !s100 VL7V@a?LLGV_CBJ1I[[C53
 R3
@@ -6359,9 +6359,9 @@ IY8ABR3:FF`I62ze]@WGT:2
 R4
 S1
 R0
-R98
-R99
 R100
+R101
+R102
 !i122 47
 L0 182 99
 R8
@@ -6369,11 +6369,11 @@ r1
 !s85 0
 31
 R60
-R101
-R102
+R103
+R104
 !i113 1
 R12
-R48
+R47
 R14
 vwishbone_bus
 R24
@@ -6383,16 +6383,16 @@ R3
 I3UXOdWG`6i?7[PKO99dIN0
 R4
 R0
+R48
 R49
 R50
-R51
 !i122 31
 L0 40 464
 R8
 r1
 !s85 0
 31
-R28
+R51
 R52
 R53
 !i113 1
@@ -6400,7 +6400,7 @@ R22
 R23
 R14
 vwrra_contention_gen
-R58
+R54
 !i10b 1
 !s100 D0>LXKZ6k:`cYRcS8VInS2
 R3
@@ -6424,7 +6424,7 @@ R22
 R23
 R14
 vwrra_inputport_destports_sum
-R58
+R54
 !i10b 1
 !s100 UgFAeAP_RzXQDR^11HMm:1
 R3
@@ -6464,16 +6464,16 @@ R8
 r1
 !s85 0
 31
+R9
 R28
 R29
-R30
 !i113 1
 R22
 R23
 R14
 vxy_mesh_routing
 R1
-R58
+R54
 !i10b 1
 !s100 afPDdK>Xi@cZUZjSjNQ550
 R3
@@ -6481,9 +6481,9 @@ I8UfH<UD7cFUlOhA[;fMHa0
 R4
 S1
 R0
-R98
-R99
 R100
+R101
+R102
 !i122 47
 L0 43 124
 R8
@@ -6491,9 +6491,9 @@ r1
 !s85 0
 31
 R60
-R101
-R102
+R103
+R104
 !i113 1
 R12
-R48
+R47
 R14

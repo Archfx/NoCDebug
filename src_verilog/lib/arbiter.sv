@@ -60,31 +60,20 @@ module arbiter #(
     output trigger;
     output [31:0] trace;
 
-    reg trigger_0;
-    reg [31:0] trace_0;
-    wire trigger_1;
-    wire [31:0] trace_1;
+    reg trigger_0,trigger_1;
 
-    assign trigger = 1'b0; //(trigger_0 | trigger_1);
-    assign trace = 32'b0;//trigger_0? trace_0 :trace_1;
-    // assign trigger = (trigger_0 );
-    // assign trace = trace_0 ;
+    assign trigger = trigger_0 | trigger_1;
+    assign trace = trigger_0? {{3{1'bX}},4'd14,request,grant,any_grant,{(24-ARBITER_WIDTH-ARBITER_WIDTH){1'bX}}} : {{3{1'bX}},4'd15,request,grant,any_grant,{(24-ARBITER_WIDTH-ARBITER_WIDTH){1'bX}}};
+    
 
-    // always@(*) begin
-    //     $display("arb_0 %d, trace %b",trigger_0,trace_0);
-	// 	$display("arb_1 %d, trace %b",trigger_1,trace_1);
-    //     // $display("MpSoc_2 %d, trace %b",trigger_2,trace_2);
-    //     // $display("MpSoc_3 %d, trace %b",trigger_3,trace_3);
-	// 	// $display("NoC %d, trace %b",trigger_4,trace_4);
-    //     $display("arb %d, trace %b",trigger,trace);
-    // end
+    
 
     generate 
     if(ARBITER_WIDTH==1)  begin: w1
         assign grant= request;
         assign any_grant =request;
-        assign trigger_1 = 1'b0;
-        assign trace_1 = 32'b0 ;
+        // assign trigger_1 = 1'b0;
+        // assign trace_1 = 32'b0 ;
 
 
     end else if(ARBITER_WIDTH<=4) begin: w4
@@ -99,8 +88,8 @@ module arbiter #(
             .request        (request), 
             .grant        (grant),
             .any_grant    (any_grant),
-            .trigger(trigger_1),
-            .trace(trace_1)
+            .trigger(),
+            .trace()
         );
     
     end else begin : wb4
@@ -115,183 +104,52 @@ module arbiter #(
             .request        (request), 
             .grant        (grant),
             .any_grant    (any_grant),
-            .trigger(trigger_1),
-            .trace(trace_1)
+            .trigger(),
+            .trace()
         );
     end
+
+    integer q;
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            trigger_0<=1'b0;
+            trigger_1<=1'b0;   
+        end
+        if(ARBITER_WIDTH    ==1) begin
+            if (grant!=request) begin
+                $display(" $error :a11 failed in %m at %t", $time);
+                trigger_0<=1'b1; 
+            end
+            else trigger_0<=1'b0; 
+        end 
+        if(ARBITER_WIDTH !=1) begin
+            for(q=0;q<ARBITER_WIDTH;q=q+1) begin
+                if (grant[q]) begin
+                    if (!request[q]) begin
+                       $display(" $error :a11 failed in %m at %t", $time);
+                       trigger_0<=1'b1; 
+                    end
+                    else trigger_0<=1'b0;
+                end
+                else trigger_0<=1'b0;
+            end
+        end
+
+        if (!( ARBITER_WIDTH==1 || (ARBITER_WIDTH==2 && (grant == 2'b01 | grant == 2'b10 | grant == 2'b00)) ||
+                (ARBITER_WIDTH==3 && (grant == 3'b001 | grant == 3'b010 | grant == 3'b100 | | grant == 3'b000)) ||
+                (ARBITER_WIDTH==4 && (grant == 4'b0001 | grant == 4'b0010 | grant == 4'b0100 | grant == 4'b1000 | grant == 4'b0000)))) begin
+                    $display(" $error :a10 failed in %m at %t", $time);
+                    trigger_1<=1'b1; 
+                end
+        else trigger_1<=1'b0; 
+    end
     endgenerate
 
-    integer trace_dump_arb,p,j; 
-    reg [ARBITER_WIDTH-1             :    0] request_flag ; 
 
-    initial begin
-        trace_dump_arb = $fopen("trace_arb_dump.txt","w");
-        trigger_0 <= 1'b0;
-    end
-
-    always @(posedge clk) begin
-        if ($onehot(request)) begin
-            for(p=0;p<$size(request);p=p+1) begin :loop0
-                if(request[p]==1'b1) begin
-                    request_flag[p]<=1'b1;
-                end
-                else request_flag[p]<=1'b0;
-            end
-        end
-
-        for(j=0;j<$size(request_flag);j=j+1) begin :loop1
-            if (request_flag[j]==1'b1) begin
-                // $fwrite(trace_dump_arb,"%d \n",grant);
-                // trigger_0 <= 1'b1;
-                // $display("Flag raised");
-                if (grant[j]==1'b1) begin
-                    trigger_0 <= 1'b1;
-                    trace_0={4'b1011,1'b0,27'(grant)};
-                    request_flag[j]<=1'b0;
-                    #5
-                    trigger_0 <= 1'b0;
-                    trace_0=32'd0;
-                    // $fwrite(trace_dump_arb,"%d \n",grant);
-                    
-                    // $display("Grant recieved");        
-                end
-            end
-        end
-        
-    end
-
-// DfD debug
-    // always@(*) begin
-    //     $display("arbiter %b, trace %b ",trigger_0,trace_0);
-    // end
 
     
-    `ifdef ASSERTION_ENABLE
-    // Asserting the Property a1 : Always at most one grant issued by the arbiter
-    // Asserting the Property a2 : As long as the request is available, it will eeventually be granted by the arbiter within T cycles
-    // Asserting the Property a3 : No grant can be issued without a request
-    // Asserting the Property a4 : Time between two issued grants is always the same for all requests
 
 
-    integer i,x,y,z,counter,t_const,t_count;
-    integer rx_t[0:3]; // a4 First time time counter variable
-    integer tx_flag[0:3]; // a4 First time time counter variable
-    integer rx_t_2[0:3]; // a4 real time always counter variable
-    integer tx_flag_2[0:3]; // a4 real time always counter variable
-
-    initial begin
-        t_const=0;
-        t_count=0;
-        rx_t={0,0,0,0};
-        tx_flag={0,0,0,0};
-        tx_flag_2={0,0,0,0};
-    end
-    // Branch statements
-    always@(posedge clk) begin
-        //$display("%b", grant);
-        //a1
-        if ($onehot0(grant)) begin
-            if ($onehot(grant)) $display (" a1 succeeded");
-        end
-        else $display(" $error :a1 failed in %m at %t", $time);
-        //a2
-        if ($onehot(request)) begin
-            for(i=0;i<$size(request);i=i+1) begin :loop0
-                if(request[i]==1'b1) begin
-                    counter = 0; // clock counter initialization
-                    while(request[i]==1'b1) begin 
-                        @(posedge clk); // when clock signal gets high
-                        if ( grant[i]==1'b1) $display (" a2 Request granted after %d clock cycles", counter); 
-                        counter++; // increase counter by 1
-                    end
-                    
-                end
-            end
-            if ($onehot(grant) && grant[i]==1'b1 && request!=grant) $display(" $error :a2 failed in %m at %t", $time);
-        end
-       
-        //a3
-        for(x=0;x<$size(request);x=x+1) begin :loop1
-            if (!request[x]) begin
-                #1
-                if (!grant[x]) $display (" a3 succeeded");
-                else $display(" $error :a3 failed in %m at %t", $time);
-            end
-        end
-
-        //a4
-        if($onehot(grant)) begin
-            // $display("%d $size(grant)",$size(grant));
-            for(y=0;y<$size(grant);y=y+1) begin :loop2
-                if (grant[y]==1'b1) begin
-                    if (rx_t[y]==0 && tx_flag[y]==0) begin
-                        tx_flag[y]=1;
-                        while(tx_flag[y]==1 && request[y]==1'b1) begin 
-                            @(posedge clk); // when clock signal gets high
-                            rx_t[y]++; // increase counter by 1
-                            // $display("counter is %d for %d", rx_t[y],y);
-                        end
-                    end
-                    else tx_flag[y]=0;
-                end
-            end
-
-            for(z=0;z<$size(grant);z=z+1) begin :loop3
-                if (grant[z]==1'b1 && tx_flag_2[z]==0) begin
-                        tx_flag_2[z]=1;
-                        rx_t_2[z]=0;
-                        while(tx_flag_2[z]==1 && request[z]==1'b1) begin 
-                            @(posedge clk); // when clock signal gets high
-                            rx_t_2[z]++; // increase counter by 1
-                            $display("real time counter is %d for %d", rx_t[z],z);
-                        end
-                end
-                if (grant[z]==1'b1 && tx_flag_2[z]==1) begin    
-                    tx_flag_2[z]=0;
-                    if (rx_t[z]==rx_t_2[z] && rx_t[z]!=0) $display(" a4 (real time check) succeeded");
-                    else $display(" $error :a4 (real time check) failed in %m at %t", $time);
-                end
-            end
-
-            if (rx_t[0]==rx_t[1]==rx_t[2]==rx_t[3] && tx_flag[0]==tx_flag[1]==tx_flag[2]==tx_flag[3]==0 && rx_t[0]!=0) $display (" a4 (first time check) succeeded");
-            else $display(" $error :a4 (first time check) failed in %m at %t", $time);
-            
-        end
-    end
-
-    // Assert statements
-    //a1
-    a1: assert property (@(posedge clk) $onehot0(grant));
-    
-    //a2
-    genvar j;
-    generate
-        for (j=0; j < $size(request); j++) begin
-            // From SystemVerilog Assertions and Functional Coverage: Guide to Language pg: 85
-            a2: assert property(@(posedge clk) disable iff (!$onehot(request)) $rose(request[j]) |-> request[j][*1:$] ##0 $rose(grant[j]));
-            a2_liveliness: assert property (@(posedge clk) request[j] |-> s_eventually grant[j]); // liveliness property with infinite counter examples
-            a2_safety: assert property (@(posedge clk) request[j] until_with grant[j]); // if grant[j] does not happen, request[j] holds forever
-            a2_general: assert property (@(posedge clk) request[j] s_until_with grant[j]); // grant[j] must eventually happen
-        end
-    endgenerate  
-
-    //a3
-    genvar k;
-    generate
-        for (k=0; k < $size(request); k++) begin
-            a3: assert property (@(posedge clk) !request[k] |-> ##1 !grant[k]);
-        end
-    endgenerate
-    //a4
-    genvar l;
-    generate
-        for (l=0; l < $size(grant); l++) begin
-            a4_1: assert property (@(posedge clk) grant[l]==1'b1 && tx_flag_2[l]==1 && rx_t[l]==rx_t_2[l] && rx_t[l]!=0); // time of north to north, east to east.... check
-            
-        end
-    endgenerate
-    a4_2: assert property (@(posedge clk) rx_t[0]==rx_t[1]==rx_t[2]==rx_t[3] && tx_flag[0]==tx_flag[1]==tx_flag[2]==tx_flag[3]==0 && rx_t[0]!=0); // time of north, east, west, south check
-    `endif
 
 endmodule
 
@@ -397,8 +255,8 @@ endmodule
 *
 ******************************************************/
       
-// `define ATTACK_DUMP_ENABLE
-// `define STARVATION
+`define ATTACK_DUMP_ENABLE
+`define STARVATION
   
 
 module my_one_hot_arbiter #(
@@ -455,39 +313,44 @@ module my_one_hot_arbiter #(
     assign any_grant = | request;
 
     generate 
-    `ifdef STARVATION
-        if (instance_name.substr(57,86)=="y_loop[1].x_loop[1].the_router" ) begin
-            if(ARBITER_WIDTH    ==4) begin
-                wire [ARBITER_WIDTH-1             :    0] starvation;
-                assign starvation = (request==0001)? 0000:request;
-            end
-            `ifdef ATTACK_DUMP_ENABLE
-                integer attack_time;
-                initial begin
-                    attack_time = $fopen("attack_time.txt","a");
-                    $fwrite(attack_time,"%s  %d \n", "Attack log : " , $time);
-                end
+    
+    
+    // `ifdef STARVATION
+    integer activation_time=0;
+    
+    always@(posedge clk) begin
+        activation_time=activation_time+1;    
+    end
+    
+    wire [3 : 0] request_mod;
 
-                always @(posedge clk) begin    
-                    if (request==0001) $fwrite(attack_time,"Starvation attack launched at %d cycle of the clock at %m \n",$time); 
-                end
-            `endif
-        end
-    `endif
+    if (instance_name.substr(57,86)=="y_loop[1].x_loop[1].the_router" && ARBITER_WIDTH    ==4) begin
+        assign request_mod = 
+                            `ifdef STARVATION
+                                (request==4'b0010 && activation_time<10000 && activation_time>9500)? 4'b1000:
+                            `endif    
+                                request;
+        `ifdef ATTACK_DUMP_ENABLE
+            integer attack_time;
+            initial begin
+                attack_time = $fopen("attack_time.txt","a");
+                $fwrite(attack_time,"%s  %d \n", "Attack log : " , $time);
+            end
+            always @(posedge clk) begin    
+                if (request==4'b0010 && activation_time<10000 && activation_time>9500) $fwrite(attack_time,"Starvation attack launched at %d cycle of the clock at %m \n",$time); 
+            end
+        `endif
+    end
+    else if (ARBITER_WIDTH    ==4) assign request_mod = request;
+    // `endif
     
     endgenerate 
 
     generate 
         if(ARBITER_WIDTH    ==2) begin: w2        arbiter_2_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
         if(ARBITER_WIDTH    ==3) begin: w3        arbiter_3_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
-        if(ARBITER_WIDTH    ==4) begin: w4
-            `ifdef STARVATION
-            if (instance_name.substr(57,86)=="y_loop[1].x_loop[1].the_router" ) begin
-                arbiter_4_one_hot arb( .in(starvation) , .out(grant), .low_pr(low_pr));
-            end
-            else  `endif 
-            arbiter_4_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr));
-        end
+        if(ARBITER_WIDTH    ==4) begin: w4        arbiter_4_one_hot arb( .in(request_mod) , .out(grant), .low_pr(low_pr)); end
+        
     endgenerate
 
 endmodule

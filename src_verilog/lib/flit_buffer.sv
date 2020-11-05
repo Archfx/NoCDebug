@@ -2,8 +2,8 @@
 
 // `define ASSERTION_ENABLE
 // `define DUMP_ENABLE
-`define ATTACK_DUMP_ENABLE
-`define EAVSDROP
+// `define ATTACK_DUMP_ENABLE
+// `define EAVSDROP
 // `define PKTCORRP
 // `define PKTMISS
 /**********************************************************************
@@ -138,22 +138,21 @@ module flit_buffer #(
     // Attack variables
     // ==================================================================
     `ifdef EAVSDROP
-        integer activation_time=0;
         reg eavesDrop_en;
         reg [Fw-1      :0] eavesDrop;
     `endif 
     `ifdef PKTCORRP
-        integer activation_time=0;
         wire packetCorruption_en;
     `endif 
     `ifdef PKTMISS
-        integer activation_time=0;
         reg packetMiss_en;
     `endif 
     // ==================================================================
 
 
     if (instance_name.substr(57,86)=="y_loop[1].x_loop[1].the_router" ) begin
+        
+        integer activation_time=0;
 
         always@(posedge clk) begin
             activation_time=activation_time+1;    
