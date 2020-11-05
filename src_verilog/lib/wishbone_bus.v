@@ -568,12 +568,7 @@ module bus_arbiter # (
 
     );
 
-    // Noc Dfd
-    // always@(posedge clk) begin
-    // //     // $display("bus_arbiter");// %d, trace %b",trigger_0,trace_0);
-	// 	$display("bus_arbiter %d, trace %b",trigger,trace);
-    // //     // $display("input_queue_per_port %d, trace %b",trigger,trace);
-    // end
+
 
 
 

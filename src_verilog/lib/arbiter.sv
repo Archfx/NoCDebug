@@ -110,6 +110,7 @@ module arbiter #(
     end
 
     integer q;
+
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             trigger_0<=1'b0;
@@ -144,6 +145,7 @@ module arbiter #(
         else trigger_1<=1'b0; 
     end
     endgenerate
+
 
 
 

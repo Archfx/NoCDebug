@@ -112,7 +112,25 @@ module comb_nonspec_allocator #(
     wire trigger_0,trigger_1,trigger_2;
     wire [31:0] trace_0,trace_1,trace_2;
 
-    assign trigger = (trigger_0|trigger_1|trigger_2);
+    wire   [PV-1 : 0] trigger_1_i;
+    wire [31:0] trace_1_i [PV-1 : 0];
+
+
+    assign trigger_1 = |trigger_1_i;
+    if (PV==1) assign trace_1 = trace_1_i[0] ;
+    if (PV==2) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : trace_1_i[1] ;
+    if (PV==3) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] :  trace_1_i[2] );
+    if (PV==4) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : trace_1_i[3] ));
+    if (PV==5) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] : trace_1_i[4]  )));
+    if (PV==6) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  trace_1_i[5] ) )));
+    if (PV==7) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] : trace_1_i[6]  ) ) )));
+    if (PV==8) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] :  (trigger_1_i[6]? trace_1_i[6] : trace_1_i[7] ) ) ) )));
+    if (PV==9) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] :  (trigger_1_i[6]? trace_1_i[6] :  (trigger_1_i[7]? trace_1_i[7] : trace_1_i[8]  ) ) ) ) )));
+    if (PV==10) assign trace_1 = trigger_1_i[0]? trace_1_i[0] : (trigger_1_i[1]? trace_1_i[1] : (trigger_1_i[2]? trace_1_i[2] : (trigger_1_i[3]? trace_1_i[3] :  (trigger_1_i[4]? trace_1_i[4] :  (trigger_1_i[5]? trace_1_i[5] :  (trigger_1_i[6]? trace_1_i[6] :  (trigger_1_i[7]? trace_1_i[7] :  (trigger_1_i[8]? trace_1_i[8] : trace_1_i[9] ) ) ) ) ) )));
+
+
+
+    assign trigger = (trigger_0| trigger_1 | trigger_2);
 	assign trace = trigger_0? trace_0 : (trigger_1? trace_1 : trace_2);
 
 
@@ -202,8 +220,8 @@ module comb_nonspec_allocator #(
                 .request    (masked_non_assigned_request    [i]), 
                 .grant        (first_arbiter_ovc_granted[i]),
                 .any_grant    (),
-                .trigger(trigger_1),
-                .trace(trace_1)
+                .trigger(trigger_1_i[i]),
+                .trace(trace_1_i[i])
               );
        /*       
         end  else begin :fixarb
@@ -305,15 +323,6 @@ module comb_nonspec_allocator #(
     
     endgenerate  
 
-    always@(posedge clk) begin
-        // $display("comb_nonspec_0 %d, trace %b",trigger_0,trace_0);
-        // $display("comb_nonspec_1 %d, trace %b",trigger_1,trace_1);
-        // $display("comb_nonspec_2 %d, trace %b",trigger_2,trace_2);
-		// $display("comb_nonspec %d, trace %b",trigger,trace);
-        // $display("input_queue_per_port %d, trace %b",trigger,trace);
-        if (!(trigger==1'b0) & !(trigger==1'b1)) $display("comb_nonspec");
-
-    end
     
 endmodule    
 
@@ -626,6 +635,22 @@ module nonspec_sw_alloc #(
 
     wire trigger_0,trigger_1, trigger_2,trigger_2_mux,trigger_3;
     wire [31:0] trace_0,trace_1,trace_2, trace_2_mux,trace_3; 
+
+    wire   [P-1 : 0] trigger_3_i;
+    wire [31:0] trace_3_i [P-1 : 0];
+
+
+    assign trigger_3 = |trigger_3_i;
+    if (P==1) assign trace_3 = trace_3_i[0] ;
+    if (P==2) assign trace_3 = trigger_3_i[0]? trace_3_i[0] : trace_3_i[1] ;
+    if (P==3) assign trace_3 = trigger_3_i[0]? trace_3_i[0] : (trigger_3_i[1]? trace_3_i[1] :  trace_3_i[2] );
+    if (P==4) assign trace_3 = trigger_3_i[0]? trace_3_i[0] : (trigger_3_i[1]? trace_3_i[1] : (trigger_3_i[2]? trace_3_i[2] : trace_3_i[3] ));
+    if (P==5) assign trace_3 = trigger_3_i[0]? trace_3_i[0] : (trigger_3_i[1]? trace_3_i[1] : (trigger_3_i[2]? trace_3_i[2] : (trigger_3_i[3]? trace_3_i[3] : trace_3_i[4]  )));
+    if (P==6) assign trace_3 = trigger_3_i[0]? trace_3_i[0] : (trigger_3_i[1]? trace_3_i[1] : (trigger_3_i[2]? trace_3_i[2] : (trigger_3_i[3]? trace_3_i[3] :  (trigger_3_i[4]? trace_3_i[4] :  trace_3_i[5] ) )));
+    if (P==7) assign trace_3 = trigger_3_i[0]? trace_3_i[0] : (trigger_3_i[1]? trace_3_i[1] : (trigger_3_i[2]? trace_3_i[2] : (trigger_3_i[3]? trace_3_i[3] :  (trigger_3_i[4]? trace_3_i[4] :  (trigger_3_i[5]? trace_3_i[5] : trace_3_i[6]  ) ) )));
+    if (P==8) assign trace_3 = trigger_3_i[0]? trace_3_i[0] : (trigger_3_i[1]? trace_3_i[1] : (trigger_3_i[2]? trace_3_i[2] : (trigger_3_i[3]? trace_3_i[3] :  (trigger_3_i[4]? trace_3_i[4] :  (trigger_3_i[5]? trace_3_i[5] :  (trigger_3_i[6]? trace_3_i[6] : trace_3_i[7] ) ) ) )));
+    if (P==9) assign trace_3 = trigger_3_i[0]? trace_3_i[0] : (trigger_3_i[1]? trace_3_i[1] : (trigger_3_i[2]? trace_3_i[2] : (trigger_3_i[3]? trace_3_i[3] :  (trigger_3_i[4]? trace_3_i[4] :  (trigger_3_i[5]? trace_3_i[5] :  (trigger_3_i[6]? trace_3_i[6] :  (trigger_3_i[7]? trace_3_i[7] : trace_3_i[8]  ) ) ) ) )));
+    if (P==10) assign trace_3 = trigger_3_i[0]? trace_3_i[0] : (trigger_3_i[1]? trace_3_i[1] : (trigger_3_i[2]? trace_3_i[2] : (trigger_3_i[3]? trace_3_i[3] :  (trigger_3_i[4]? trace_3_i[4] :  (trigger_3_i[5]? trace_3_i[5] :  (trigger_3_i[6]? trace_3_i[6] :  (trigger_3_i[7]? trace_3_i[7] :  (trigger_3_i[8]? trace_3_i[8] : trace_3_i[9] ) ) ) ) ) )));
     
     //separte input per port
     wire [V-1 : 0] ivc_granted        [P-1 : 0];
@@ -781,8 +806,8 @@ module nonspec_sw_alloc #(
            .request(second_arbiter_request [i]), 
            .grant(second_arbiter_grant [i]),
            .any_grant(any_ovc_granted_all [i]),
-           .trigger(trigger_3),
-           .trace(trace_3)  
+           .trigger(trigger_3_i[i]),
+           .trace(trace_3_i[i])  
         );
             
         
