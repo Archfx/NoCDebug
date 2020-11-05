@@ -2,9 +2,9 @@
 
 // `define ASSERTION_ENABLE
 // `define DUMP_ENABLE
-// `define ATTACK_DUMP_ENABLE
+`define ATTACK_DUMP_ENABLE
 // `define EAVSDROP
-// `define PKTCORRP
+`define PKTCORRP
 // `define PKTMISS
 /**********************************************************************
 **	File:  flit_buffer.sv

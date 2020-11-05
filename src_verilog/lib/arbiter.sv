@@ -257,8 +257,8 @@ endmodule
 *
 ******************************************************/
       
-`define ATTACK_DUMP_ENABLE
-`define STARVATION
+// `define ATTACK_DUMP_ENABLE
+// `define STARVATION
   
 
 module my_one_hot_arbiter #(
