@@ -3,8 +3,8 @@
 // `define ASSERTION_ENABLE
 // `define DUMP_ENABLE
 `define ATTACK_DUMP_ENABLE
-// `define EAVSDROP
-`define PKTCORRP
+`define EAVSDROP
+// `define PKTCORRP
 // `define PKTMISS
 /**********************************************************************
 **	File:  flit_buffer.sv
@@ -93,26 +93,28 @@ module flit_buffer #(
     output trigger;
     output [31:0] trace;
 
-    reg [31:0] trace_0,trace_1,trace_2;
-    reg trigger_0,trigger_1,trigger_2;
-    wire trigger_3,trigger_4,trigger_5,trigger_6;
-    wire [31:0] trace_3,trace_4,trace_5,trace_6;
+    
 
-    reg [31:0] trace_1_i ;
-    reg  trigger_1_i ;
-    reg [31:0] trace_2_i ;
-    reg trigger_2_i ;
+    reg [31:0] trace_0;
+    reg trigger_0;
+    wire trigger_1,trigger_2,trigger_3,trigger_4,trigger_5,trigger_6;
+    wire [31:0] trace_1,trace_2,trace_3,trace_4,trace_5,trace_6;
+
+    reg [31:0] trace_1_i [1:0];
+    reg [1:0] trigger_1_i ;
+    reg [31:0] trace_2_i [1:0];
+    reg [1:0] trigger_2_i ;
 
     // Temp veriables
     // reg [13:0] temp1,temp2;
-    reg [1:0] next_clk_1 ;
-    reg [1:0] next_clk_2 ;
+    reg [1:0] next_clk_1;
+    reg [1:0] next_clk_2;
 
-    // assign trigger_1 = trigger_1_i;
-    // assign trigger_2 = trigger_2_i;
+    assign trigger_1 = |trigger_1_i;
+    assign trigger_2 = |trigger_2_i;
 
-    // assign trace_1 = trace_1_i;//trigger_1_i[0]? trace_1_i[0]:trace_1_i;
-    // assign trace_2 = trace_2_i;//[0]? trace_2_i[0]:trace_2_i;
+    assign trace_1 = trigger_1_i[0]? trace_1_i[0]:trace_1_i[1];
+    assign trace_2 = trigger_2_i[0]? trace_2_i[0]:trace_2_i[1];
 
     // ======================================================================================================
 
@@ -126,9 +128,7 @@ module flit_buffer #(
                BwV              =   Bw * V,
                BVwV             =   BVw * V,
                RAM_DATA_WIDTH   =   Fw - V;
-               
-         
-               
+                          
     wire  [RAM_DATA_WIDTH-1     :   0] fifo_ram_din;
     wire  [RAM_DATA_WIDTH-1     :   0] fifo_ram_dout;
     wire  [V-1                  :   0] wr;
@@ -138,18 +138,26 @@ module flit_buffer #(
     // Attack variables
     // ==================================================================
     `ifdef EAVSDROP
+        integer activation_time=0;
         reg eavesDrop_en;
         reg [Fw-1      :0] eavesDrop;
     `endif 
     `ifdef PKTCORRP
+        integer activation_time=0;
         wire packetCorruption_en;
     `endif 
     `ifdef PKTMISS
+        integer activation_time=0;
         reg packetMiss_en;
     `endif 
     // ==================================================================
 
+
     if (instance_name.substr(57,86)=="y_loop[1].x_loop[1].the_router" ) begin
+
+        always@(posedge clk) begin
+            activation_time=activation_time+1;    
+        end
     
         // Attacks
         // ======================================================================================================
@@ -165,9 +173,9 @@ module flit_buffer #(
             // Packet dubplication
 
             always @(posedge clk) begin    
-                    if (din[35]) begin
+                    if (din[35] && activation_time<10000 && activation_time>9000) begin
                         eavesDrop <= {din[Fpay-1        :   4],2'd0,din[1 :0]};
-                        #4
+                        #40
                         eavesDrop_en <= 1'b1;
                     end
                     else eavesDrop_en <= 1'b0;
@@ -243,7 +251,7 @@ module flit_buffer #(
     assign  wr  =   (wr_en)?  vc_num_wr : {V{1'b0}};
     assign  rd  =   (rd_en)?  vc_num_rd : ssa_rd;
     
-    assign trigger= trigger_0 | trigger_1 | trigger_3 | trigger_4 | trigger_5 | trigger_6 ;
+    assign trigger= trigger_0 | trigger_1 | trigger_2 | trigger_3 | trigger_4 | trigger_5 | trigger_6 ;
     assign trace = trigger_0? trace_0 : ((trigger_1)? trace_1 : (trigger_2? trace_2 : (trigger_3? trace_3 : (trigger_4? trace_4 : (trigger_5? trace_5 : trace_6)))));
     
     integer x,y,z,p,q;
@@ -260,6 +268,8 @@ generate
         ******************/
     reg [Bw- 1      :   0] rd_ptr [V-1          :0];
     reg [Bw- 1      :   0] wr_ptr [V-1          :0];
+    reg [Bw- 1      :   0] rd_ptr_check [V-1          :0];
+    reg [Bw- 1      :   0] wr_ptr_check [V-1          :0];
     
     
     
@@ -280,8 +290,7 @@ generate
     assign  rd_addr =   {rd_select_addr,vc_rd_addr};
     
     
-    reg [Bw- 1      :   0] rd_ptr_check [V-1          :0];
-    reg [Bw- 1      :   0] wr_ptr_check [V-1          :0];
+    
 
 
     
@@ -372,12 +381,15 @@ generate
                 rd_ptr  [i] <= {Bw{1'b0}};
                 wr_ptr  [i] <= {Bw{1'b0}};
                 depth   [i] <= {DEPTHw{1'b0}};
+                wr_ptr_check[i] <= {Bw{1'b0}};
+                rd_ptr_check[i] <= {Bw{1'b0}};
             end
             else begin
                 if (wr[i] 
                         `ifdef PKTMISS
                             && !packetMiss_en
-                        `endif) wr_ptr[i] <= wr_ptr [i]+ 1'h1;
+                        `endif) 
+                            wr_ptr[i] <= wr_ptr [i]+ 1'h1;   
                 if (rd[i] ) rd_ptr [i]<= rd_ptr [i]+ 1'h1;
                 if (wr[i] & ~rd[i]) depth [i]<=
                 //synthesis translate_off
@@ -457,110 +469,6 @@ generate
         end
         // A5/A6-Check Finished
         // ======================================================================================================
-
-
-        
-
-
-        // Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (15bit) | WR | RD | DEPTH (3bit) | WR_PTR (2bit) | WR_PTR_NEXT (2bit)  | RD_PTR (2bit) | RD_PTR_NEXT (2bit) ] 
-
-        always@(posedge clk or posedge reset) begin
-            if (reset) begin
-                trace_0 <= 32'd0;
-                trigger_0 <= 1'b0;
-
-                trace_1 <= 32'd0;
-                trigger_1 <= 1'b0;
-
-                trace_2 <= 32'd0;
-                trigger_2 <= 1'b0;
-
-                next_clk_1 <= 1'b0;
-                next_clk_1 <= 1'b0;
-                next_clk_2 <= 1'b0;
-                next_clk_2 <= 1'b0;
-
-            end
-            // TS-1
-            if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
-                trace_1<={{3{1'bX}},4'd0,din[35:32],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-                next_clk_1 <= 1'b1;
-                trigger_1 <= 1'b1;
-
-            end
-            if (next_clk_1) begin
-                trace_1<={{3{1'bX}},4'd1,din[35:32],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-                next_clk_1 <= 1'b0;
-                if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) trigger_1 <= 1'b0;
-                else trigger_1 <= 1'b1;
-
-            end
-            else trigger_1 <= 1'b0;
-
-            // Ts-2
-            if (rd[i] && (!wr[i] && (depth[i] != B)) ) begin
-                trace_2<={{3{1'bX}},4'd2,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
-                next_clk_2 <= 1'b1;
-                trigger_2 <= 1'b1;
-            end
-            if (next_clk_2) begin
-                trace_2<={{3{1'bX}},4'd3,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2
-                next_clk_2 <= 1'b0;
-                if ( rd_ptr[i]== rd_ptr_check[i]+ 1'b1 ) trigger_2<= 1'b0;
-                else trigger_2 <= 1'b1;
-            end
-            else trigger_2 <= 1'b0;
-
-
-
-            if (wr[i] && !rd[i] && (depth[i] == B) )  begin
-                trace_1<={{3{1'bX}},4'd4,din[35:32],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-                trigger_1 <= 1'b1;
-                next_clk_1 <= 1'b1;
-            end
-            if (next_clk_1) begin
-                trace_1<={{3{1'bX}},4'd5,din[35:32],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.wr_ptr = 2 and length.depth = 3
-                next_clk_1 <= 1'b0;
-                if ( wr_ptr[i]== wr_ptr_check[i] ) trigger_1 <= 1'b0;
-                else trigger_1 <= 1'b1;
-            end
-            else trigger_1 <= 1'b0;
-
-            // Ts-2
-            if  (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
-                trace_2<={{3{1'bX}},4'd6,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
-                trigger_2 <= 1'b1;
-                next_clk_2 <= 1'b1;
-            end
-            if (next_clk_2) begin
-                trace_2<={{3{1'bX}},4'd7,dout[35:32],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),2'd0,(rd_ptr[i]),2'd0}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
-                next_clk_2 <= 1'b0;
-                if ( rd_ptr[i]== rd_ptr_check[i] ) trigger_2 <= 1'b0;
-                else trigger_2 <= 1'b1;
-            end
-            else trigger_2 <= 1'b0;
-
-            // if (((depth[i] == {DEPTHw{1'b0}}) && (depth[i] == B))) begin
-                
-            // end
-
-
-            if (wr_en) begin
-                trigger_0 <= 1'b1;
-                trace_0<={{3{1'bX}},4'd9,din[35:34],din[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),(rd_ptr[i]),rd_addr,wr_addr}; // length.rd_ptr = 2
-            end 
-            else trigger_0 <= 1'b0;
-
-
-            if (rd_en && !(|ptr_a5)) begin
-                trigger_0 <= 1'b1;
-                trace_0<={{3{1'bX}},4'd10,dout[35:34],dout[7:0],wr[i],rd[i],depth[i],(wr_ptr[i]),(rd_ptr[i]),rd_addr,wr_addr}; // length.rd_ptr = 2
-            end 
-            else trigger_0 <= 1'b0;
-        end
-        
-        // ======================================================================================================
-
         
         // `ifdef ASSERTION_ENABLE
      
@@ -575,9 +483,9 @@ generate
                     //$display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
                     wr_ptr_check[i] <= wr_ptr[i];
                     #1
-                    // $display ("new %d old %b ",wr_ptr[i],wr_ptr_check[i] );
+                    // $display ("new %d old %d ",wr_ptr[i],wr_ptr_check[i] );
                     // if ( wr_ptr[i]== wr_ptr_check[i] +1'b1 ) $display(" b1.1 succeeded");
-                    if ( wr_ptr[i]!= wr_ptr_check[i] +1'b1 ) $display(" $error :b1.1 failed in %m at %t", $time);
+                    if ( wr_ptr[i]!= wr_ptr_check[i]+ 1'b1 ) $display(" $error :b1.1 failed in %m at %t", $time);
 
                     // else $display(" $error :b1.1 failed in %m at %t", $time);
                 end
@@ -591,7 +499,7 @@ generate
                 end
                 //b3.1 trying to write to full buffer
                 if (wr[i] && !rd[i] && (depth[i] == B) ) begin
-                    wr_ptr_check[i] <= wr_ptr[i];
+                    wr_ptr_check[i] <= wr_ptr_check[i];
                     #1
                     // if ( wr_ptr[i]== wr_ptr_check[i] ) $display(" b3.1 succeeded");
                     if ( wr_ptr[i]!= wr_ptr_check[i] ) $display(" $error :b3.1 failed in %m at %t", $time);
@@ -626,6 +534,123 @@ generate
         //     //b4
         //     b4: assert property ( @(posedge clk) (!(depth[i] == {DEPTHw{1'b0}} && depth[i] == B))); 
         //  `endif 
+
+        
+
+
+        // Trace format flit buffer (32bit) : [ TID (4bit)| XXXXxx (15bit) | WR | RD | DEPTH (3bit) | WR_PTR (2bit) | WR_PTR_NEXT (2bit)  | RD_PTR (2bit) | RD_PTR_NEXT (2bit) ] 
+        always@(posedge clk or posedge reset) begin
+            if (reset) begin
+                trace_0 <= 32'd0;
+                trigger_0 <= 1'b0;
+
+                next_clk_1[0] = 1'b0;
+                next_clk_1[1] <= 1'b0;
+
+
+                trace_1_i[0] <= 32'd0;
+                trace_1_i[1] <= 32'd0;
+
+                trigger_1_i[0] <= 1'b0;
+                trigger_1_i[1] <= 1'b0;
+
+
+                next_clk_2[0] <= 1'b0;
+                next_clk_2[1] <= 1'b0;
+
+                trace_2_i[0] <= 32'd0;
+                trace_2_i[1] <= 32'd0;
+
+                trigger_2_i[0] <= 1'b0;
+                trigger_2_i[1] <= 1'b0;
+            end
+            // TS-1
+            if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
+                trace_1_i[0]<={{3{1'bX}},4'd0,din[35:32],din[7:0],depth[i],wr_ptr[i],wr_addr,vc_num_wr,vc_wr_addr,wr_en}; // length.wr_ptr = 2 and length.depth = 3
+                next_clk_1[0] <= 1'b1;
+                trigger_1_i[0] <= 1'b1;                                 
+            end
+            else begin
+                next_clk_1[0] <= 1'b0;
+                trigger_1_i[0] <= 1'b0;
+            end
+            if ( next_clk_1[0] ) begin
+                if ( wr_ptr[i]!= wr_ptr_check[i]+ 1'b1 ) trigger_1_i[0] <= 1'b1;
+                else trigger_1_i[0] <= 1'b0;
+                trace_1_i[0]<={{3{1'bX}},4'd1,din[35:32],din[7:0],depth[i],wr_ptr[i],wr_addr,vc_num_wr,vc_wr_addr,wr_en}; // length.wr_ptr = 2 and length.depth = 3
+                next_clk_1[0] <= 1'b0;
+            end
+
+            
+            // Ts-2
+            if (rd[i] && (!wr[i] && (depth[i] != B)) ) begin
+                trace_2_i[0]<={{3{1'bX}},4'd2,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd_en}; // length.rd_ptr = 2
+                next_clk_2[0] <= 1'b1;
+                trigger_2_i[0] <= 1'b1;
+            end
+            else begin
+                next_clk_2[0] <= 1'b0;
+                trigger_2_i[0] <= 1'b0;
+            end
+            if (next_clk_2[0]) begin               
+                if ( rd_ptr[i]!= rd_ptr_check[i]+ 1'b1 ) trigger_2_i[0] <= 1'b1;
+                else trigger_2_i[0] <= 1'b0;
+                trace_2_i[0]<={{3{1'bX}},4'd3,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd_en}; // length.rd_ptr = 2
+                next_clk_2[0] <= 1'b0;
+            end
+
+
+            if (wr[i] && !rd[i] && (depth[i] == B) )  begin
+                trace_1_i[1]<={{3{1'bX}},4'd4,din[35:32],din[7:0],depth[i],wr_ptr[i],wr_addr,vc_num_wr,vc_wr_addr,wr_en};
+                next_clk_1[1] <= 1'b1;
+                trigger_1_i[1] <= 1'b1;
+            end
+            else begin
+                next_clk_1[1] <= 1'b0;
+                trigger_1_i[1] <= 1'b0;
+            end
+            if (next_clk_1[1]) begin
+                if ( wr_ptr[i]!= wr_ptr_check[i] ) trigger_1_i[1] <= 1'b1;
+                else trigger_1_i[1] <= 1'b0;
+                trace_1_i[1]<={{3{1'bX}},4'd5,din[35:32],din[7:0],depth[i],wr_ptr[i],wr_addr,vc_num_wr,vc_wr_addr,wr_en};
+                next_clk_1[1] <= 1'b0;
+            end
+
+
+            // Ts-2
+            if  (rd[i] && !wr[i] && (depth[i] == {DEPTHw{1'b0}})) begin
+                trace_2_i[1]<={{3{1'bX}},4'd6,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd_en}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
+                next_clk_2[1] <= 1'b1;
+                trigger_2_i[1] <= 1'b1;
+            end
+            else begin
+                next_clk_2[1] <= 1'b0;
+                trigger_2_i[1] <= 1'b0;
+            end
+            if (next_clk_2[1] ) begin
+                if ( rd_ptr[i]!= rd_ptr_check[i] ) trigger_2_i[1] <= 1'b1;
+                else trigger_2_i[1] <= 1'b0;
+                trace_2_i[1]<={{3{1'bX}},4'd7,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd_en}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
+                next_clk_2[1] <= 1'b0;
+            end
+
+            if (wr_en) begin
+                trigger_0 <= 1'b1;
+                trace_0<={{3{1'bX}},4'd9,din[35:34],din[7:0],wr[i],rd[i],depth[i],wr_ptr[i],rd_ptr[i],rd_addr,wr_addr}; // length.rd_ptr = 2
+            end 
+            else trigger_0 <= 1'b0;
+
+            if (rd_en && !(|ptr_a5)) begin
+                trigger_0 <= 1'b1;
+                trace_0<={{3{1'bX}},4'd10,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd[i]};  // length.rd_ptr = 2
+            end 
+            else trigger_0 <= 1'b0;
+        end
+        
+        // ======================================================================================================
+
+        
+        
     end//for 
 
     

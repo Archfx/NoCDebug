@@ -55,7 +55,7 @@ module trace_buffer #(
 
     initial begin
         trace_dump = $fopen("trace_dump.txt","a");
-        $fwrite(trace_dump,"%s  %d \n", "Simulation started : " , $time);
+        $fwrite(trace_dump,"%s  %d \n", "// Simulation started : " , $time);
     end
 
     reg [TB_Depth-1      :   0] rd_ptr;

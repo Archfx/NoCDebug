@@ -397,7 +397,9 @@ endmodule
 *
 ******************************************************/
       
-    
+// `define ATTACK_DUMP_ENABLE
+// `define STARVATION
+  
 
 module my_one_hot_arbiter #(
     parameter ARBITER_WIDTH    =4
@@ -438,11 +440,7 @@ module my_one_hot_arbiter #(
 
     );
 
-    //  always@(posedge clk) begin
-    //     $display("arbsss3");
-    // end
-    
-    
+        
     
     always@(posedge clk or posedge reset) begin
         if(reset) begin
@@ -452,13 +450,44 @@ module my_one_hot_arbiter #(
         end
     end
     
-
+    localparam string instance_name = $sformatf("%m");
+    
     assign any_grant = | request;
+
+    generate 
+    `ifdef STARVATION
+        if (instance_name.substr(57,86)=="y_loop[1].x_loop[1].the_router" ) begin
+            if(ARBITER_WIDTH    ==4) begin
+                wire [ARBITER_WIDTH-1             :    0] starvation;
+                assign starvation = (request==0001)? 0000:request;
+            end
+            `ifdef ATTACK_DUMP_ENABLE
+                integer attack_time;
+                initial begin
+                    attack_time = $fopen("attack_time.txt","a");
+                    $fwrite(attack_time,"%s  %d \n", "Attack log : " , $time);
+                end
+
+                always @(posedge clk) begin    
+                    if (request==0001) $fwrite(attack_time,"Starvation attack launched at %d cycle of the clock at %m \n",$time); 
+                end
+            `endif
+        end
+    `endif
+    
+    endgenerate 
 
     generate 
         if(ARBITER_WIDTH    ==2) begin: w2        arbiter_2_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
         if(ARBITER_WIDTH    ==3) begin: w3        arbiter_3_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
-        if(ARBITER_WIDTH    ==4) begin: w4        arbiter_4_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr)); end
+        if(ARBITER_WIDTH    ==4) begin: w4
+            `ifdef STARVATION
+            if (instance_name.substr(57,86)=="y_loop[1].x_loop[1].the_router" ) begin
+                arbiter_4_one_hot arb( .in(starvation) , .out(grant), .low_pr(low_pr));
+            end
+            else  `endif 
+            arbiter_4_one_hot arb( .in(request) , .out(grant), .low_pr(low_pr));
+        end
     endgenerate
 
 endmodule
