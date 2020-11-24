@@ -146,20 +146,20 @@ module xy_mesh_routing #(
             `endif
     end
 
-    // wire trigger_1,trigger_2,trigger_3;
-    // assign trigger_1 = !((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL));
-    // assign trigger_2 = !(destport==5'b00001 || destport==5'b00010 || destport==5'b00100 || destport==5'b01000 || destport==5'b100000 );
-    // assign trigger_3 = !((dest_x<=1'b1 && dest_y<=1'b1));
-    // assign trigger = (trigger_1 | trigger_2 | trigger_3)? 1'b1 : 1'b0;
+    wire trigger_1,trigger_2,trigger_3;
+    assign trigger_1 = !((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL));
+    assign trigger_2 = !(destport==5'b00001 || destport==5'b00010 || destport==5'b00100 || destport==5'b01000 || destport==5'b100000 );
+    assign trigger_3 = !((dest_x<=1'b1 && dest_y<=1'b1));
+    assign trigger = (trigger_1 | trigger_2 | trigger_3)? 1'b1 : 1'b0;
 
-    // // always@(*) begin
-    // //     // trace<={{3{1'bX}},4'd15,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
-    // //     if (!((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL))) $display (" r3 failed");
-    // // end
+    // always@(*) begin
+    //     // trace<={{3{1'bX}},4'd15,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
+    //     if (!((dest_x > current_x && destport_next==EAST) || (dest_x < current_x && destport_next==WEST) || (dest_y > current_y && destport_next==SOUTH) || (dest_y < current_y && destport_next==NORTH) || (destport_next==LOCAL))) $display (" r3 failed");
+    // end
 
-    // assign trace= trigger_1? {{3{1'bX}},4'd11,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}} :
-    // (trigger_2? {{3{1'bX}},4'd12,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}} :
-    // {{3{1'bX}},4'd13,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}}); // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
+    assign trace= trigger_1? {{3{1'bX}},4'd11,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}} :
+    (trigger_2? {{3{1'bX}},4'd12,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}} :
+    {{3{1'bX}},4'd13,current_x,current_y,dest_x,dest_y,destport,destport_next,{11{1'bX}}}); // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
 
     
     

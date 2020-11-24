@@ -2,10 +2,12 @@
 
 // `define ASSERTION_ENABLE
 // `define DUMP_ENABLE
-`define ATTACK_DUMP_ENABLE
+// `define ATTACK_DUMP_ENABLE
 // `define EAVSDROP
-`define PKTCORRP
+// `define EAVSDROP2
+// `define PKTCORRP
 // `define PKTMISS
+// `define PKTMSROUT
 /**********************************************************************
 **	File:  flit_buffer.sv
 **    
@@ -105,16 +107,22 @@ module flit_buffer #(
     reg [31:0] trace_2_i [1:0];
     reg [1:0] trigger_2_i ;
 
+    reg [31:0] trace_1_j [1:0];
+    reg [1:0] trigger_1_j ;
+    reg [31:0] trace_2_j [1:0];
+    reg [1:0] trigger_2_j ;
+
+
     // Temp veriables
     // reg [13:0] temp1,temp2;
     reg [1:0] next_clk_1;
     reg [1:0] next_clk_2;
 
-    assign trigger_1 = |trigger_1_i;
-    assign trigger_2 = |trigger_2_i;
+    assign trigger_1 = (|trigger_1_i) | (|trigger_1_j);
+    assign trigger_2 = (|trigger_2_i) | (|trigger_2_j);
 
-    assign trace_1 = trigger_1_i[0]? trace_1_i[0]:trace_1_i[1];
-    assign trace_2 = trigger_2_i[0]? trace_2_i[0]:trace_2_i[1];
+    assign trace_1 = trigger_1_j[0]? trace_1_j[0]:(trigger_1_j[1]? trace_1_j[1] :(trigger_1_i[0]? trace_1_i[0]: trace_1_i[1]));
+    assign trace_2 = trigger_2_j[0]? trace_2_j[0]:(trigger_2_j[1]? trace_2_j[0] :(trigger_2_i[0]? trace_2_i[0]: trace_2_i[1]));
 
     // ======================================================================================================
 
@@ -141,11 +149,18 @@ module flit_buffer #(
         reg eavesDrop_en;
         reg [Fw-1      :0] eavesDrop;
     `endif 
+    `ifdef EAVSDROP2
+        reg eavesDrop_en;
+        reg [Fw-1      :0] eavesDrop;
+    `endif 
     `ifdef PKTCORRP
         wire packetCorruption_en;
     `endif 
     `ifdef PKTMISS
         reg packetMiss_en;
+    `endif 
+    `ifdef PKTMSROUT
+        reg pktmissroute;
     `endif 
     // ==================================================================
 
@@ -170,10 +185,28 @@ module flit_buffer #(
         
         `ifdef EAVSDROP
             // Packet dubplication
-
             always @(posedge clk) begin    
                     if (din[35] && activation_time<10000 && activation_time>9000) begin
                         eavesDrop <= {din[Fpay-1        :   4],2'd0,din[1 :0]};
+                        #40
+                        eavesDrop_en <= 1'b1;
+                    end
+                    else eavesDrop_en <= 1'b0;
+            end
+            `ifdef ATTACK_DUMP_ENABLE
+                // Dumping attach activation time to a file
+                always @(posedge clk) begin    
+                    if (eavesDrop_en) $fwrite(attack_time,"Eaves drop attack launched at %d cycle of the clock at %m \n",$time); 
+                end
+                    
+            `endif
+        `endif
+
+        `ifdef EAVSDROP2
+            // Packet dubplication
+            always @(posedge clk) begin    
+                    if (rd_en && dout[35] && activation_time<10000 && activation_time>9000) begin
+                        eavesDrop <= {dout[Fpay-1        :   4],2'd0,dout[1 :0]};
                         #40
                         eavesDrop_en <= 1'b1;
                     end
@@ -201,7 +234,7 @@ module flit_buffer #(
 
         `ifdef PKTMISS
             always @(posedge clk) begin    
-                    if (rd_en && (!din[35] || !din[34])) begin
+                    if (wr_en && (!din[35] || !din[34])) begin
                         packetMiss_en <= 1'b1;
                     end
                     else packetMiss_en <= 1'b0;
@@ -210,6 +243,24 @@ module flit_buffer #(
                 // Dumping attach activation time to a file
                 always @(posedge clk) begin    
                     if (packetMiss_en) $fwrite(attack_time,"Packet missing attack launched at %d cycle of the clock at %m \n",$time); 
+                end
+                    
+            `endif
+        `endif
+
+        `ifdef PKTMSROUT
+            // Packet missroting at buffer
+
+            always @(posedge clk) begin    
+                    if ( activation_time<10000 && activation_time>9000) begin
+                       pktmissroute <= 1'b1;
+                    end
+                    else pktmissroute <= 1'b0;
+            end
+            `ifdef ATTACK_DUMP_ENABLE
+                // Dumping attach activation time to a file
+                always @(posedge clk) begin    
+                    if (pktmissroute) $fwrite(attack_time,"packet missroute attack launched at %d cycle of the clock at %m \n",$time); 
                 end
                     
             `endif
@@ -234,6 +285,11 @@ module flit_buffer #(
                 packetMiss_en<=1'b0;
             end
         `endif 
+        `ifdef PKTMSROUT
+            initial begin
+                pktmissroute<=1'b0;
+            end
+        `endif 
         // ==================================================================
     end
     // assign fifo_ram_din = {din[Fw-1 :   Fw-2],din[Fpay-1        :   0]};
@@ -244,9 +300,15 @@ module flit_buffer #(
                             `ifdef PKTCORRP
                                 packetCorruption_en? {din[ Fw-1 : Fw-2 ],{Fpay{2'b10}}} : 
                             `endif  
+                            `ifdef PKTMSROUT
+                                pktmissroute? {din[ Fw-1 : Fw-2 ],din[Fpay-1        :   4],{2{1'b0}},din[1        :   0]} : 
+                            `endif  
                             {din[Fw-1 :   Fw-2],din[Fpay-1        :   0]};
 
-    assign dout = {fifo_ram_dout[Fpay+1:Fpay],{V{1'bX}},fifo_ram_dout[Fpay-1        :   0]};    
+    assign dout = `ifdef EAVSDROP2
+                    eavesDrop_en? {fifo_ram_dout[Fpay+1:Fpay],{V{1'bX}},fifo_ram_dout[Fpay-1        :   0]} :
+                   `endif
+                    {fifo_ram_dout[Fpay+1:Fpay],{V{1'bX}},fifo_ram_dout[Fpay-1        :   0]};      
     assign  wr  =   (wr_en)?  vc_num_wr : {V{1'b0}};
     assign  rd  =   (rd_en)?  vc_num_rd : ssa_rd;
     
@@ -384,11 +446,11 @@ generate
                 rd_ptr_check[i] <= {Bw{1'b0}};
             end
             else begin
-                if (wr[i] 
-                        `ifdef PKTMISS
-                            && !packetMiss_en
-                        `endif) 
-                            wr_ptr[i] <= wr_ptr [i]+ 1'h1;   
+                if (wr[i] ) begin
+                    `ifdef PKTMISS
+                        if (packetMiss_en) wr_ptr[i] <= wr_ptr [i];
+                        else `endif wr_ptr[i] <= wr_ptr [i]+ 1'h1;
+                end         
                 if (rd[i] ) rd_ptr [i]<= rd_ptr [i]+ 1'h1;
                 if (wr[i] & ~rd[i]) depth [i]<=
                 //synthesis translate_off
@@ -498,7 +560,7 @@ generate
                 end
                 //b3.1 trying to write to full buffer
                 if (wr[i] && !rd[i] && (depth[i] == B) ) begin
-                    wr_ptr_check[i] <= wr_ptr_check[i];
+                    wr_ptr_check[i] <= wr_ptr[i];
                     #1
                     // if ( wr_ptr[i]== wr_ptr_check[i] ) $display(" b3.1 succeeded");
                     if ( wr_ptr[i]!= wr_ptr_check[i] ) $display(" $error :b3.1 failed in %m at %t", $time);
@@ -550,8 +612,14 @@ generate
                 trace_1_i[0] <= 32'd0;
                 trace_1_i[1] <= 32'd0;
 
+                trace_1_j[0] <= 32'd0;
+                trace_1_j[1] <= 32'd0;
+
                 trigger_1_i[0] <= 1'b0;
                 trigger_1_i[1] <= 1'b0;
+
+                trigger_1_j[0] <= 1'b0;
+                trigger_1_j[1] <= 1'b0;
 
 
                 next_clk_2[0] <= 1'b0;
@@ -560,60 +628,72 @@ generate
                 trace_2_i[0] <= 32'd0;
                 trace_2_i[1] <= 32'd0;
 
+                trace_2_j[0] <= 32'd0;
+                trace_2_j[1] <= 32'd0;
+
                 trigger_2_i[0] <= 1'b0;
                 trigger_2_i[1] <= 1'b0;
+
+                trigger_2_j[0] <= 1'b0;
+                trigger_2_j[1] <= 1'b0;
             end
             // TS-1
             if (wr[i] && (!rd[i] && (depth[i] != B)))  begin
                 trace_1_i[0]<={{3{1'bX}},4'd0,din[35:32],din[7:0],depth[i],wr_ptr[i],wr_addr,vc_num_wr,vc_wr_addr,wr_en}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1[0] <= 1'b1;
-                trigger_1_i[0] <= 1'b1;                                 
+                trigger_1_i[0] <= 1'b1;
+                trigger_1_j[0] <= 1'b0;                                 
             end
             else begin
                 next_clk_1[0] <= 1'b0;
                 trigger_1_i[0] <= 1'b0;
             end
             if ( next_clk_1[0] ) begin
-                if ( wr_ptr[i]!= wr_ptr_check[i]+ 1'b1 ) trigger_1_i[0] <= 1'b1;
-                else trigger_1_i[0] <= 1'b0;
-                trace_1_i[0]<={{3{1'bX}},4'd1,din[35:32],din[7:0],depth[i],wr_ptr[i],wr_addr,vc_num_wr,vc_wr_addr,wr_en}; // length.wr_ptr = 2 and length.depth = 3
+                if ( wr_ptr[i]!= wr_ptr_check[i]+ 1'b1 ) trigger_1_j[0] <= 1'b1;
+                else trigger_1_j[0] <= 1'b0;
+                trace_1_j[0]<={{3{1'bX}},4'd1,din[35:32],din[7:0],depth[i],wr_ptr[i],wr_addr,vc_num_wr,vc_wr_addr,wr_en}; // length.wr_ptr = 2 and length.depth = 3
                 next_clk_1[0] <= 1'b0;
             end
+            else trigger_1_j[0] <= 1'b0;
 
             
             // Ts-2
             if (rd[i] && (!wr[i] && (depth[i] != B)) ) begin
-                trace_2_i[0]<={{3{1'bX}},4'd2,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd_en}; // length.rd_ptr = 2
+                trace_2_i[0]<={{3{1'bX}},4'd3,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd_en}; // length.rd_ptr = 2
                 next_clk_2[0] <= 1'b1;
                 trigger_2_i[0] <= 1'b1;
+                trigger_2_j[0] <= 1'b0;
             end
             else begin
                 next_clk_2[0] <= 1'b0;
                 trigger_2_i[0] <= 1'b0;
             end
             if (next_clk_2[0]) begin               
-                if ( rd_ptr[i]!= rd_ptr_check[i]+ 1'b1 ) trigger_2_i[0] <= 1'b1;
-                else trigger_2_i[0] <= 1'b0;
-                trace_2_i[0]<={{3{1'bX}},4'd3,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd_en}; // length.rd_ptr = 2
+                if ( rd_ptr[i]!= rd_ptr_check[i]+ 1'b1 ) trigger_2_j[0] <= 1'b1;
+                else trigger_2_j[0] <= 1'b0;
+                trace_2_j[0]<={{3{1'bX}},4'd3,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd_en}; // length.rd_ptr = 2
                 next_clk_2[0] <= 1'b0;
             end
+            else trigger_2_j[0] <= 1'b0;
 
 
             if (wr[i] && !rd[i] && (depth[i] == B) )  begin
                 trace_1_i[1]<={{3{1'bX}},4'd4,din[35:32],din[7:0],depth[i],wr_ptr[i],wr_addr,vc_num_wr,vc_wr_addr,wr_en};
                 next_clk_1[1] <= 1'b1;
                 trigger_1_i[1] <= 1'b1;
+                trigger_1_j[1] <= 1'b0;
             end
             else begin
                 next_clk_1[1] <= 1'b0;
                 trigger_1_i[1] <= 1'b0;
             end
             if (next_clk_1[1]) begin
-                if ( wr_ptr[i]!= wr_ptr_check[i] ) trigger_1_i[1] <= 1'b1;
-                else trigger_1_i[1] <= 1'b0;
-                trace_1_i[1]<={{3{1'bX}},4'd5,din[35:32],din[7:0],depth[i],wr_ptr[i],wr_addr,vc_num_wr,vc_wr_addr,wr_en};
+                if ( wr_ptr[i]!= wr_ptr_check[i] ) trigger_1_j[1] <= 1'b1;
+                else trigger_1_j[1] <= 1'b0;
+                trace_1_j[1]<={{3{1'bX}},4'd5,din[35:32],din[7:0],depth[i],wr_ptr[i],wr_addr,vc_num_wr,vc_wr_addr,wr_en};
                 next_clk_1[1] <= 1'b0;
             end
+            else trigger_1_j[1] <= 1'b0;
 
 
             // Ts-2
@@ -621,23 +701,25 @@ generate
                 trace_2_i[1]<={{3{1'bX}},4'd6,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd_en}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
                 next_clk_2[1] <= 1'b1;
                 trigger_2_i[1] <= 1'b1;
+                trigger_2_j[1] <= 1'b0;
             end
             else begin
                 next_clk_2[1] <= 1'b0;
                 trigger_2_i[1] <= 1'b0;
             end
             if (next_clk_2[1] ) begin
-                if ( rd_ptr[i]!= rd_ptr_check[i] ) trigger_2_i[1] <= 1'b1;
-                else trigger_2_i[1] <= 1'b0;
-                trace_2_i[1]<={{3{1'bX}},4'd7,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd_en}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
+                if ( rd_ptr[i]!= rd_ptr_check[i] ) trigger_2_j[1] <= 1'b1;
+                else trigger_2_j[1] <= 1'b0;
+                trace_2_j[1]<={{3{1'bX}},4'd7,dout[35:32],dout[7:0],depth[i],rd_ptr[i],rd_addr,vc_num_rd,vc_rd_addr,rd_en}; // length.rd_ptr = 2 15'((dout*(dout+34'd3))%34'd32749)
                 next_clk_2[1] <= 1'b0;
             end
+            else trigger_2_j[1] <= 1'b0;
 
-            if (wr_en) begin
-                trigger_0 <= 1'b1;
-                trace_0<={{3{1'bX}},4'd9,din[35:34],din[7:0],wr[i],rd[i],depth[i],wr_ptr[i],rd_ptr[i],rd_addr,wr_addr}; // length.rd_ptr = 2
-            end 
-            else trigger_0 <= 1'b0;
+            // if (wr_en) begin
+            //     trigger_0 <= 1'b1;
+            //     trace_0<={{3{1'bX}},4'd9,din[35:34],din[7:0],wr[i],rd[i],depth[i],wr_ptr[i],rd_ptr[i],rd_addr,wr_addr}; // length.rd_ptr = 2
+            // end 
+            // else trigger_0 <= 1'b0;
 
             if (rd_en && !(|ptr_a5)) begin
                 trigger_0 <= 1'b1;
